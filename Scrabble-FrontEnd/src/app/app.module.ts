@@ -10,6 +10,7 @@ import {FormsModule} from "@angular/forms";
 import { BoiteCommunicationComponent } from './components/boite-communication/boite-communication.component';
 
 import { GrilleComponent } from './components/grille/grille.component';
+import { ChevaletComponent } from './components/chevalet/chevalet.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { GrilleComponent } from './components/grille/grille.component';
     AppComponent,
     InscriptionComponent,
     BoiteCommunicationComponent,
-    GrilleComponent
+    GrilleComponent,
+    ChevaletComponent,
 
   ],
   imports: [
