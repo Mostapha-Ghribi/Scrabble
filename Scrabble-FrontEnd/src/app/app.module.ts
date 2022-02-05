@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InscriptionComponent } from './components/inscription/inscription.component';
 import {FormsModule} from "@angular/forms";
+import { BoiteCommunicationComponent } from './components/boite-communication/boite-communication.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InscriptionComponent
+    InscriptionComponent,
+    BoiteCommunicationComponent
   ],
   imports: [
     BrowserModule,
