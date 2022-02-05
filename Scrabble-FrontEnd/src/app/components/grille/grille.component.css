@@ -1,11 +1,6 @@
 .grille{
   width: 600px;
-  border-top: 4px solid #d8d8d8;
-  border-bottom: 4px solid #d8d8d8;
   margin: 50px;
-  -moz-box-shadow:0 3px 20px #000;
-  -webkit-box-shadow:0 3px 20px #000;
-  box-shadow:0 3px 20px #000;
 }
 .BoardBlock {
   background-color: #ffbead;
@@ -101,15 +96,15 @@
 
 .Lettre {
   background: #f6e1a6;
-  height: 40px;
-  width: 40px;
+  height: 39px;
+  width: 39px;
   margin-left: -12px;
   -moz-border-radius: 7px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
   -moz-box-shadow:0 3px 5px #000;
   -webkit-box-shadow:0 3px 5px #000;
-  box-shadow:0 0 5px #a000;
+  box-shadow:0 0 1px #000;
   float: left;
   text-align: center;
   border-top-width: 1px;
@@ -121,7 +116,7 @@
   border-bottom-style: solid;
   border-left-style: solid;
   border-top-color: #f8e6b1;
-  border-right-color: #f8e6b1;
+  border-right-color: #d7c293;
   border-bottom-color: #cab06b;
   border-left-color: #f8e6b1;
   user-select: none;
@@ -133,7 +128,7 @@
   color: #272832;
   text-shadow:1px 1px 0 #fff5d7;
   margin-top: -9px;
-  margin-left: -14px;
+  margin-left: -16px;
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -145,8 +140,36 @@
   color: #272832;
   text-shadow:1px 1px 0 #fff5d7;
   margin-top: 14px;
-  margin-left: 5px;
+  margin-left: 4px;
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
+}
+.numbers{
+  background-color: #a8b8be;
+  width: 40px;
+  height: 40px;
+  float: left;
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  font-size: 24px;
+  box-shadow: inset 0 0 5px #acacac;
+}
+.alphabets{
+  position: absolute;
+  top: 50px;
+  left: 10px;
+
+}
+.alphabet_Lettre{
+  position:relative;
+  display: block;
+  background-color: #a8b8be;
+  width: 40px;
+  height: 40px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: inset 0 0 5px #acacac;
 }

@@ -7,9 +7,19 @@
   <title>Document</title>
 </head>
 <body>
+<div class="alphabets">
+<div  *ngFor="let alpha of ['','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O']">
+  <div class="alphabet_Lettre">{{alpha}}</div>
+</div>
+</div>
 <div class="grille">
+  <div class="lettres" *ngFor="let number of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+    <div class="numbers">{{number}}</div>
+  </div>
+
   <div class="container">
     <div class="row">
+
       <div class="BoardBlock" *ngFor="let tile of tiles" style="{{this.BackGroundColor(tile)}};">
         <div class="Lettre" *ngIf="isLettre(tile)">
           <span class="ScrabbleLetter">{{tile}}</span>
@@ -18,9 +28,16 @@
         <span class="BoardLetter{{tile}}">{{tile}}</span>
       </div>
     </div>
+
+
+
+
+
   </div>
 
 
+
 </div>
+
 </body>
 </html>
