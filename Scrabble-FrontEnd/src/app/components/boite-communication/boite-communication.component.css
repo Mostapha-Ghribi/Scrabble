@@ -1,0 +1,11 @@
+
+.container {
+  border: 2px solid black;
+  width: 390px;
+  background-color: #D1E7DD;
+}
+.message{
+  margin-top: 10px;
+  resize: none;
+  height: 200px;
+}
