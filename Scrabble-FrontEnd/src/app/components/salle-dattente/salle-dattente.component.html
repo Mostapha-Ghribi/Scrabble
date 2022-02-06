@@ -1,0 +1,18 @@
+<mat-card class="salle-card">
+  <mat-card-title class="salle-card-title"></mat-card-title>
+  <mat-card-content>
+    <p class="message">veuillez patienter jusqu'à ce que tous les joueurs rejoignent la partie</p>
+    <div class="players" *ngFor="let player of players; index as i">
+    <div class="basic-container" >
+      <mat-spinner [ngStyle]="{'visibility': player ? 'hidden' : ''}"  strokeWidth="2" [value]="60"></mat-spinner>
+      <img src="../../../assets/images/{{player ? player.avatar : 'player.png'}}" alt="avatar-joueur">
+    </div>
+      <p class="name">{{player ? player.name : "player"+(i+1)}}</p>
+    </div>
+    <p class="timer">{{display }}</p>
+    <br>
+  </mat-card-content>
+  <mat-card-footer>
+    <p class="footer">Tapez [Esc] pour quitter salle d'attente</p>
+  </mat-card-footer>
+</mat-card>
