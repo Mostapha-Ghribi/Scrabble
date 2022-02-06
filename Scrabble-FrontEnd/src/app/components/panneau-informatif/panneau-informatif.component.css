@@ -1,0 +1,90 @@
+.joueurContainers {
+  height: 100px;
+  display: grid;
+  grid-template-columns: 100px 260px;
+  margin: 10px;
+}
+
+.container {
+  border: 2px solid black;
+  width: 390px;
+  background-color:#D1E7DD;
+}
+
+.infojoueur {
+  font-size: 16px;
+  border-radius: 15px;
+  padding-top: 4px;
+  padding-left: 8px;
+  margin-left: 7px;
+}
+
+.nom-joueur {
+  padding-top: 2px;
+  font-family: serif;
+  font-weight: bold;
+  color: black;
+  font-size: 15px;
+}
+
+.temps {
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: #D1E7DD;
+  border: 2px solid rgba(35, 229, 229, 0.63);
+  border-radius: 15px;
+  margin-left: 15px;
+}
+
+.timeout {
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: #d95a5a;
+  border: 2px solid red;
+  border-radius: 15px;
+  margin-left: 15px;
+}
+
+.image-joueur {
+  border: 1px solid rgba(35, 229, 229, 0.63);
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.score-joueur {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.lettre-chevalet {
+text-align: justify;
+  font-weight: bold;
+}
+
+
+.reserve {
+  height: 50px;
+  display: grid;
+  grid-template-columns: 60px 260px 140px 100px;
+}
+
+.nombre-reserve {
+  font-size: 16px;
+  padding-top: 5px;
+  padding-left: 2px;
+
+}
+
+.nombre-lettre-reserve {
+  margin-left: 95px;
+ border-radius: 50%;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: justify-all;
+  padding: 1px;
+}
+
+.image-reserve {
+  padding: 2px;
+
+}

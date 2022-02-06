@@ -10,6 +10,8 @@ import {FormsModule} from "@angular/forms";
 import { BoiteCommunicationComponent } from './components/boite-communication/boite-communication.component';
 
 import { GrilleComponent } from './components/grille/grille.component';
+import { PanneauInformatifComponent } from './components/panneau-informatif/panneau-informatif.component';
+
 import { ChevaletComponent } from './components/chevalet/chevalet.component';
 
 
@@ -17,6 +19,8 @@ import { ChevaletComponent } from './components/chevalet/chevalet.component';
   declarations: [
     AppComponent,
     InscriptionComponent,
+    GrilleComponent,
+    PanneauInformatifComponent
     BoiteCommunicationComponent,
     GrilleComponent,
     ChevaletComponent,
