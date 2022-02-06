@@ -1,0 +1,48 @@
+.salle-card {
+  max-width: 500px;
+  margin-top: 10%;
+  margin-left: 30%;
+}
+.salle-card-title{
+  text-align: center;
+}
+.basic-container {
+  display: inline-block;
+  position: relative;
+}
+.footer{
+  text-align: center;
+}
+img {
+  max-width: 100%;
+  position: absolute;
+  max-height: 100%;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  clip-path: circle(45% at 50% 49%);
+}
+.basic-container::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+  stroke: #2cf5e7;
+}
+.timer{
+  font-weight: bold;
+  font-size: 50px;
+  margin-left: 200px;
+  margin-top: 200px;
+}
+.message{
+  text-align: center;
+}
+
+.players{
+  margin-left: 12px;
+  max-width:100px ;
+  margin-top: 20px;
+  display: block;
+  float: left;
+}
+.players .name{
+  text-align: center;
+  font-weight: bold;
+}

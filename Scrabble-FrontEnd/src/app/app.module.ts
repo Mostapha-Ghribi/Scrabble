@@ -13,6 +13,12 @@ import { GrilleComponent } from './components/grille/grille.component';
 import { PanneauInformatifComponent } from './components/panneau-informatif/panneau-informatif.component';
 
 import { ChevaletComponent } from './components/chevalet/chevalet.component';
+import { SalleDattenteComponent } from './components/salle-dattente/salle-dattente.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatButtonModule} from "@angular/material/button";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -20,17 +26,23 @@ import { ChevaletComponent } from './components/chevalet/chevalet.component';
     AppComponent,
     InscriptionComponent,
     GrilleComponent,
-    PanneauInformatifComponent
+    PanneauInformatifComponent,
     BoiteCommunicationComponent,
     GrilleComponent,
     ChevaletComponent,
+    SalleDattenteComponent,
 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    MatCardModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
