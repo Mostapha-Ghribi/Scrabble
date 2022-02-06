@@ -1,0 +1,51 @@
+.Chevalet{
+  width: 385px;
+  height: 60px;
+  margin-left: 15px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #D1E7DD;
+}
+.LettreChevalet{
+  background: #f6e1a6;
+  height: 50px;
+  width: 50px;
+  border-radius: 7px;
+  box-shadow:0 0 1px #000;
+  border-top-width: 1px;
+  border-right-width: 4px;
+  border-bottom-width: 4px;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-top-color: #f8e6b1;
+  border-right-color: #d7c293;
+  border-bottom-color: #cab06b;
+  border-left-color: #f8e6b1;
+  margin-top: 3px;
+  margin-left: 4px;
+  display: block;
+  float: left;
+}
+.ScrabbleLetter {
+  position: absolute;
+  font-family: 'Asap', serif;
+  font-size: 35px;
+  color: #272832;
+  text-shadow:1px 1px 0 #fff5d7;
+  margin-top: 6px;
+  margin-left: 3px;
+
+}
+.ScrabbleNumber {
+  position: absolute;
+  font-family: 'Asap', serif;
+  font-size: 25px;
+  font-weight: bold;
+  color: #272832;
+  text-shadow:1px 1px 0 #fff5d7;
+  margin-top: 22px;
+  margin-left: 26px;
+}
