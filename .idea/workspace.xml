@@ -1,16 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="186fb656-2ff0-42bc-be90-13a2d6b139a4" name="Changes" comment="creation d'interface boite de communication" />
+    <list default="true" id="186fb656-2ff0-42bc-be90-13a2d6b139a4" name="Changes" comment="creation d'interface boite de communication">
+      <change afterPath="$PROJECT_DIR$/.idea/T1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/.editorconfig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/.styleci.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Console/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Exceptions/Handler.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Controllers/Controller.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/Authenticate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/EncryptCookies.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/PreventRequestsDuringMaintenance.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/TrimStrings.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/TrustHosts.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/TrustProxies.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Models/User.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Providers/BroadcastServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Providers/EventServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/app/Providers/RouteServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/artisan" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/bootstrap/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/bootstrap/cache/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/composer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/composer.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/auth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/broadcasting.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/cache.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/cors.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/database.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/filesystems.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/hashing.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/l5-swagger.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/logging.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/mail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/queue.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/sanctum.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/services.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/session.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/config/view.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/factories/UserFactory.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/migrations/2014_10_12_100000_create_password_resets_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/migrations/2019_08_19_000000_create_failed_jobs_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/lang/en.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/lang/en/auth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/lang/en/pagination.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/lang/en/passwords.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/lang/en/validation.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/phpunit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/public/.htaccess" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/public/index.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/public/robots.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/css/app.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/js/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/views/vendor/l5-swagger/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/views/vendor/l5-swagger/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/resources/views/welcome.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/routes/api.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/routes/channels.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/routes/console.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/routes/web.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/app/public/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/cache/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/cache/data/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/sessions/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/testing/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/framework/views/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/storage/logs/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/tests/CreatesApplication.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/tests/Feature/ExampleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/tests/TestCase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/tests/Unit/ExampleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrabble-BackEnd/webpack.mix.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="T1-7-interface-boite-communication" />
+        <entry key="$PROJECT_DIR$" value="Acceptation" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,10 +125,14 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Scrabble-FrontEnd" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Scrabble-BackEnd" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Users\haith\angularProjects\T1\Scrabble-FrontEnd\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -54,6 +155,7 @@
       <workItem from="1644026715201" duration="90000" />
       <workItem from="1644026816154" duration="22000" />
       <workItem from="1644072836297" duration="4314000" />
+      <workItem from="1644337952939" duration="1766000" />
     </task>
     <task id="LOCAL-00001" summary="ajout d'interface inscription">
       <created>1644025333325</created>
