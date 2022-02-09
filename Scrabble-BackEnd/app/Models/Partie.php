@@ -9,14 +9,18 @@ class Partie extends Model
 {
     public function joueurs()
     {
-        return $this->hasMany(Joueur::class,"partie");
+        return $this->hasMany(Joueur::class, "partie");
     }
 
 
-
+    public function messages()
+    {
+        return $this->hasMany(Message::class, "partie");
+    }
 
 
     use HasFactory;
-    protected $fillable=["typePartie"] ;
+
+    protected $fillable = ["typePartie"];
     public $timestamps = false;
 }

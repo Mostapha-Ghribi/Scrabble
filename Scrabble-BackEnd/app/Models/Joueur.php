@@ -7,15 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Joueur extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['nom', 'photo'];
-    public $timestamps = false;
 
     public function partie()
     {
         return $this->belongsTo(Partie::class);
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, "envoyeur");
+    }
+
+
+    use HasFactory;
+
+    protected $fillable = ['nom', 'photo'];
+    public $timestamps = false;
 
 
 }
