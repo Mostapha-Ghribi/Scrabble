@@ -269,7 +269,6 @@ return [
                  */
                 'filter' => env('L5_SWAGGER_UI_FILTERS', true), // true | false
             ],
-
             'authorization' => [
                 /*
                  * If set to true, it persists authorization data, and it would not be lost on browser close/refresh
@@ -281,7 +280,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-           // 'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://127.0.0.1:8000/api'),
         ],
     ],
 ];
