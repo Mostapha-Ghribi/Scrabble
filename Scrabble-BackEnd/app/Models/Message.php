@@ -21,7 +21,7 @@ class Message extends Model
 
     use HasFactory;
 
-    protected $fillable = ['contenu'];
+    protected $fillable = ['contenu','statutMessage'];
     public $timestamps = false;
 
 }

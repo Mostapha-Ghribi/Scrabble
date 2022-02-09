@@ -18,10 +18,8 @@ class Joueur extends Model
         return $this->hasMany(Message::class, "envoyeur");
     }
 
-
     use HasFactory;
-
-    protected $fillable = ['nom', 'photo'];
+    protected $fillable = ['nom', 'photo','partie','chevalet','score'];
     public $timestamps = false;
 
 

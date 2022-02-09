@@ -18,9 +18,8 @@ class Partie extends Model
         return $this->hasMany(Message::class, "partie");
     }
 
-
     use HasFactory;
 
-    protected $fillable = ["typePartie"];
+    protected $fillable = ["typePartie","reserve","grille","statutPartie","tempsJoueur"];
     public $timestamps = false;
 }
