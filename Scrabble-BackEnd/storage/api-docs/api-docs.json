@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Api pour un jeu scrabble",
+        "title": "Api pour scrabble",
         "description": "Implementation de Swagger avec Laravel9 pour documneter l'api",
         "contact": {
             "email": "admin@admin.com"
