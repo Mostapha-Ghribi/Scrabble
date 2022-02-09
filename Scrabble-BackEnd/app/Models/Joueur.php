@@ -11,4 +11,11 @@ class Joueur extends Model
 
     protected $fillable = ['nom', 'photo'];
     public $timestamps = false;
+
+    public function partie()
+    {
+        return $this->belongsTo(Partie::class);
+    }
+
+
 }
