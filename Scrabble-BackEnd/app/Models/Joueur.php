@@ -19,7 +19,7 @@ class Joueur extends Model
     }
 
     use HasFactory;
-    protected $fillable = ['nom', 'photo','partie','chevalet','score'];
+    protected $fillable = ['nom', 'photo','partie'];
     public $timestamps = false;
 
 

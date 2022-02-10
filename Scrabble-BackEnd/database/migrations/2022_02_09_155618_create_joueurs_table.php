@@ -10,12 +10,12 @@ return new class extends Migration {
     {
         Schema::create('joueurs', function (Blueprint $table) {
             $table->increments('idJoueur');
-            $table->string('nom',50);
+            $table->string('nom', 50);
             $table->string('photo')->default('public/profile.png');
-            $table->string('chevalet', 7);
-            $table->integer('score');
-            $table->boolean('statutJoueur');
-            $table->integer('ordre');
+            $table->string('chevalet', 7)->nullable();
+            $table->integer('score')->nullable();
+            $table->boolean('statutJoueur')->nullable();
+            $table->integer('ordre')->nullable();
             $table->integer('partie')->unsigned();
             $table->foreign('partie')->references('idPartie')->on('parties');
 

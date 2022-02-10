@@ -1,19 +1,19 @@
 <?php
 
+use App\Http\Controllers\JoueurController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// JoueurController rest api grouped under one controller
+
+Route::controller(JoueurController::class)->prefix("v1")->group(static function () {
+    Route::post("/inscrire", [JoueurController::class, "inscrire"]);
+    Route::get("/joueurs", [JoueurController::class, "index"]);
+
+});
+//Route::post("/nom/{nom}/photo/{photo}/partie/{partie}", [JoueurController::class, "inscrire"])->name("insription");
+
