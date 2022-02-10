@@ -12,6 +12,11 @@ use Illuminate\Validation\Rule;
 class JoueurController extends Controller
 {
 
+    public function index()
+    {
+        return Joueur::all();
+
+    }
 
     public function inscrire(Request $request)
     {
@@ -21,7 +26,12 @@ class JoueurController extends Controller
             "partie" => "integer"
         ]);
 
-        if ($valid) {
+        $tousLesjoueurs = $this->index();
+        $nomjoueur = $request->name;
+        $validnom = true;
+        $nom = Joueur::where('nom', $request->nom)->first();
+
+        if ($nom == "" && $valid) {
             $filename = "";
             if ($request->hasFile('photo')) {
                 $filename = $request->file('photo')->store('joueurs', 'public');
@@ -30,36 +40,13 @@ class JoueurController extends Controller
                 $filename = 'public/profile.png';
             }
             $joueur = Joueur::create($request->all());
-            return new  JoueurResource($joueur);
+            return new JoueurResource($joueur);
         } else {
             return Response()->json(['data' => 'invalid']);
         }
 
 
-        /* $joueur = $request->validate($request,
-             [
-                 "nom" => "required|max:50",
-                 "photo" => "mimes:jpg,bmp,png",
-                 "partie" => "integer"
-             ]
-         );
-
-         if ($joueur) {
-             $j = Joueur::create($request->all());
-             return Response()->json($j);
-
-         } else {
-             return Response()->json("erreur: impossible de se connecter verifier les info", 400);
-
-         }*/
-
-
     }
 
-    public function index()
-    {
-        return JoueurResource::collection(Joueur::all());
-
-    }
 
 }
