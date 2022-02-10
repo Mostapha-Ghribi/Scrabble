@@ -12,7 +12,10 @@ class MessageFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'contenu'=>$this->faker->name() ,
+            'statutMessage'=>true ,
+            'partie'=>1,
+            'envoyeur'=>rand(1,4)
         ];
     }
 }
