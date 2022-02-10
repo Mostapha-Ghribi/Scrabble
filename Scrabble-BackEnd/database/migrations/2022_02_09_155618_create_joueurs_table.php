@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->integer('ordre');
             $table->integer('partie')->unsigned();
             $table->foreign('partie')->references('idPartie')->on('parties');
-            $table->timestamps();
+
         });
     }
 

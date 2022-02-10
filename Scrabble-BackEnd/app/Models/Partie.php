@@ -12,14 +12,12 @@ class Partie extends Model
         return $this->hasMany(Joueur::class, "partie");
     }
 
-
     public function messages()
     {
         return $this->hasMany(Message::class, "partie");
     }
 
     use HasFactory;
-
-    protected $fillable = ["typePartie","reserve","grille","statutPartie","tempsJoueur"];
+    protected $fillable = ["typePartie", "reserve", "grille", "statutPartie", "tempsJoueur"];
     public $timestamps = false;
 }
