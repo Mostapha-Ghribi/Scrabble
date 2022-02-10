@@ -15,38 +15,35 @@ class JoueurController extends Controller
     public function index()
     {
         return Joueur::all();
-
     }
 
     public function inscrire(Request $request)
     {
-        $valid = $request->validate([
+        $validData = $request->validate([
             "nom" => "required|max:50",
             "photo" => "mimes:jpg,bmp,png,jpeg",
             "partie" => "integer"
         ]);
-
-        $tousLesjoueurs = $this->index();
-        $nomjoueur = $request->name;
-        $validnom = true;
-        $nom = Joueur::where('nom', $request->nom)->first();
-
-        if ($nom == "" && $valid) {
+        if (!$validData) {
+            return Response()->json(["Erreur" => "les champs sont obligatoires"], 401);
+        }
+        $joueur = Joueur::where('nom', $request->nom)->first();
+        if ($joueur) {
+            $actif = $joueur->statutJoueur;
+        }
+        if ($joueur && $actif) {
+            return Response()->json(["Erreur" => "le joueur est déja existant ou en cours de jouer"], 401);
+        } else {
             $filename = "";
             if ($request->hasFile('photo')) {
                 $filename = $request->file('photo')->store('joueurs', 'public');
-                $request->photo = $filename.".".$request->photo->getClientOriginalExtension();
-
-
+                $request->photo = $filename . "." . $request->photo->getClientOriginalExtension();
             } else {
                 $filename = 'public/profile.png';
             }
             $joueur = Joueur::create($request->all());
             return new JoueurResource($joueur);
-        } else {
-            return Response()->json(['data' => ' invalid data ']);
         }
-
 
     }
 
