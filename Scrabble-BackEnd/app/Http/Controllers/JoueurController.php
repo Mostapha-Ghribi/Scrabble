@@ -35,14 +35,16 @@ class JoueurController extends Controller
             $filename = "";
             if ($request->hasFile('photo')) {
                 $filename = $request->file('photo')->store('joueurs', 'public');
-                $request->photo = $filename;
+                $request->photo = $filename.".".$request->photo->getClientOriginalExtension();
+
+
             } else {
                 $filename = 'public/profile.png';
             }
             $joueur = Joueur::create($request->all());
             return new JoueurResource($joueur);
         } else {
-            return Response()->json(['data' => 'invalid']);
+            return Response()->json(['data' => ' invalid data ']);
         }
 
 
