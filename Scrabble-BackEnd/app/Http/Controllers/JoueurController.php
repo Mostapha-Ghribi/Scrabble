@@ -12,6 +12,47 @@ use Illuminate\Support\Facades\DB;
 class JoueurController extends Controller
 {
 
+
+    /**
+     * @OA\Get(
+     *      path="/v1/joueur/{idJoueur}",
+     *      operationId="getJoueur",
+     *      tags={"joueurs"},
+     *      summary="Trouver un joueurs a partie son id ",
+     *      description="Trouver un joueurs a partie son id",
+     *@OA\Parameter(
+     *      name="idJoueur",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *  )
+     */
     public function getJoueur($idJoueur)
     {
         $joueur = DB::table('joueurs')->where('idJoueur', "=", $idJoueur)->get();
@@ -23,6 +64,49 @@ class JoueurController extends Controller
 
     }
 
+
+
+
+    /**
+     * @OA\Post (
+     *      path="/v1/inscrire",
+     *      operationId="inscrire",
+     *      tags={"joueurs"},
+     *      summary="Get List Of Cases Per Country Per Province By Case Type From The First Recorded Case",
+     *      description="Returns all cases by case type for a country from the first recorded case. Country must be the country_slug from /countries. Cases must be one of: confirmed, recovered, deaths",
+     *@OA\Parameter(
+     *      name="country",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *  )
+     */
 
     public function inscrire(Request $request)
     {
@@ -54,6 +138,39 @@ class JoueurController extends Controller
 
     }
 
+
+    /**
+     * @OA\Get(
+     *      path="/v1/joueurs",
+     *      operationId="getJoueurs",
+     *      tags={"joueurs"},
+     *      summary="la liste des joueurs",
+     *      description="la liste des joueurs",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *  )
+     */
     public function getJoueurs()
     {
         return Joueur::all();
