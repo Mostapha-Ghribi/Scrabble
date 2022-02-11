@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JoueurRequest;
 use App\Http\Resources\JoueurResource;
 use App\Models\Joueur;
 use Illuminate\Http\Request;
@@ -25,15 +26,15 @@ class JoueurController extends Controller
      *      in="path",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
+     *           type="integer"
      *      )
      *   ),
-     *     @OA\Response(
+     *    @OA\Response(
      *          response=200,
      *          description="Successful operation",
      *          @OA\MediaType(
      *           mediaType="application/json",
-     *      )
+     *      ),
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -64,64 +65,31 @@ class JoueurController extends Controller
     }
 
 
+
+
+
+
+
+
+
     /**
-     * @OA\Post (
-     *      path="/v1/inscrire",
-     *      operationId="inscrire",
-     *      tags={"joueurs"},
-     *      summary="inscrire un nouveau joueur",
-     *      description="inscrire un joueur",
-     * @OA\Parameter(
-     *      name="nom",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
+     * Store a newly created resource in storage.
+     * @OA\Post(
+     *   tags={"joueur"},
+     *   path="/api/v1/inscrire",
+     *   @OA\Response(
+     *     response="201",
+     *     description="Returns the created station",
      *   ),
-     *  @OA\Parameter(
-     *      name="photo",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="file"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="partie",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\MediaType(
-     *           mediaType="application/json",
-     *      )
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     * @OA\Response(
-     *      response=400,
-     *      description="Bad Request"
-     *   ),
-     * @OA\Response(
-     *      response=404,
-     *      description="not found"
-     *   ),
-     *  )
+     *   @OA\RequestBody(
+     *     description="Station to create",
+     *     required=true,
+     *   )
+     * )
+     *
      */
 
-    public function inscrire(Request $request)
+    public function inscrire(JoueurRequest $request)
     {
         $validData = $request->validate([
             "nom" => "required|max:50",

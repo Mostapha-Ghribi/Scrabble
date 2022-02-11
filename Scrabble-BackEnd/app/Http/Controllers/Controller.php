@@ -25,15 +25,6 @@ use Illuminate\Routing\Controller as BaseController;
  *      url=L5_SWAGGER_CONST_HOST,
  *      description="Demo API Server"
  * )
- * @OA\Tag(
- *     name="ScrabbleGO",
- *     description="API Endpoints de projet"
- * )
- * @OA\Get(
- *     path="/projects",
- *     @OA\Response(response="200", description="Display a listing of projects.")
- * )
- *
  *
  */
 class Controller extends BaseController

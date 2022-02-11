@@ -19,15 +19,6 @@
         }
     ],
     "paths": {
-        "/projects": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Display a listing of projects."
-                    }
-                }
-            }
-        },
         "/v1/joueur/{idJoueur}": {
             "get": {
                 "tags": [
@@ -42,7 +33,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -68,58 +59,20 @@
                 }
             }
         },
-        "/v1/inscrire": {
+        "/api/v1/inscrire": {
             "post": {
                 "tags": [
-                    "joueurs"
+                    "joueur"
                 ],
-                "summary": "inscrire un nouveau joueur",
-                "description": "inscrire un joueur",
-                "operationId": "inscrire",
-                "parameters": [
-                    {
-                        "name": "nom",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "photo",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "file"
-                        }
-                    },
-                    {
-                        "name": "partie",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "c44c23b493b72b5a17859078445ffc47",
+                "requestBody": {
+                    "description": "Station to create",
+                    "required": true
+                },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
+                    "201": {
+                        "description": "Returns the created station"
                     }
                 }
             }
@@ -155,12 +108,65 @@
             }
         }
     },
-    "tags": [
-        {
-            "name": "ScrabbleGO",
-            "description": "API Endpoints de projet"
+    "components": {
+        "schemas": {
+            "StationPostRequest": {
+                "properties": {
+                    "nom": {
+                        "schema": "JoueurRequest",
+                        "description": "joueur nom",
+                        "type": "string"
+                    },
+                    "photo": {
+                        "schema": "JoueurRequest",
+                        "description": "The station title",
+                        "type": "file"
+                    },
+                    "partie": {
+                        "schema": "JoueurRequest",
+                        "description": "The station title",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "joueurs": {
+                "properties": {
+                    "nom": {
+                        "schema": "JoueurResource",
+                        "description": "The station name",
+                        "type": "string"
+                    },
+                    "photo": {
+                        "schema": "JoueurResource",
+                        "description": "The station title",
+                        "type": "string"
+                    },
+                    "partie": {
+                        "schema": "JoueurResource",
+                        "description": "The station latitude",
+                        "type": "number"
+                    },
+                    "chevalet": {
+                        "schema": "JoueurResource",
+                        "description": "The station longitude",
+                        "type": "string"
+                    },
+                    "statutJoueur": {
+                        "schema": "JoueurResource",
+                        "description": "The station longitude",
+                        "type": "string"
+                    },
+                    "ordre": {
+                        "schema": "JoueurResource",
+                        "description": "The station longitude",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
         }
-    ],
+    },
     "security": [
         []
     ]
