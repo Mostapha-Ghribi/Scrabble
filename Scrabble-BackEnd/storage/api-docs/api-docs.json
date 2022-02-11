@@ -59,12 +59,12 @@
                 }
             }
         },
-        "/api/v1/inscrire": {
+        "/v1/inscrire": {
             "post": {
                 "tags": [
                     "joueurs"
                 ],
-                "operationId": "c44c23b493b72b5a17859078445ffc47",
+                "operationId": "36df692f96d4f540fd16704db162e968",
                 "requestBody": {
                     "description": "joueurs to create",
                     "required": true,

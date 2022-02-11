@@ -76,7 +76,7 @@ class JoueurController extends Controller
 *
 * @OA\Post(
 *   tags={"joueurs"},
-*   path="/api/v1/inscrire",
+*   path="/v1/inscrire",
 *   @OA\Response(
 *     response="201",
 *     description="Returns the created station",

@@ -12,10 +12,10 @@ return new class extends Migration {
             $table->increments('idJoueur');
             $table->string('nom', 50);
             $table->string('photo')->default('public/profile.png');
-            $table->string('chevalet', 7)->nullable();
+            $table->string('chevalet', 7)->default("");
             $table->integer('score')->default(0);
             $table->boolean('statutJoueur')->default(1);
-            $table->integer('ordre')->nullable();
+            $table->integer('ordre')->default(0);
             $table->integer('partie')->unsigned();
             $table->foreign('partie')->references('idPartie')->on('parties');
 
