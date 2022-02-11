@@ -4,18 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\JoueurResource;
 use App\Models\Joueur;
-use http\Env\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
+
 
 class JoueurController extends Controller
 {
 
-    public function index()
+    public function getJoueur($idJoueur)
     {
-        return Joueur::all();
+        $joueur = DB::table('joueurs')->where('idJoueur', "=", $idJoueur)->get();
+        if (!empty(json_decode($joueur))) {
+            return new JsonResource($joueur);
+        }
+        return Response()->json(["Erreur" => "le joueur n'existe pas"], 401);
+
+
     }
+
 
     public function inscrire(Request $request)
     {
@@ -47,5 +54,9 @@ class JoueurController extends Controller
 
     }
 
+    public function getJoueurs()
+    {
+        return Joueur::all();
+    }
 
 }
