@@ -61,10 +61,7 @@ class JoueurController extends Controller
         }
         return Response()->json(["Erreur" => "le joueur n'existe pas"], 401);
 
-
     }
-
-
 
 
     /**
@@ -72,10 +69,26 @@ class JoueurController extends Controller
      *      path="/v1/inscrire",
      *      operationId="inscrire",
      *      tags={"joueurs"},
-     *      summary="Get List Of Cases Per Country Per Province By Case Type From The First Recorded Case",
-     *      description="Returns all cases by case type for a country from the first recorded case. Country must be the country_slug from /countries. Cases must be one of: confirmed, recovered, deaths",
-     *@OA\Parameter(
-     *      name="country",
+     *      summary="inscrire un nouveau joueur",
+     *      description="inscrire un joueur",
+     * @OA\Parameter(
+     *      name="nom",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="photo",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="file"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="partie",
      *      in="path",
      *      required=true,
      *      @OA\Schema(

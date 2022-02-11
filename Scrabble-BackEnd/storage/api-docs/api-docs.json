@@ -71,14 +71,30 @@
         "/v1/inscrire": {
             "post": {
                 "tags": [
-                    "inscrire"
+                    "joueurs"
                 ],
-                "summary": "Get List Of Cases Per Country Per Province By Case Type From The First Recorded Case",
-                "description": "Returns all cases by case type for a country from the first recorded case. Country must be the country_slug from /countries. Cases must be one of: confirmed, recovered, deaths",
+                "summary": "inscrire un nouveau joueur",
+                "description": "inscrire un joueur",
                 "operationId": "inscrire",
                 "parameters": [
                     {
-                        "name": "country",
+                        "name": "nom",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "photo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    {
+                        "name": "partie",
                         "in": "path",
                         "required": true,
                         "schema": {
