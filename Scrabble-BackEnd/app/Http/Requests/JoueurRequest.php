@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 
 /**
- * @OA\Schema(schema="StationPostRequest")
+ * @OA\Schema(schema="JoueurRequest")
  * {
  *   @OA\Property(
  *     property="nom",
@@ -15,7 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *   ),
  *   @OA\Property(
  *     property="photo",
- *     type="file",
+ *     type="string",
  *     description="The station title"
  *   ),
  * }

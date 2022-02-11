@@ -49,6 +49,7 @@ class JoueurResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'idJoueur' => $this->idJoueur,
             'nom' => $this->nom,
             'photo' => $this->photo,
             'chevalet' => $this->chevalet,

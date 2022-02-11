@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\JoueurRequest;
+use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
 use App\Models\Joueur;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 
@@ -58,7 +59,7 @@ class JoueurController extends Controller
     {
         $joueur = DB::table('joueurs')->where('idJoueur', "=", $idJoueur)->get();
         if (!empty(json_decode($joueur))) {
-            return new JsonResource($joueur);
+            return new JsonResponse($joueur);
         }
         return Response()->json(["Erreur" => "le joueur n'existe pas"], 401);
 
@@ -71,24 +72,30 @@ class JoueurController extends Controller
 
 
 
-
-    /**
-     * Store a newly created resource in storage.
-     * @OA\Post(
-     *   tags={"joueur"},
-     *   path="/api/v1/inscrire",
-     *   @OA\Response(
-     *     response="201",
-     *     description="Returns the created station",
-     *   ),
-     *   @OA\RequestBody(
-     *     description="Station to create",
-     *     required=true,
-     *   )
-     * )
-     *
-     */
-
+/**
+*
+* @OA\Post(
+*   tags={"joueurs"},
+*   path="/api/v1/inscrire",
+*   @OA\Response(
+*     response="201",
+*     description="Returns the created station",
+*     @OA\JsonContent(
+*       type="array",
+*       @OA\Items(ref="#/components/schemas/Joueur")
+*     )
+*   ),
+*   @OA\RequestBody(
+*     description="joueurs to create",
+*     required=true,
+*     @OA\MediaType(
+*       mediaType="application/json",
+*       @OA\Schema(ref="#/components/schemas/JoueurRequest")
+*     )
+*   )
+* )
+*
+ */
     public function inscrire(JoueurRequest $request)
     {
         $validData = $request->validate([

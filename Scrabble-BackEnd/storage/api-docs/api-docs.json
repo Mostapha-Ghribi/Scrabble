@@ -62,17 +62,33 @@
         "/api/v1/inscrire": {
             "post": {
                 "tags": [
-                    "joueur"
+                    "joueurs"
                 ],
-                "summary": "Store a newly created resource in storage.",
                 "operationId": "c44c23b493b72b5a17859078445ffc47",
                 "requestBody": {
-                    "description": "Station to create",
-                    "required": true
+                    "description": "joueurs to create",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JoueurRequest"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "201": {
-                        "description": "Returns the created station"
+                        "description": "Returns the created station",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Joueur"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -110,7 +126,7 @@
     },
     "components": {
         "schemas": {
-            "StationPostRequest": {
+            "JoueurRequest": {
                 "properties": {
                     "nom": {
                         "schema": "JoueurRequest",
@@ -120,7 +136,7 @@
                     "photo": {
                         "schema": "JoueurRequest",
                         "description": "The station title",
-                        "type": "file"
+                        "type": "string"
                     },
                     "partie": {
                         "schema": "JoueurRequest",
@@ -161,6 +177,36 @@
                         "schema": "JoueurResource",
                         "description": "The station longitude",
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Joueur": {
+                "properties": {
+                    "nom": {
+                        "schema": "Joueur",
+                        "description": "le nom du joueur",
+                        "type": "string"
+                    },
+                    "photo": {
+                        "schema": "Joueur",
+                        "description": "The station title",
+                        "type": "string"
+                    },
+                    "chevalet": {
+                        "schema": "Joueur",
+                        "description": "The station title",
+                        "type": "string"
+                    },
+                    "statutJoueur": {
+                        "schema": "Joueur",
+                        "description": "The station title",
+                        "type": "string"
+                    },
+                    "ordre": {
+                        "schema": "Joueur",
+                        "description": "The station title",
+                        "type": "string"
                     }
                 },
                 "type": "object"
