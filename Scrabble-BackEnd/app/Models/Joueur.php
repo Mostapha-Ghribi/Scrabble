@@ -4,7 +4,47 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @OA\Schema(schema="Joueur")
+ * {
+ *   @OA\Property(
+ *     property="nom",
+ *     type="string",
+ *     description="le nom du joueur"
+ *   ),
+ *   @OA\Property(
+ *     property="photo",
+ *     type="string",
+ *     description="photo du joueur"
+ *   ),
+ *   @OA\Property(
+ *     property="chevalet",
+ *     type="string",
+ *     description="la chevalet"
+ *   ),
+ *   @OA\Property(
+ *     property="score",
+ *     type="integer",
+ *     description="le score "
+ *   ),
+ * @OA\Property(
+ *     property="statutJoueur",
+ *     type="boolean",
+ *     description="le statutJoueur "
+ *   ),
+ * @OA\Property(
+ *     property="ordre",
+ *     type="integer",
+ *     description="l'ordre du joueur "
+ *   ),
+ * @OA\Property(
+ *     property="partie",
+ *     type="integer",
+ *     description="la partie "
+ *   ),
+ *
+ * }
+ */
 class Joueur extends Model
 {
 
@@ -19,7 +59,7 @@ class Joueur extends Model
     }
 
     use HasFactory;
-    protected $fillable = ['nom', 'photo','partie','chevalet','score'];
+    protected $fillable = ['nom', 'photo','partie'];
     public $timestamps = false;
 
 

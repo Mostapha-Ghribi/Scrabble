@@ -19,7 +19,6 @@ class JoueurFactory extends Factory
             $lettres += $chevalet2[$i];
         }*/
 
-
         $nom = "haithem";
         return [
             'nom' => $nom . rand(1, 100),
