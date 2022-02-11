@@ -1,11 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Api pour scrabble",
-        "description": "Implementation de Swagger avec Laravel9 pour documneter l'api",
-        "contact": {
-            "email": "admin@admin.com"
-        },
+        "title": "Api pour scrabbleGO",
         "license": {
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
@@ -22,10 +18,9 @@
         "/v1/joueur/{idJoueur}": {
             "get": {
                 "tags": [
-                    "joueurs"
+                    "joueur"
                 ],
-                "summary": "Trouver un joueurs a partie son id ",
-                "description": "Trouver un joueurs a partie son id",
+                "summary": "Trouver un joueur a partir  de son id",
                 "operationId": "getJoueur",
                 "parameters": [
                     {
@@ -39,10 +34,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
+                        "description": "Opération réussie"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -54,7 +46,7 @@
                         "description": "Bad Request"
                     },
                     "404": {
-                        "description": "not found"
+                        "description": "joueur inexistant"
                     }
                 }
             }
@@ -62,11 +54,12 @@
         "/v1/inscrire": {
             "post": {
                 "tags": [
-                    "joueurs"
+                    "joueur"
                 ],
+                "summary": "Inscrire un joueur",
                 "operationId": "36df692f96d4f540fd16704db162e968",
                 "requestBody": {
-                    "description": "joueurs to create",
+                    "description": "Creer un joueur avec son nom,photo,partie ",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -77,8 +70,8 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Returns the created station",
+                    "200": {
+                        "description": "joueur inscrit avec succées",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -89,6 +82,9 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "L'un des champs est invalide"
                     }
                 }
             }
@@ -96,7 +92,7 @@
         "/v1/joueurs": {
             "get": {
                 "tags": [
-                    "joueurs"
+                    "joueur"
                 ],
                 "summary": "la liste des joueurs",
                 "description": "la liste des joueurs",
@@ -130,52 +126,52 @@
                 "properties": {
                     "nom": {
                         "schema": "JoueurRequest",
-                        "description": "joueur nom",
+                        "description": "nom de joueur",
                         "type": "string"
                     },
                     "photo": {
                         "schema": "JoueurRequest",
-                        "description": "The station title",
+                        "description": "Photo de joueur",
                         "type": "string"
                     },
                     "partie": {
                         "schema": "JoueurRequest",
-                        "description": "The station title",
+                        "description": "La partie",
                         "type": "integer"
                     }
                 },
                 "type": "object"
             },
-            "joueurs": {
+            "joueurResource": {
                 "properties": {
                     "nom": {
                         "schema": "JoueurResource",
-                        "description": "The station name",
+                        "description": "Le nom du joueur",
                         "type": "string"
                     },
                     "photo": {
                         "schema": "JoueurResource",
-                        "description": "The station title",
+                        "description": "La photo du joueur",
                         "type": "string"
                     },
                     "partie": {
                         "schema": "JoueurResource",
-                        "description": "The station latitude",
+                        "description": "la partie associée au joueur",
                         "type": "number"
                     },
                     "chevalet": {
                         "schema": "JoueurResource",
-                        "description": "The station longitude",
+                        "description": "Le chevalet du joueur",
                         "type": "string"
                     },
                     "statutJoueur": {
                         "schema": "JoueurResource",
-                        "description": "The station longitude",
+                        "description": "la statut du joueur",
                         "type": "string"
                     },
                     "ordre": {
                         "schema": "JoueurResource",
-                        "description": "The station longitude",
+                        "description": "L'ordre du joueur",
                         "type": "integer"
                     }
                 },
@@ -190,23 +186,33 @@
                     },
                     "photo": {
                         "schema": "Joueur",
-                        "description": "The station title",
+                        "description": "photo du joueur",
                         "type": "string"
                     },
                     "chevalet": {
                         "schema": "Joueur",
-                        "description": "The station title",
+                        "description": "la chevalet",
                         "type": "string"
+                    },
+                    "score": {
+                        "schema": "Joueur",
+                        "description": "le score ",
+                        "type": "integer"
                     },
                     "statutJoueur": {
                         "schema": "Joueur",
-                        "description": "The station title",
-                        "type": "string"
+                        "description": "le statutJoueur ",
+                        "type": "boolean"
                     },
                     "ordre": {
                         "schema": "Joueur",
-                        "description": "The station title",
-                        "type": "string"
+                        "description": "l'ordre du joueur ",
+                        "type": "integer"
+                    },
+                    "partie": {
+                        "schema": "Joueur",
+                        "description": "la partie ",
+                        "type": "integer"
                     }
                 },
                 "type": "object"

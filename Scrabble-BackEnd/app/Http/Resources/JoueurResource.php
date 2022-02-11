@@ -8,37 +8,37 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 
 /**
- * @OA\Schema(schema="joueurs")
+ * @OA\Schema(schema="joueurResource")
  * {
  *   @OA\Property(
  *    property="nom",
  *    type="string",
- *    description="The station name"
+ *    description="Le nom du joueur"
  *    ),
  *    @OA\Property(
  *       property="photo",
  *       type="string",
- *       description="The station title"
+ *       description="La photo du joueur"
  *    ),
  *    @OA\Property(
  *       property="partie",
  *       type="number",
- *       description="The station latitude"
+ *       description="la partie associée au joueur"
  *    ),
  *    @OA\Property(
  *       property="chevalet",
  *       type="string",
- *       description="The station longitude"
+ *       description="Le chevalet du joueur"
  *    ),
  *    @OA\Property(
  *       property="statutJoueur",
  *       type="string",
- *       description="The station longitude"
+ *       description="la statut du joueur"
  *    ),
  *    @OA\Property(
  *       property="ordre",
  *       type="integer",
- *       description="The station longitude"
+ *       description="L'ordre du joueur"
  *    ),
  * }
  */

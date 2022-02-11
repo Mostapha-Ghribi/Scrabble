@@ -14,28 +14,25 @@ use Illuminate\Support\Facades\DB;
 class JoueurController extends Controller
 {
 
-
     /**
+     *
      * @OA\Get(
      *      path="/v1/joueur/{idJoueur}",
      *      operationId="getJoueur",
-     *      tags={"joueurs"},
-     *      summary="Trouver un joueurs a partie son id ",
-     *      description="Trouver un joueurs a partie son id",
-     *@OA\Parameter(
+     *      tags={"joueur"},
+     *      summary="Trouver un joueur a partir  de son id",
+     *
+     *  @OA\Parameter(
      *      name="idJoueur",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
      *           type="integer"
-     *      )
+     *      ),
      *   ),
      *    @OA\Response(
      *          response=200,
-     *          description="Successful operation",
-     *          @OA\MediaType(
-     *           mediaType="application/json",
-     *      ),
+     *          description="Opération réussie",
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -51,7 +48,7 @@ class JoueurController extends Controller
      *   ),
      * @OA\Response(
      *      response=404,
-     *      description="not found"
+     *      description="joueur inexistant"
      *   ),
      *  )
      */
@@ -61,7 +58,7 @@ class JoueurController extends Controller
         if (!empty(json_decode($joueur))) {
             return new JsonResponse($joueur);
         }
-        return Response()->json(["Erreur" => "le joueur n'existe pas"], 401);
+        return Response()->json(["Erreur" => "le joueur n'existe pas"], 404);
 
     }
 
@@ -75,18 +72,25 @@ class JoueurController extends Controller
 /**
 *
 * @OA\Post(
-*   tags={"joueurs"},
+*   tags={"joueur"},
 *   path="/v1/inscrire",
+ *     summary="Inscrire un joueur",
 *   @OA\Response(
-*     response="201",
-*     description="Returns the created station",
+*     response="200",
+*     description="joueur inscrit avec succées",
 *     @OA\JsonContent(
 *       type="array",
 *       @OA\Items(ref="#/components/schemas/Joueur")
 *     )
 *   ),
+ *     @OA\Response(
+ *          response=422,
+ *          description="L'un des champs est invalide",
+ *      ),
+ *
+ *
 *   @OA\RequestBody(
-*     description="joueurs to create",
+*     description="Creer un joueur avec son nom,photo,partie ",
 *     required=true,
 *     @OA\MediaType(
 *       mediaType="application/json",
@@ -131,7 +135,7 @@ class JoueurController extends Controller
      * @OA\Get(
      *      path="/v1/joueurs",
      *      operationId="getJoueurs",
-     *      tags={"joueurs"},
+     *      tags={"joueur"},
      *      summary="la liste des joueurs",
      *      description="la liste des joueurs",
      *      @OA\Response(

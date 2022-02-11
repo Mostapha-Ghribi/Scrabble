@@ -15,23 +15,34 @@ use Illuminate\Database\Eloquent\Model;
  *   @OA\Property(
  *     property="photo",
  *     type="string",
- *     description="The station title"
+ *     description="photo du joueur"
  *   ),
  *   @OA\Property(
  *     property="chevalet",
  *     type="string",
- *     description="The station title"
+ *     description="la chevalet"
  *   ),
  *   @OA\Property(
+ *     property="score",
+ *     type="integer",
+ *     description="le score "
+ *   ),
+ * @OA\Property(
  *     property="statutJoueur",
- *     type="string",
- *     description="The station title"
+ *     type="boolean",
+ *     description="le statutJoueur "
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="ordre",
- *     type="string",
- *     description="The station title"
+ *     type="integer",
+ *     description="l'ordre du joueur "
  *   ),
+ * @OA\Property(
+ *     property="partie",
+ *     type="integer",
+ *     description="la partie "
+ *   ),
+ *
  * }
  */
 class Joueur extends Model

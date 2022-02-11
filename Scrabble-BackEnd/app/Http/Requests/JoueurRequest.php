@@ -11,18 +11,18 @@ use Illuminate\Foundation\Http\FormRequest;
  *   @OA\Property(
  *     property="nom",
  *     type="string",
- *     description="joueur nom"
+ *     description="nom de joueur"
  *   ),
  *   @OA\Property(
  *     property="photo",
  *     type="string",
- *     description="The station title"
+ *     description="Photo de joueur"
  *   ),
- * }
+ *
  *  @OA\Property(
  *     property="partie",
  *     type="integer",
- *     description="The station title"
+ *     description="La partie"
  *   ),
  * }
  */
