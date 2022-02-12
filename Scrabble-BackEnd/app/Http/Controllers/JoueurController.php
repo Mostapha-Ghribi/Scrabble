@@ -6,6 +6,8 @@ use App\Http\Requests\JoueurRequest;
 use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
 use App\Models\Joueur;
+use App\Models\Partie;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
@@ -104,30 +106,55 @@ class JoueurController extends Controller
     {
         $validData = $request->validate([
             "nom" => "required|max:50",
-            "photo" => "mimes:jpg,bmp,png,jpeg",
+            "photo" => "mimes:image/jpg,image/png,image/jpeg",
             "partie" => "integer"
         ]);
-        if (!$validData) {
-            return Response()->json(["Erreur" => "les champs sont obligatoires"], 401);
-        }
+        //recuper le joueur qui a le meme nom
         $joueur = Joueur::where('nom', $request->nom)->first();
         if ($joueur) {
             $actif = $joueur->statutJoueur;
         }
+        //si le joueur existe et actif en meme temps
         if ($joueur && $actif) {
             return Response()->json(["Erreur" => "le joueur est déja existant ou en cours de jouer"], 401);
         } else {
-            $filename = "";
+            // tous les champs sont obligatoires
+            if (!$validData) {
+                return Response()->json(["Erreur" => "les champs sont obligatoires"], 401);
+            }
+            //recuperer le type de la partie
+            $typePartie = $request->partie;
+            //selectionner la partie ou le typepartie == $typePartie
+            $partie = Partie::where('typePartie', $typePartie)->first();
+            // si le joueur ajouter son image
             if ($request->hasFile('photo')) {
                 $filename = $request->file('photo')->store('joueurs', 'public');
                 $request->photo = $filename . "." . $request->photo->getClientOriginalExtension();
-            } else {
-                $filename = 'public/profile.png';
             }
-            $joueur = Joueur::create($request->all());
-            return new JoueurResource($joueur);
+            //si la partie n'est pas existe ou bien le status de la partie different de "EnAttente"
+            if (!$partie || $partie->statutPartie != "EnAttente") {
+                $partieCreated = Partie::create(['typePartie' => $typePartie]);
+                $joueur = Joueur::create(['nom' => $request->nom, $request->has('photo') ? $request->photo : null, 'partie' => $partieCreated->id]);
+                return new JoueurResource($joueur);
+            }
+            //si la partie existe et sa statut == "EnAttente"
+            if ($partie && $partie->statutPartie == "EnAttente") {
+                $joueur = Joueur::create(['nom' => $request->nom, $request->has('photo') ? $request->photo : null, 'partie' => $partie->idPartie]);
+                if ($partie->typePartie - $partie->nombreJoueurs == 1) {
+                    DB::table('parties')
+                        ->where('idPartie', $partie->idPartie)
+                        ->increment('nombreJoueurs');
+                    DB::table('parties')
+                        ->where('idPartie', $partie->idPartie)
+                        ->update(['statutPartie' => "EnCours"]);
+                } else {
+                    DB::table('parties')
+                        ->where('idPartie', $partie->idPartie)
+                        ->increment('nombreJoueurs');
+                }
+                return new JoueurResource($joueur);
+            }
         }
-
     }
 
 
