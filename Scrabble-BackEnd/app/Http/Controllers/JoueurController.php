@@ -200,4 +200,6 @@ class JoueurController extends Controller
         return Joueur::all();
     }
 
+
+
 }
