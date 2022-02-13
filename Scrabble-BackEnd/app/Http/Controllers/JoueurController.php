@@ -86,8 +86,11 @@ class JoueurController extends Controller
 *     )
 *   ),
  *     @OA\Response(
- *          response=422,
+ *          response="422",
  *          description="L'un des champs est invalide",
+ *     @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+ *        )
  *      ),
  *
  *
@@ -106,9 +109,11 @@ class JoueurController extends Controller
     {
         $validData = $request->validate([
             "nom" => "required|max:50",
-            "partie" => "integer"
+            "partie" => "required|integer"
         ]);
-        //return $request->photo;
+        if(!$request->has('partie')){
+            return Response()->json(["message" => "il faut selectionner un type de partie"], 404);
+        }
         //recuper le joueur qui a le meme nom
         $joueur = Joueur::where('nom', $request->nom)->first();
         if ($joueur) {
@@ -116,20 +121,15 @@ class JoueurController extends Controller
         }
         //si le joueur existe et actif en meme temps
         if ($joueur && $actif) {
-            return Response()->json(["Erreur" => "le joueur est déja existant ou en cours de jouer"], 401);
+            return Response()->json(["message" => "le joueur est déja existant ou en cours de jouer"], 404);
         } else {
             // tous les champs sont obligatoires
             if (!$validData) {
-                return Response()->json(["Erreur" => "les champs sont obligatoires"], 401);
+                return Response()->json(["message" => "les champs sont obligatoires"], 404);
             }
             //recuperer le type de la partie
             $typePartie = $request->partie;
-            //selectionner la partie ou le typepartie == $typePartie
-            // $partie = Partie::where('typePartie', $typePartie)->first();
-            /*$partie = DB::table('parties')
-                ->where('typePartie', '=', $typePartie)
-                ->where('statutPartie', '=', 'EnAttente')
-                ->first();*/
+            //selectionner la partie ou le typepartie == $typePartie & le statut de la partie et en Attente
             $partie = DB::table('parties')->where([
                 ['typePartie', '=', $typePartie],
                 ['statutPartie', '=', 'EnAttente'],

@@ -24,6 +24,10 @@ use Illuminate\Foundation\Http\FormRequest;
  *     type="integer",
  *     description="La partie"
  *   ),
+ *  @OA\Response(
+ *          response=422,
+ *          description="L'un des champs est invalide",
+ *      ),
  * }
  */
 class JoueurRequest extends FormRequest

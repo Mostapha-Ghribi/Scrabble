@@ -23,17 +23,17 @@
     </div>
     <br>
     <div class="form-group">
-      <input type="text" formControlName="nom"  class="form-control form-control-sm" placeholder="Entrer votre nom"  name="nom" >
+      <input type="text" formControlName="nom" required  class="form-control form-control-sm" placeholder="Entrer votre nom"  name="nom" >
     </div>
     <br>
     <p >Choisir un type de partie </p>
     <div class="container">
       <div class="radio_container">
-        <input type="radio" name="partie" id="deux" formControlName="partie" value=2 checked>
+        <input type="radio" name="partie" id="deux" formControlName="partie" value=2 >
         <label for="deux">Deux</label>
         <input type="radio" name="partie" formControlName="partie" value=3 id="trois">
         <label for="trois">Trois</label>
-        <input type="radio" name="partie" formControlName="partie" value=4 id="quatre">
+        <input type="radio" name="partie" formControlName="partie" value=4 id="quatre" checked>
         <label for="quatre">Quatre</label>
       </div>
       <div *ngIf="partie?.touched && partie?.invalid">
