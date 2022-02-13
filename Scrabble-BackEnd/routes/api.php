@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\JoueurController;
+use App\Http\Controllers\PartieController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,13 +13,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // JoueurController rest api grouped under one controller
 
 Route::controller(JoueurController::class)->prefix("v1")->group(static function () {
-    Route::post("/inscrire", "inscrire");
-    Route::get("/joueurs","getJoueurs");
-    Route::get("/joueur/{idJoueur}","getJoueur");
+    Route::post("/inscrire", [JoueurController::class ,"inscrire"]);
+    Route::get("/joueurs", [JoueurController::class ,"getJoueurs"]);
+    Route::get("/joueur/{idJoueur}", [JoueurController::class ,"getJoueur"]);
 });
 Route::controller(PartieController::class)->prefix("v1")->group(static function () {
-    Route::get("/partie/{idPartie}","getJoueursByIdPartie");
-    Route::get("/partie/joueur/{idJoueur}","getJoueursPartieByIdPlayer");
+    Route::get("/partie/{idPartie}",[PartieController::class ,"getJoueursByIdPartie"]);
+    Route::get("/partie/joueur/{idJoueur}",[PartieController::class ,"getJoueursPartieByIdJoueur"]);
 });
 
 

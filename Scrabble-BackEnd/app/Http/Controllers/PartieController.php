@@ -93,7 +93,7 @@ class PartieController extends Controller
      *   ),
      *  )
      */
-    public function getJoueursPartieByIdPlayer($idJoueur)
+    public function getJoueursPartieByIdJoueur($idJoueur)
     {
         $joueur = DB::table('joueurs')->where('idJoueur','=',$idJoueur)->get();
         if(empty(json_decode($joueur))){
