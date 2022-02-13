@@ -17,7 +17,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *    ),
  *    @OA\Property(
  *       property="photo",
- *       type="string",
+ *       type="text",
  *       description="La photo du joueur"
  *    ),
  *    @OA\Property(

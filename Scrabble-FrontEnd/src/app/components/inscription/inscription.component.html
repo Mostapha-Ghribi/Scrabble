@@ -7,40 +7,46 @@
 <div class="card  align-items-center " >
   <img src="assets/images/logo.png" alt="logo" width="300" height="100" class="rounded">
   <br>
-  <h2 class="card text-white bg-dark mb-3"> {{ nom }} </h2>
-  <div class="text-center">
-    <img src="assets/images/scrabble.png" class="rounded-circle" alt="..." width="90" height="90">
-  </div>
+
   <br>
-  <form>
-    <div class="form-group">
-      <input type="file" class="form-control form-control-sm" >
-
+  <form [formGroup]="inscriptionForm" (ngSubmit)="inscrire()">
+    <div class="avatar-upload">
+      <div class="avatar-edit">
+        <input  type='file' id="imageUpload" accept=".png, .jpg, .jpeg" #fileInput (change)="uploadFile($event)" />
+        <label for="imageUpload"  [ngClass]="{'custom-label upload-image': editFile}"></label>
+        <label   [ngClass]="{'custom-label remove-image': removeUpload}" (click)="removeUploadedFile()"></label>
+      </div>
+      <div class="avatar-preview">
+        <div id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'">
+        </div>
+      </div>
     </div>
     <br>
     <div class="form-group">
-      <input type="text"  class="form-control form-control-sm" placeholder="Entrer votre nom"  [(ngModel)]="nom" name="nom" >
+      <input type="text" formControlName="nom" required  class="form-control form-control-sm" placeholder="Entrer votre nom"  name="nom" >
     </div>
     <br>
-
-
-
-
     <p >Choisir un type de partie </p>
     <div class="container">
       <div class="radio_container">
-        <input type="radio" name="radio" id="one" checked>
-        <label for="one">Deux</label>
-        <input type="radio" name="radio" id="two">
-        <label for="two">Trois</label>
-        <input type="radio" name="radio" id="three">
-        <label for="three">Quatre</label>
+        <input type="radio" name="partie" id="deux" formControlName="partie" value=2 >
+        <label for="deux">Deux</label>
+        <input type="radio" name="partie" formControlName="partie" value=3 id="trois">
+        <label for="trois">Trois</label>
+        <input type="radio" name="partie" formControlName="partie" value=4 id="quatre" checked>
+        <label for="quatre">Quatre</label>
+      </div>
+      <div *ngIf="partie?.touched && partie?.invalid">
+        <small *ngIf="partie?.errors?.required" class="text-danger">role is required<br></small>
       </div>
     </div>
 
     <br>
+    <div *ngIf="isError" class="alert alert-danger" role="alert">
+      {{messageError}}
+    </div>
 
-    <input style="margin-left: 100px;" type="button" value="Confirmer" class="btn  btn-outline-success rounded">
+    <input style="margin-left: 100px;" type="submit" value="Confirmer" class="btn  btn-outline-success rounded">
 
   </form>
 

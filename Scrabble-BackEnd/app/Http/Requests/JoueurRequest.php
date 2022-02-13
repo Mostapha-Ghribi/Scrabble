@@ -15,7 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *   ),
  *   @OA\Property(
  *     property="photo",
- *     type="string",
+ *     type="text",
  *     description="Photo de joueur"
  *   ),
  *
@@ -24,6 +24,10 @@ use Illuminate\Foundation\Http\FormRequest;
  *     type="integer",
  *     description="La partie"
  *   ),
+ *  @OA\Response(
+ *          response=422,
+ *          description="L'un des champs est invalide",
+ *      ),
  * }
  */
 class JoueurRequest extends FormRequest
@@ -39,7 +43,7 @@ class JoueurRequest extends FormRequest
     {
         return [
             "nom" => "required|max:50",
-            "photo" => "mimes:jpg,bmp,png,jpeg",
+            "photo" => "string",
             "partie" => "integer"
         ];
     }
