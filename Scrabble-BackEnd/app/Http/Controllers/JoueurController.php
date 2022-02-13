@@ -106,9 +106,9 @@ class JoueurController extends Controller
     {
         $validData = $request->validate([
             "nom" => "required|max:50",
-            "photo" => "mimes:image/jpg,image/png,image/jpeg",
             "partie" => "integer"
         ]);
+        //return $request->photo;
         //recuper le joueur qui a le meme nom
         $joueur = Joueur::where('nom', $request->nom)->first();
         if ($joueur) {
@@ -125,21 +125,26 @@ class JoueurController extends Controller
             //recuperer le type de la partie
             $typePartie = $request->partie;
             //selectionner la partie ou le typepartie == $typePartie
-            $partie = Partie::where('typePartie', $typePartie)->first();
+            // $partie = Partie::where('typePartie', $typePartie)->first();
+            /*$partie = DB::table('parties')
+                ->where('typePartie', '=', $typePartie)
+                ->where('statutPartie', '=', 'EnAttente')
+                ->first();*/
+            $partie = DB::table('parties')->where([
+                ['typePartie', '=', $typePartie],
+                ['statutPartie', '=', 'EnAttente'],
+            ])->first();
             // si le joueur ajouter son image
-            if ($request->hasFile('photo')) {
-                $filename = $request->file('photo')->store('joueurs', 'public');
-                $request->photo = $filename . "." . $request->photo->getClientOriginalExtension();
-            }
+
             //si la partie n'est pas existe ou bien le status de la partie different de "EnAttente"
             if (!$partie || $partie->statutPartie != "EnAttente") {
                 $partieCreated = Partie::create(['typePartie' => $typePartie]);
-                $joueur = Joueur::create(['nom' => $request->nom, $request->has('photo') ? $request->photo : null, 'partie' => $partieCreated->id]);
+                $joueur = Joueur::create(['nom' => $request->nom, 'photo' =>  $request->photo, 'partie' => $partieCreated->id]);
                 return new JoueurResource($joueur);
             }
             //si la partie existe et sa statut == "EnAttente"
             if ($partie && $partie->statutPartie == "EnAttente") {
-                $joueur = Joueur::create(['nom' => $request->nom, $request->has('photo') ? $request->photo : null, 'partie' => $partie->idPartie]);
+                $joueur = Joueur::create(['nom' => $request->nom, 'photo' => $request->photo, 'partie' => $partie->idPartie]);
                 if ($partie->typePartie - $partie->nombreJoueurs == 1) {
                     DB::table('parties')
                         ->where('idPartie', $partie->idPartie)
