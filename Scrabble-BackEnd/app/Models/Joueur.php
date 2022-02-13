@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  *   ),
  *   @OA\Property(
  *     property="photo",
- *     type="string",
+ *     type="text",
  *     description="photo du joueur"
  *   ),
  *   @OA\Property(

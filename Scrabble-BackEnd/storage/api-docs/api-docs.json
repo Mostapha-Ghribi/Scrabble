@@ -132,7 +132,7 @@
                     "photo": {
                         "schema": "JoueurRequest",
                         "description": "Photo de joueur",
-                        "type": "string"
+                        "type": "text"
                     },
                     "partie": {
                         "schema": "JoueurRequest",
@@ -152,7 +152,7 @@
                     "photo": {
                         "schema": "JoueurResource",
                         "description": "La photo du joueur",
-                        "type": "string"
+                        "type": "text"
                     },
                     "partie": {
                         "schema": "JoueurResource",
@@ -187,7 +187,7 @@
                     "photo": {
                         "schema": "Joueur",
                         "description": "photo du joueur",
-                        "type": "string"
+                        "type": "text"
                     },
                     "chevalet": {
                         "schema": "Joueur",

@@ -15,7 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *   ),
  *   @OA\Property(
  *     property="photo",
- *     type="string",
+ *     type="text",
  *     description="Photo de joueur"
  *   ),
  *
@@ -39,7 +39,7 @@ class JoueurRequest extends FormRequest
     {
         return [
             "nom" => "required|max:50",
-            "photo" => "mimes:jpg,bmp,png,jpeg",
+            "photo" => "string",
             "partie" => "integer"
         ];
     }
