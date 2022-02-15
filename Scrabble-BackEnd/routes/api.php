@@ -27,6 +27,8 @@ Route::controller(MessageController::class)->prefix("v1")->group(
     static function () {
 
         Route::get("/messages", [MessageController::class, 'index']);
+        Route::get("/message/{idMessage}", [MessageController::class, 'getMessageById']);
+        Route::get("/messages/{playerId}", [MessageController::class, 'getMessageByPlayerId']);
 
 
     }
