@@ -20,4 +20,5 @@ class Partie extends Model
     use HasFactory;
     protected $fillable = ["typePartie", "reserve", "grille", "statutPartie", "tempsJoueur"];
     public $timestamps = false;
+    protected $primaryKey='idPartie';
 }
