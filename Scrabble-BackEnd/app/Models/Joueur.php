@@ -4,25 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 /**
  * @OA\Schema(schema="Joueur")
  * {
- *   @OA\Property(
+ * @OA\Property(
  *     property="nom",
  *     type="string",
  *     description="le nom du joueur"
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="photo",
  *     type="text",
  *     description="photo du joueur"
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="chevalet",
  *     type="string",
  *     description="la chevalet"
  *   ),
- *   @OA\Property(
+ * @OA\Property(
  *     property="score",
  *     type="integer",
  *     description="le score "
@@ -59,8 +60,10 @@ class Joueur extends Model
     }
 
     use HasFactory;
-    protected $fillable = ['nom', 'photo','partie'];
-    public $timestamps = false;
 
+    protected $fillable = ['nom', 'photo', 'partie'];
+    public $timestamps = false;
+    protected $primaryKey = 'idJoueur';
+    
 
 }

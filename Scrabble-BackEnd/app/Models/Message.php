@@ -21,7 +21,7 @@ class Message extends Model
 
     use HasFactory;
 
-    protected $fillable = ['contenu','statutMessage'];
+    protected $fillable = ['contenu', 'statutMessage'];
     public $timestamps = false;
-
+    protected $primaryKey = 'idMessage';
 }
