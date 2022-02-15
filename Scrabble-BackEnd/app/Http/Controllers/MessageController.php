@@ -6,6 +6,7 @@ use App\Models\Joueur;
 use App\Models\Message;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Models\Partie;
 
 class MessageController extends Controller
 {
@@ -32,6 +33,15 @@ class MessageController extends Controller
     {
         return Joueur::find($playerId)->messages()
             ->where('envoyeur', $playerId)
+            ->latest('dateCreation')
+            ->get();
+    }/**
+     * retourner  Tous les messages a partir d'un partie ID
+     */
+    public function getMessageByPartieId($partieId)
+    {
+        return Partie::find($partieId)->messages()
+            ->where('partie', $partieId)
             ->latest('dateCreation')
             ->get();
     }
