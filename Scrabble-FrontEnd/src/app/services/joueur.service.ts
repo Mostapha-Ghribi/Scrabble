@@ -8,6 +8,8 @@ import {Joueur} from "../model/joueur.model";
 export class JoueurService {
 
   private InscriptionAPI = "http://localhost:8000/api/v1/inscrire";
+  private quitGameAPI = "http://localhost:8000/api/v1/quitter/joueur/";
+
 
 
   constructor(private http: HttpClient) { }
@@ -16,5 +18,11 @@ export class JoueurService {
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');
     return this.http.post<any>(this.InscriptionAPI, joueur,{headers: headers});
+  }
+  public quitGame(id: any) {
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+    return this.http.get<any>(this.quitGameAPI+ id,{headers: headers});
   }
 }

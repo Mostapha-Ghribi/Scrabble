@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {PartieService} from "../../services/partie.service";
 import {Router} from "@angular/router";
+import {JoueurService} from "../../services/joueur.service";
 
 @Component({
   selector: 'app-salle-dattente',
@@ -10,6 +11,7 @@ import {Router} from "@angular/router";
 export class SalleDattenteComponent implements OnInit {
   @HostListener('window:keydown.escape', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+    this.quitGame();
     this.router.navigate(['/inscription'])
   }
   players: Array<any> = [];
@@ -17,6 +19,7 @@ export class SalleDattenteComponent implements OnInit {
   time: number = 0;
   display: any ;
   interval: any;
+  id :any;
   private typePartie: any;
   startTimer() {
     console.log("=====>");
@@ -37,17 +40,28 @@ export class SalleDattenteComponent implements OnInit {
     clearInterval(this.interval);
   }
 
-  constructor(private partieService : PartieService,private router: Router) { }
+  constructor(private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
+    this.id = localStorage.getItem('idJoueur');
     this.getPartieByIdJoueur();
     this.startTimer()
    // this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
     console.log("Players",this.players);
   }
+  quitGame(){
+    this.joueurService.quitGame(this.id).subscribe(
+      res =>{
+        console.log(res);
+      },
+      err =>{
+        console.log(err);
+      }
+    )
+  }
   getPartieByIdJoueur() {
     setInterval(() => {
-      let id = localStorage.getItem('idJoueur');
-      this.partieService.getPartieByIdJoueur(id).subscribe(
+
+      this.partieService.getPartieByIdJoueur(this.id).subscribe(
         res => {
           this.joueurs = res.joueurs;
           console.log("Joueurs from result",this.joueurs);
