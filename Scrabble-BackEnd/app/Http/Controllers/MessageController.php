@@ -62,19 +62,19 @@ class MessageController extends Controller
 
 
     /**
-     * retourner un  message  pard idMeddage
+     * retourner un  message a partir de son  Id
      */
 
     /**
      *
      * @OA\Get(
      *      path="/v1/message/{idMessage}",
-     *      operationId="getJoueur",
-     *      tags={"joueur"},
-     *      summary="Trouver un joueur a partir  de son id",
+     *      operationId="getMessageById",
+     *      tags={"message"},
+     *      summary="Trouver un Message a partir  de son id",
      *
      *  @OA\Parameter(
-     *      name="idJoueur",
+     *      name="idMessage",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -106,10 +106,9 @@ class MessageController extends Controller
 
 
 
-
     public function getMessageById($idMessage)
     {
-        return Message::find($idMessage)->first();
+        return Message::findOrFail($idMessage);
     }
 
 
