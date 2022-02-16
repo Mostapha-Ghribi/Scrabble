@@ -132,6 +132,42 @@
                 }
             }
         },
+        "/v1/quitter/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "joueur"
+                ],
+                "summary": "quit game",
+                "operationId": "quitPlayer",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
         "/v1/partie/{idPartie}": {
             "get": {
                 "tags": [

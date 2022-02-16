@@ -47,6 +47,7 @@ export class InscriptionComponent implements OnInit {
     console.log(joueur)
     this.joueurService.addPlayer(joueur).subscribe(
       res=>{
+        console.log(res);
         this.id = res.idJoueur;
         if(this.id==res.idJoueur){
           localStorage.setItem('idJoueur',String(this.id));

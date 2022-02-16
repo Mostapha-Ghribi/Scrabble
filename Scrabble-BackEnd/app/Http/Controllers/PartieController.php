@@ -106,7 +106,7 @@ class PartieController extends Controller
         }
         $partie = Partie::find($joueur->partie);
         $p = $partie->first();
-        $p->joueurs = $partie->joueurs;
+        $p->joueurs = $partie->joueurs()->where('statutJoueur',1)->get();
         return new JsonResponse($p);
     }
 

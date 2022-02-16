@@ -143,9 +143,7 @@ class JoueurController extends Controller
             if (!$partie || $partie->statutPartie != "EnAttente") {
                 $partieCreated = Partie::create(['typePartie' => $typePartie]);
                 $joueur = Joueur::create(['nom' => $request->nom, 'photo' =>  $request->photo, 'partie' => $partieCreated->idPartie]);
-                DB::table('joueurs')
-                    ->where('idJoueur', $joueur->idJoueur)
-                    ->increment('ordre');
+                $joueur->increment('ordre');
             }
             //si la partie existe et sa statut == "EnAttente"
             if ($partie && $partie->statutPartie == "EnAttente") {
@@ -154,20 +152,16 @@ class JoueurController extends Controller
                 DB::table('joueurs')
                     ->where('idJoueur', $joueur->idJoueur)
                     ->update(['ordre' => $nbJ+1]);
+
                 if ($partie->typePartie - $partie->nombreJoueurs == 1) {
-                    DB::table('parties')
-                        ->where('idPartie', $partie->idPartie)
-                        ->increment('nombreJoueurs');
-                    DB::table('parties')
-                        ->where('idPartie', $partie->idPartie)
-                        ->update(['statutPartie' => "EnCours"]);
+                    Partie::find($partie->idPartie)->increment('nombreJoueurs');
+                    Partie::find($partie->idPartie)->update(['statutPartie'=>"EnCours"]);
                 } else {
-                    DB::table('parties')
-                        ->where('idPartie', $partie->idPartie)
-                        ->increment('nombreJoueurs');
+                    Partie::find($partie->idPartie)->increment('nombreJoueurs');
                 }
-                return new JsonResponse($joueur);
             }
+            return new JsonResponse($joueur);
+
         }
     }
 
@@ -207,6 +201,55 @@ class JoueurController extends Controller
     public function getJoueurs()
     {
         return Joueur::all();
+    }
+    /**
+     *
+     * @OA\Get(
+     *      path="/v1/quitter/joueur/{idJoueur}",
+     *      operationId="quitPlayer",
+     *      tags={"joueur"},
+     *      summary="quit game",
+     *
+     *  @OA\Parameter(
+     *      name="idJoueur",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      ),
+     *   ),
+     *    @OA\Response(
+     *          response=200,
+     *          description="Opération réussie",
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="joueur inexistant"
+     *   ),
+     *  )
+     */
+    public function quitPlayer($idJoueur)
+    {
+        $joueur = Joueur::find($idJoueur);
+        $joueur->decrement('statutJoueur');
+        $partie = Partie::find($joueur->partie);
+        if($partie->nombreJoueurs == $partie->typePartie){
+            $partie->update(['statutPartie'=>'EnAttente']);
+        }
+        $partie->decrement('nombreJoueurs');
+        return new JsonResponse($joueur);
     }
 
 

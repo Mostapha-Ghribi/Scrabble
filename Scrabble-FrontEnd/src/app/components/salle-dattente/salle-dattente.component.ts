@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
+import {PartieService} from "../../services/partie.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-salle-dattente',
@@ -6,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./salle-dattente.component.css']
 })
 export class SalleDattenteComponent implements OnInit {
-  players: [] | any;
+  @HostListener('window:keydown.escape', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    this.router.navigate(['/inscription'])
+  }
+  players: Array<any> = [];
+  joueurs:[] |any;
   time: number = 0;
   display: any ;
   interval: any;
+  private typePartie: any;
   startTimer() {
     console.log("=====>");
     this.interval = setInterval(() => {
@@ -29,12 +37,36 @@ export class SalleDattenteComponent implements OnInit {
     clearInterval(this.interval);
   }
 
-  constructor() { }
+  constructor(private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
+    this.getPartieByIdJoueur();
     this.startTimer()
-    this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
-
+   // this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
+    console.log("Players",this.players);
   }
+  getPartieByIdJoueur() {
+    setInterval(() => {
+      let id = localStorage.getItem('idJoueur');
+      this.partieService.getPartieByIdJoueur(id).subscribe(
+        res => {
+          this.joueurs = res.joueurs;
+          console.log("Joueurs from result",this.joueurs);
+          this.typePartie = res.typePartie;
+          console.log("typePartie",this.typePartie);
+          this.players = [];
+          for(var i=0;i<this.typePartie;i++){
+            this.players.push(this.joueurs[i]);
+          }
+          console.log("players from interval",this.players)
+        },
+        err => {
+          console.log(err);
+        }
+      )
+    }, 5000);
+
+    }
+
 
 
 }
