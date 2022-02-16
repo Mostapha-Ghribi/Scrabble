@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Joueur;
+use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class PartieController extends Controller
 {
@@ -11,9 +14,9 @@ class PartieController extends Controller
      *
      * @OA\Get(
      *      path="/v1/partie/{idPartie}",
-     *      operationId="getJoueursByIdPartie",
+     *      operationId="getPartieById",
      *      tags={"partie"},
-     *      summary="Trouver les joueurs d'une partie par id partie",
+     *      summary="retourne la partie et ses joueurs avec id partie",
      *
      *  @OA\Parameter(
      *      name="idPartie",
@@ -45,11 +48,13 @@ class PartieController extends Controller
      *   ),
      *  )
      */
-    public function getJoueursByIdPartie($idPartie)
+    public function getPartieById($idPartie)
     {
-        $joueurs = DB::table('joueurs')->where('partie', "=", $idPartie)->get();
-        if (!empty(json_decode($joueurs))) {
-            return new JsonResponse($joueurs);
+        $partie = Partie::find($idPartie);
+        $p = $partie->first();
+        $p->joueurs = $partie->joueurs;
+        if (!empty(json_decode($p))) {
+            return new JsonResponse($p);
         }
         return Response()->json(["Erreur" => "Cette Partie n'existe pas"], 404);
 
@@ -59,9 +64,9 @@ class PartieController extends Controller
      *
      * @OA\Get(
      *      path="/v1/partie/joueur/{idJoueur}",
-     *      operationId="getJoueursPartieByIdPlayer",
+     *      operationId="getPartieByIdJoueur",
      *      tags={"partie"},
-     *      summary="Trouver les joueurs d'une partie par id joueur",
+     *      summary="recuperer la partie et ses joueurs avec id joueur",
      *
      *  @OA\Parameter(
      *      name="idJoueur",
@@ -93,15 +98,16 @@ class PartieController extends Controller
      *   ),
      *  )
      */
-    public function getJoueursPartieByIdJoueur($idJoueur)
+    public function getPartieByIdJoueur($idJoueur)
     {
-        $joueur = DB::table('joueurs')->where('idJoueur','=',$idJoueur)->get();
+        $joueur = Joueur::find($idJoueur)->first();
         if(empty(json_decode($joueur))){
             return Response()->json(['message'=>'Joueur inexistant'],404);
         }
-        $joueurs = DB::table('joueurs')->where('partie', "=", $joueur[0]->partie)->get();
-        if (!empty(json_decode($joueurs))) {
-            return new JsonResponse($joueurs);
-        }
+        $partie = Partie::find($joueur->partie);
+        $p = $partie->first();
+        $p->joueurs = $partie->joueurs;
+        return new JsonResponse($p);
     }
+
 }

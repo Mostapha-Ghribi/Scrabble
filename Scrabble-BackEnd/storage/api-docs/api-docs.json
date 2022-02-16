@@ -137,8 +137,8 @@
                 "tags": [
                     "partie"
                 ],
-                "summary": "Trouver les joueurs d'une partie par id partie",
-                "operationId": "getJoueursByIdPartie",
+                "summary": "retourne la partie avec ses joueurs",
+                "operationId": "getPartieById",
                 "parameters": [
                     {
                         "name": "idPartie",

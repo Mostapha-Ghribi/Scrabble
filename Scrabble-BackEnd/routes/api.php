@@ -18,7 +18,7 @@ Route::controller(JoueurController::class)->prefix("v1")->group(static function 
     Route::get("/joueur/{idJoueur}", [JoueurController::class ,"getJoueur"]);
 });
 Route::controller(PartieController::class)->prefix("v1")->group(static function () {
-    Route::get("/partie/{idPartie}",[PartieController::class ,"getJoueursByIdPartie"]);
+    Route::get("/partie/{idPartie}",[PartieController::class ,"getPartieById"]);
     Route::get("/partie/joueur/{idJoueur}",[PartieController::class ,"getJoueursPartieByIdJoueur"]);
 });
 
