@@ -198,6 +198,78 @@
                 }
             }
         },
+        "/v1/messages/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Trouver un Message a partir  de l'ID d'un joueur",
+                "operationId": "getMessageByPlayerId",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
+        "/v1/messages/partie/{partieId}": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Trouver Tous les  Messages a partir  de l'ID d'une partie",
+                "operationId": "getMessageByPartieId",
+                "parameters": [
+                    {
+                        "name": "partieId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
         "/v1/partie/{idPartie}": {
             "get": {
                 "tags": [
