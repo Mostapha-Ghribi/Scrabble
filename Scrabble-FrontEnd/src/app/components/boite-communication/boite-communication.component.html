@@ -9,21 +9,18 @@
                 <br>
               </span>
 
-
-
     </div>
-
-
-
 
 
     </div>
     <br>
     <div class="mb-6">
+      <form #f="ngForm" (ngSubmit)="add(f)" >
+        <input type="text" class="form-control form-control-sm" name="message"
+        placeholder="Entrer une commande ou un message"  #message="ngModel" ngModel  >
+        <input type="submit" value="ok" >
+      </form>
 
-
-      <input type="text" class="form-control form-control-sm" name="message"
-             placeholder="Entrer une commande ou un message">
     </div>
     <br>
   </div>

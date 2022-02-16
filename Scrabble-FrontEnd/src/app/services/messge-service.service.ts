@@ -7,10 +7,7 @@ import {HttpClient} from "@angular/common/http";
 export class MessageService {
 
 
-  constructor(private http: HttpClient) {
-
-
-  }
+  constructor(private http: HttpClient) {}
 
   urlApi = 'http://127.0.0.1:8000/api/v1/';
 
