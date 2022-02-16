@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMessageRequest;
+use App\Http\Resources\MessageResource;
 use App\Models\Joueur;
 use App\Models\Message;
-use App\Http\Requests\StoreMessageRequest;
-use App\Http\Requests\UpdateMessageRequest;
+
 use App\Models\Partie;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
@@ -35,7 +38,9 @@ class MessageController extends Controller
             ->where('envoyeur', $playerId)
             ->latest('dateCreation')
             ->get();
-    }/**
+    }
+
+    /**
      * retourner  Tous les messages a partir d'un partie ID
      */
     public function getMessageByPartieId($partieId)
@@ -44,5 +49,14 @@ class MessageController extends Controller
             ->where('partie', $partieId)
             ->latest('dateCreation')
             ->get();
+    }
+
+    /**
+     * retourner  Tous les messages a partir d'un partie ID
+     */
+    public function creerMessage(Request $request)
+    {
+        $message = Message::create($request->all());
+        return new JsonResponse($message);
     }
 }

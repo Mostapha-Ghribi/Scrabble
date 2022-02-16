@@ -4,6 +4,12 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+
+
+
+
+
 class StoreMessageRequest extends FormRequest
 {
 
@@ -16,7 +22,7 @@ class StoreMessageRequest extends FormRequest
     public function rules()
     {
         return [
-            "contenu" => "required|max:50"
+            "parte"=>"required",
 
         ];
     }
