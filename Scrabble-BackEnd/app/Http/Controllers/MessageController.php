@@ -228,6 +228,43 @@ class MessageController extends Controller
     /**
      * retourner  Tous les messages a partir d'un partie ID
      */
+
+
+/**
+*
+* @OA\Post(
+*   tags={"message"},
+*   path="/v1/message",
+ *     summary="Ecrire un message",
+*   @OA\Response(
+*     response="200",
+*     description="Message envoyé avec succées",
+*     @OA\JsonContent(
+*       type="array",
+*       @OA\Items(ref="#/components/schemas/Message")
+*     )
+*   ),
+ *     @OA\Response(
+ *          response="422",
+ *          description="L'un des champs est invalide",
+ *     @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+*        )
+ *      ),
+ *
+ *
+*   @OA\RequestBody(
+*     description="Creer un Message avec son contenu,envoyeur,partie ",
+*     required=true,
+*     @OA\MediaType(
+*       mediaType="application/json",
+*       @OA\Schema(ref="#/components/schemas/Message")
+*     )
+*   )
+* )
+*
+ */
+
     public function creerMessage(Request $request)
     {
         $message = Message::create($request->all());

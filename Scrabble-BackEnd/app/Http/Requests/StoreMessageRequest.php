@@ -9,7 +9,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 
 
-
 class StoreMessageRequest extends FormRequest
 {
 
@@ -23,6 +22,8 @@ class StoreMessageRequest extends FormRequest
     {
         return [
             "parte"=>"required",
+            "envoyeur"=>"required",
+            "partie"=>"required"
 
         ];
     }

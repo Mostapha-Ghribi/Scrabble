@@ -270,6 +270,57 @@
                 }
             }
         },
+        "/v1/message": {
+            "post": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Ecrire un message",
+                "operationId": "89cb9fce9100dab799a744281e2a300a",
+                "requestBody": {
+                    "description": "Creer un Message avec son contenu,envoyeur,partie ",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Message"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message envoyé avec succées",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Message"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "L'un des champs est invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address or password. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/partie/{idPartie}": {
             "get": {
                 "tags": [
@@ -400,6 +451,36 @@
                 },
                 "type": "object"
             },
+            "MessageResource": {
+                "properties": {
+                    "dateCreation": {
+                        "schema": "MessageResource",
+                        "description": "la dateCreation du message",
+                        "type": "string"
+                    },
+                    "contenu": {
+                        "schema": "MessageResource",
+                        "description": "Le contenu du message",
+                        "type": "string"
+                    },
+                    "statutMessage": {
+                        "schema": "MessageResource",
+                        "description": "le statut du  Message",
+                        "type": "boolean"
+                    },
+                    "partie": {
+                        "schema": "MessageResource",
+                        "description": "la partie du  Message ",
+                        "type": "integer"
+                    },
+                    "envoyeur": {
+                        "schema": "MessageResource",
+                        "description": "l envoyeur du Message ",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "Joueur": {
                 "properties": {
                     "nom": {
@@ -435,6 +516,36 @@
                     "partie": {
                         "schema": "Joueur",
                         "description": "la partie ",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Message": {
+                "properties": {
+                    "dateCreation": {
+                        "schema": "Message",
+                        "description": "la dateCreation du message",
+                        "type": "string"
+                    },
+                    "contenu": {
+                        "schema": "Message",
+                        "description": "Le contenu du message",
+                        "type": "string"
+                    },
+                    "statutMessage": {
+                        "schema": "Message",
+                        "description": "le statut du  Message",
+                        "type": "boolean"
+                    },
+                    "partie": {
+                        "schema": "Message",
+                        "description": "la partie du  Message ",
+                        "type": "integer"
+                    },
+                    "envoyeur": {
+                        "schema": "Message",
+                        "description": "l envoyeur du Message ",
                         "type": "integer"
                     }
                 },
