@@ -142,18 +142,17 @@ class JoueurController extends Controller
             //si la partie n'est pas existe ou bien le status de la partie different de "EnAttente"
             if (!$partie || $partie->statutPartie != "EnAttente") {
                 $partieCreated = Partie::create(['typePartie' => $typePartie]);
-                $joueur = Joueur::create(['nom' => $request->nom, 'photo' =>  $request->photo, 'partie' => $partieCreated->id]);
+                $joueur = Joueur::create(['nom' => $request->nom, 'photo' =>  $request->photo, 'partie' => $partieCreated->idPartie]);
                 DB::table('joueurs')
-                    ->where('idJoueur', $joueur->id)
+                    ->where('idJoueur', $joueur->idJoueur)
                     ->increment('ordre');
-                return new JoueurResource($joueur);
             }
             //si la partie existe et sa statut == "EnAttente"
             if ($partie && $partie->statutPartie == "EnAttente") {
                 $joueur = Joueur::create(['nom' => $request->nom, 'photo' => $request->photo, 'partie' => $partie->idPartie]);
                 $nbJ = $partie->nombreJoueurs;
                 DB::table('joueurs')
-                    ->where('idJoueur', $joueur->id)
+                    ->where('idJoueur', $joueur->idJoueur)
                     ->update(['ordre' => $nbJ+1]);
                 if ($partie->typePartie - $partie->nombreJoueurs == 1) {
                     DB::table('parties')
@@ -167,7 +166,7 @@ class JoueurController extends Controller
                         ->where('idPartie', $partie->idPartie)
                         ->increment('nombreJoueurs');
                 }
-                return new JoueurResource($joueur);
+                return new JsonResponse($joueur);
             }
         }
     }

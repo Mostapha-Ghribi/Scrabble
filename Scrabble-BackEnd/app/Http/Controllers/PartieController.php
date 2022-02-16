@@ -52,7 +52,7 @@ class PartieController extends Controller
     {
         $partie = Partie::find($idPartie);
         $p = $partie->first();
-        $p->joueurs = $partie->joueurs;
+        $p->joueurs = $partie->joueurs()->where('statutJoueur',1)->get();
         if (!empty(json_decode($p))) {
             return new JsonResponse($p);
         }
