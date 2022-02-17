@@ -268,9 +268,51 @@ class MessageController extends Controller
     public function creerMessage(Request $request)
     {
         $envoyeur = Joueur::find($request->envoyeur);
+        //verifier si le joeuur est deja partant de la partie courante
         if ($envoyeur->partie === $request->partie) {
-            $message = Message::create($request->all());
-            return new JsonResponse($message);
+            // verifier le type de la commande
+            $commande = $request->contenu;
+            if (substr($commande, 0) === "!") {
+                //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
+                $commandePlacer = substr($commande, 1, 6);
+                if ($commandePlacer === "placer") {
+                    //verifier si c'est une ligne correcte
+                    $ligneArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"];
+                    $posArray = ["h", "v"];
+                    $nouvelleCommande = substr($commande, 8, 4);
+                    // verifier si longeur d ela chaine est  égale a 3 exemple g5v
+                    if ($nouvelleCommande[strlen($nouvelleCommande) - 1] === ' ') {
+                        $lg = $nouvelleCommande[0];
+                        // verification de LIGNE  COLONNE POSITION
+                        /* 1 boolean */
+                        $ligneCommande = in_array($lg, $ligneArray);
+                        /* 2 boolean */
+                        $colonneisNumber = is_numeric($nouvelleCommande[1]);
+                        /* 3 boolean */
+                        $pos = in_array($nouvelleCommande[2], $posArray);
+                        /* 4 boolean */
+                        $chaine = is_string(substr($commande, 11, str($commande)));
+                         // TODO verfier si la chaine est correcte ou non
+                         // TODO changer la valeur de statutcommande dans la base de donnes
+                       if($ligneCommande && $colonneisNumber && $pos && $chaine)  {
+                                 return  new JsonResponse(['commande placer correcte'=>"ok"],200) ;
+                       }
+                        return  new JsonResponse(['Erreur'=>"commande placer erronée"],200) ;
+
+                    } else {
+                        echo 'hello';
+                    }
+
+
+                }
+
+
+            } else {
+                // ajouter le message ordinire
+                $message = Message::create($request->all());
+                return new JsonResponse($message);
+            }
+
         } else {
             return new JsonResponse(['Erreur' => "Impossible d'envoyer un message dans cette partie"], 404);
         }
