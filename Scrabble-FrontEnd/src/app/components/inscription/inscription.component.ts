@@ -35,17 +35,29 @@ export class InscriptionComponent implements OnInit {
   get nom() { return this.inscriptionForm.get('nom'); }
   get partie() { return this.inscriptionForm.get('partie'); }
   get photo() { return this.inscriptionForm.get('photo'); }
-
+  id = 0;
   ngOnInit(): void {
+    localStorage.clear();
   }
 
   inscrire() {
     let data = this.inscriptionForm.value ;
     let joueur = {"nom" : data.nom,"photo" : data.photo, "partie" : data.partie}
+
     console.log(joueur)
     this.joueurService.addPlayer(joueur).subscribe(
       res=>{
-        this.router.navigate(['/room'])
+        console.log(res);
+        this.id = res.idJoueur;
+        if(this.id==res.idJoueur){
+          localStorage.setItem('idJoueur',String(this.id));
+        }
+        if(localStorage.getItem('idJoueur')==res.idJoueur){
+          this.router.navigate(['/room'])
+        }
+        this.cd.markForCheck();
+
+
       },
       err=>{
         this.isError = true;
