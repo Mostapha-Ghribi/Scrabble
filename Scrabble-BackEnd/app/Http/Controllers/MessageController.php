@@ -277,7 +277,6 @@ class MessageController extends Controller
         if ($envoyeur->partie === $request->partie) {
             // verifier le type de la commande
             $commande = trim($request->contenu);
-
             if (str_starts_with($commande, "!")) {
                 //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
                 $commandePlacer = substr($commande, 1, 6);
