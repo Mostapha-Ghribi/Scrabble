@@ -267,20 +267,20 @@ class MessageController extends Controller
 
     public function creerMessage(Request $request)
     {
+        $ligneArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"];
+        $posArray = ["h", "v"];
         $envoyeur = Joueur::find($request->envoyeur);
         //verifier si le joeuur est deja partant de la partie courante
         if ($envoyeur->partie === $request->partie) {
             // verifier le type de la commande
             $commande = $request->contenu;
-            if (substr($commande, 0) === "!") {
+            if (str_starts_with($commande, "!")) {
                 //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
                 $commandePlacer = substr($commande, 1, 6);
                 if ($commandePlacer === "placer") {
-                    //verifier si c'est une ligne correcte
-                    $ligneArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"];
-                    $posArray = ["h", "v"];
+                    //nouvelle commandde contient g15v
                     $nouvelleCommande = substr($commande, 8, 4);
-                    // verifier si longeur d ela chaine est  égale a 3 exemple g5v
+                    // verifier si longeur de la chaine est  égale a 3 exemple g5v
                     if ($nouvelleCommande[strlen($nouvelleCommande) - 1] === ' ') {
                         $lg = $nouvelleCommande[0];
                         // verification de LIGNE  COLONNE POSITION
@@ -288,24 +288,33 @@ class MessageController extends Controller
                         $ligneCommande = in_array($lg, $ligneArray);
                         /* 2 boolean */
                         $colonneisNumber = is_numeric($nouvelleCommande[1]);
+                        $colonneisNumberValid = ((int)$nouvelleCommande[1])<=9;
                         /* 3 boolean */
                         $pos = in_array($nouvelleCommande[2], $posArray);
                         /* 4 boolean */
-                        $chaine = is_string(substr($commande, 11, str($commande)));
-                         // TODO verfier si la chaine est correcte ou non
-                         // TODO changer la valeur de statutcommande dans la base de donnes
-                       if($ligneCommande && $colonneisNumber && $pos && $chaine)  {
-                                 return  new JsonResponse(['commande placer correcte'=>"ok"],200) ;
-                       }
-                        return  new JsonResponse(['Erreur'=>"commande placer erronée"],200) ;
+                        $chaine = is_string(substr($commande, 11, strlen($commande)));
+                        // TODO verfier si la chaine est correcte ou non
+                        // TODO changer la valeur de statutMessage=false dans la base de donnes
+                        if ($ligneCommande && $colonneisNumber&& $colonneisNumberValid && $pos ) {
+                            return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                        }
+                        return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
 
                     } else {
-                        echo 'hello';
+                        $ligneCorrecte = in_array($nouvelleCommande[0], $ligneArray, true);
+                        $colIsNumber = substr($nouvelleCommande, 1, 2);
+                        $coloneCorrecte = is_numeric($colIsNumber)&&( (int)$colIsNumber <= 15);
+                        $posCorrecte = in_array($nouvelleCommande[3], $posArray);
+                        // TODO verfier si la chaine est correcte ou non
+                        // TODO changer la valeur de statutMessage=false dans la base de donnes
+                        if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
+                            return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                        }
+                        return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
                     }
 
 
                 }
-
 
             } else {
                 // ajouter le message ordinire
