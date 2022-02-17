@@ -269,11 +269,15 @@ class MessageController extends Controller
     {
         $ligneArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"];
         $posArray = ["h", "v"];
+        $joueur = Joueur::find($request->envoyeur);
+        $partie = Partie::find($request->partie);
+
         $envoyeur = Joueur::find($request->envoyeur);
         //verifier si le joeuur est deja partant de la partie courante
         if ($envoyeur->partie === $request->partie) {
             // verifier le type de la commande
             $commande = trim($request->contenu);
+
             if (str_starts_with($commande, "!")) {
                 //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
                 $commandePlacer = substr($commande, 1, 6);
@@ -282,6 +286,14 @@ class MessageController extends Controller
                 $commandeAider = substr($commande, 1, 5);
 
                 if ($commandePlacer === "placer") {
+                     // la taille de la commande <=12
+                    if (strlen($commande)<=11) {
+                        return new JsonResponse([
+                            "nom" => $joueur->nom,
+                            "partie" => $partie->idPartie,
+                            'message' => "$joueur->nom  vous devez entrer une une commande correcte ",
+                        ], 404);
+                    }
                     //nouvelle commande contiennent par  EXEMPLE g15v
                     $nouvelleCommande = substr($commande, 8, 4);
                     // verifier si longeur de la chaine est  égale a 3 exemple g5v
@@ -298,18 +310,65 @@ class MessageController extends Controller
                         $pos = in_array($nouvelleCommande[2], $posArray);
                         /* 4 boolean */
                         // trouver le mot a remplacer
-                        $motAplacer = $mot = substr($commande, 11, strlen($commande));
+                        $motAplacer = substr($commande, 11, strlen($commande));
                         $chaine = is_string(substr($commande, 11, strlen($commande)));
                         // chaine est inexistante
                         if (empty($motAplacer) || substr_count($commande, ' ') !== 2) {
-                            return new JsonResponse(['le mot  placer  inexistante' => "ok"], 404);
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                "mot" => "Le mot a  placée est Inexistante"
+                            ], 404);
+                            //return new JsonResponse(['le mot a  placer est  inexistante' => "ok"], 404);
                         }
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos) {
-                            return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom a Placée le mot  $motAplacer",
+                                'mot' => "$motAplacer",
+                            ],
+                                200);
                         }
-                        return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
+                        // message erreur de ligne
+
+                         if (!$ligneCommande) {
+                             return new JsonResponse([
+                                 "nom" => $joueur->nom,
+                                 "partie" => $partie->idPartie,
+                                 'message' => "$joueur->nom  vous devez entrer une ligne correcte ",
+                                 'mot' => "$motAplacer",
+                             ], 404);
+                         }
+
+                        // message erreur de colonne
+                        if (!$colonneisNumber) {
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom vous devez entrer une colonne correcte ",
+                                'mot' => "$motAplacer",
+                            ], 404);
+                        }
+                        // message erreur de erreur position
+                        if (!$pos) {
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom  vous devez entrer une position correcte (h,v)",
+                                'mot' => "$motAplacer",
+                            ], 404);
+                        }
+
+
+                        return new JsonResponse([
+                            "nom" => $joueur->nom,
+                            "partie" => $partie->idPartie,
+                            'message' => "$joueur->nom  probleme de ligne ou colonne ou ",
+                            'mot' => "$motAplacer",
+                        ], 404);
 
                     } else {
                         $ligneCorrecte = in_array($nouvelleCommande[0], $ligneArray, true);
@@ -319,16 +378,35 @@ class MessageController extends Controller
                         // chaine est inexistante
                         $mot = substr($commande, 12);
                         if (empty($mot)) {
-                            return new JsonResponse(['le mot  placer  inexistante' => "ok"], 404);
+                            //return new JsonResponse(['le mot  placer  inexistante' => "ok"], 404);
+
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom vous devez taper le mot a placée",
+                                'mot' => "$mot",
+                            ], 404);
                         }
 
 
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
-                            return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                           //return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom  a Placée le mot $mot",
+                                'mot' => "$mot",
+                            ], 200);
                         }
-                        return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
+                        //return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
+                        return new JsonResponse([
+                            "nom" => $joueur->nom,
+                            "partie" => $partie->idPartie,
+                            'message' => "$joueur->nom a entrée une commande placer erronée",
+                            'mot' => "$mot",
+                        ], 404);
                     }
 
                     /* Changer des lettres  */
@@ -337,18 +415,33 @@ class MessageController extends Controller
                     $LettreChanger = substr($commande, 8, strlen($commande));
                     if (!empty($LettreChanger)) {
                         // TODO lettre alphabetiue et  le contiennet *
-
-                        return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
-
+                        // TODO verifier si les lettres sont inclus dans le chavalet du joueur
+                       // return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
+                        return new JsonResponse([
+                            "nom" => $joueur->nom,
+                            "partie" => $partie->idPartie,
+                            'message' => "$joueur->nom a changer les lettres $LettreChanger",
+                            'mot' => "$LettreChanger",
+                        ], 200);
 
                     }
-                    return new JsonResponse(['Aucune lettre a changer' => $LettreChanger], 404);
+                    //return new JsonResponse(['Aucune lettre a changer' => $LettreChanger], 404);
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom vous devez taper des lettres a échangé ",
+                        'mot' => "$LettreChanger",
+                    ], 404);
 
                 } elseif ($commandeAider === "aider") {
-                    return new JsonResponse(['Plasser un lettre' => "!placer g15v bonjour : joue le mot bonjour à la verticale et le b est positionné en g15",
-                        'changer un lettre' => "!changer mwb : remplace les lettres m, w et b. !changer e* :remplace une seule des lettres e et une lettre blanche",
-                        'Passer son tour' => '!passer',
-                        'Besoin d aide ' => '!aider',
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "!placer g15v bonjour  ===> joue le mot bonjour à la verticale et le b est positionné en g15
+                        changer un lettre avec  ===>  !changer mwb : remplace les lettres m, w et b.
+                        !changer e*  =>  remplace une seule des lettres e et une lettre blanche
+                        Passer son tour ===> !passer
+                          Besoin d aide ===>  !aider "
                     ], 200);
 
                 }
@@ -360,7 +453,12 @@ class MessageController extends Controller
             }
 
         } else {
-            return new JsonResponse(['Erreur' => "Impossible d'envoyer un message dans cette partie"], 404);
+          //  return new JsonResponse(['Erreur' => "Impossible d'envoyer un message dans cette partie"], 404);
+            return new JsonResponse([
+                "nom" => $joueur->nom,
+                "partie" => $partie->idPartie,
+                'message' => "$joueur->nom vous n'etes pas autorisée a envoyer des message dans cette partie",
+            ], 404);
         }
 
     }
