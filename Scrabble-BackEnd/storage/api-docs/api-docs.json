@@ -168,7 +168,7 @@
                 }
             }
         },
-        "/v1/partie/{idPartie}": {
+        "/v1/partie/{idJoueur}": {
             "get": {
                 "tags": [
                     "partie"
@@ -177,7 +177,7 @@
                 "operationId": "getPartieById",
                 "parameters": [
                     {
-                        "name": "idPartie",
+                        "name": "idJoueur",
                         "in": "path",
                         "required": true,
                         "schema": {

@@ -242,14 +242,39 @@ class JoueurController extends Controller
      */
     public function quitPlayer($idJoueur)
     {
-        $joueur = Joueur::find($idJoueur);
+        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
         $joueur->decrement('statutJoueur');
-        $partie = Partie::find($joueur->partie);
+        $partie = Partie::where('idPartie',$joueur->partie)->first();
         if($partie->nombreJoueurs == $partie->typePartie){
             $partie->update(['statutPartie'=>'EnAttente']);
         }
         $partie->decrement('nombreJoueurs');
-        return new JsonResponse($joueur);
+
+        $chercheRoom = DB::table('parties')
+            ->whereNotIn('idPartie',[$joueur->partie])
+            ->where('typePartie','=',$partie->typePartie)
+            ->where('statutPartie','=','EnAttente')
+            ->first();
+
+        if (!empty($chercheRoom)) {
+            $partie2 = Partie::find($joueur->partie);
+            $getOneJoueur = $partie2->joueurs()->where('statutJoueur',1)->first();
+            $switched = $this->switchRoom($getOneJoueur, $chercheRoom->idPartie);
+        }
+        return true;
+    }
+
+    private function switchRoom($getOneJoueur, mixed $idPartie)
+    {
+        $partie = Partie::where('idPartie',$getOneJoueur->partie)->first();
+        $partie->decrement('nombreJoueurs');
+        $getOneJoueur->update(['partie'=>$idPartie]);
+        $partieToJoin = Partie::where('idPartie',$idPartie)->first();
+        if($partieToJoin->typePartie - $partieToJoin->nombreJoueurs == 1){
+            $partieToJoin->update(['statutPartie'=>'EnCours']);
+        }
+        $partieToJoin->increment('nombreJoueurs');
+        return $getOneJoueur;
     }
 
 

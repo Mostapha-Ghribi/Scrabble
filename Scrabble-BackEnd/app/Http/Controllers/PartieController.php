@@ -13,13 +13,13 @@ class PartieController extends Controller
     /**
      *
      * @OA\Get(
-     *      path="/v1/partie/{idPartie}",
+     *      path="/v1/partie/{idJoueur}",
      *      operationId="getPartieById",
      *      tags={"partie"},
      *      summary="retourne la partie et ses joueurs avec id partie",
      *
      *  @OA\Parameter(
-     *      name="idPartie",
+     *      name="idJoueur",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -48,15 +48,10 @@ class PartieController extends Controller
      *   ),
      *  )
      */
-    public function getPartieById($idPartie)
+    public function getPartieById($idJoueur)
     {
-        $partie = Partie::find($idPartie);
-        $p = $partie->first();
-        $p->joueurs = $partie->joueurs()->where('statutJoueur',1)->get();
-        if (!empty(json_decode($p))) {
-            return new JsonResponse($p);
-        }
-        return Response()->json(["Erreur" => "Cette Partie n'existe pas"], 404);
+
+
 
     }
 
@@ -100,14 +95,25 @@ class PartieController extends Controller
      */
     public function getPartieByIdJoueur($idJoueur)
     {
-        $joueur = Joueur::find($idJoueur)->first();
+        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
+
         if(empty(json_decode($joueur))){
             return Response()->json(['message'=>'Joueur inexistant'],404);
         }
-        $partie = Partie::find($joueur->partie);
+        $partie = Partie::where('idPartie',$joueur->partie);
+        $partie2 = Partie::find($joueur->partie);
+
         $p = $partie->first();
-        $p->joueurs = $partie->joueurs()->where('statutJoueur',1)->get();
-        return new JsonResponse($p);
+        //return new JsonResponse($p);
+        $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+       // if(in_array($joueur, $p->joueurs)){
+            return new JsonResponse($p);
+        //}else{
+         //   return new JsonResponse();
+       // }
+
     }
+
+
 
 }

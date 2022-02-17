@@ -10,9 +10,13 @@ import {JoueurService} from "../../services/joueur.service";
 })
 export class SalleDattenteComponent implements OnInit {
   @HostListener('window:keydown.escape', ['$event'])
+  //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     this.quitGame();
+
     this.router.navigate(['/inscription'])
+
+
   }
   players: Array<any> = [];
   joueurs:[] |any;
@@ -63,6 +67,8 @@ export class SalleDattenteComponent implements OnInit {
 
       this.partieService.getPartieByIdJoueur(this.id).subscribe(
         res => {
+         // console.log(this.id);
+          console.log("le res : ",res);
           this.joueurs = res.joueurs;
           console.log("Joueurs from result",this.joueurs);
           this.typePartie = res.typePartie;
