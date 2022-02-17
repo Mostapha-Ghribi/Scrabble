@@ -273,29 +273,40 @@ class MessageController extends Controller
         //verifier si le joeuur est deja partant de la partie courante
         if ($envoyeur->partie === $request->partie) {
             // verifier le type de la commande
-            $commande = $request->contenu;
+            $commande = trim($request->contenu);
             if (str_starts_with($commande, "!")) {
                 //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
                 $commandePlacer = substr($commande, 1, 6);
+                $commandeChanger = substr($commande, 1, 7);
+                $commandePasser = substr($commande, 1, 7);
+                $commandeAider = substr($commande, 1, 5);
+
                 if ($commandePlacer === "placer") {
-                    //nouvelle commandde contient g15v
+                    //nouvelle commande contiennent par  EXEMPLE g15v
                     $nouvelleCommande = substr($commande, 8, 4);
                     // verifier si longeur de la chaine est  égale a 3 exemple g5v
                     if ($nouvelleCommande[strlen($nouvelleCommande) - 1] === ' ') {
-                        $lg = $nouvelleCommande[0];
+
                         // verification de LIGNE  COLONNE POSITION
+                        $lg = $nouvelleCommande[0];
                         /* 1 boolean */
                         $ligneCommande = in_array($lg, $ligneArray);
                         /* 2 boolean */
                         $colonneisNumber = is_numeric($nouvelleCommande[1]);
-                        $colonneisNumberValid = ((int)$nouvelleCommande[1])<=9;
+                        $colonneisNumberValid = (((int)$nouvelleCommande[1]) <= 9) && ((int)$nouvelleCommande[1] >= 1);
                         /* 3 boolean */
                         $pos = in_array($nouvelleCommande[2], $posArray);
                         /* 4 boolean */
+                        // trouver le mot a remplacer
+                        $motAplacer = $mot = substr($commande, 11, strlen($commande));
                         $chaine = is_string(substr($commande, 11, strlen($commande)));
+                        // chaine est inexistante
+                        if (empty($motAplacer) || substr_count($commande, ' ') !== 2) {
+                            return new JsonResponse(['le mot  placer  inexistante' => "ok"], 404);
+                        }
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
-                        if ($ligneCommande && $colonneisNumber&& $colonneisNumberValid && $pos ) {
+                        if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos) {
                             return new JsonResponse(['commande placer correcte' => "ok"], 200);
                         }
                         return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
@@ -303,8 +314,15 @@ class MessageController extends Controller
                     } else {
                         $ligneCorrecte = in_array($nouvelleCommande[0], $ligneArray, true);
                         $colIsNumber = substr($nouvelleCommande, 1, 2);
-                        $coloneCorrecte = is_numeric($colIsNumber)&&( (int)$colIsNumber <= 15);
-                        $posCorrecte = in_array($nouvelleCommande[3], $posArray);
+                        $coloneCorrecte = is_numeric($colIsNumber) && ((int)$colIsNumber <= 15);
+                        $posCorrecte = in_array($nouvelleCommande[3], $posArray, true);
+                        // chaine est inexistante
+                        $mot = substr($commande, 12);
+                        if (empty($mot)) {
+                            return new JsonResponse(['le mot  placer  inexistante' => "ok"], 404);
+                        }
+
+
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
@@ -313,6 +331,25 @@ class MessageController extends Controller
                         return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
                     }
 
+                    /* Changer des lettres  */
+                } elseif ($commandeChanger === "changer") {
+                    // changer des lettre exemple !changer mw*
+                    $LettreChanger = substr($commande, 8, strlen($commande));
+                    if (!empty($LettreChanger)) {
+                        // TODO lettre alphabetiue et  le contiennet *
+
+                        return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
+
+
+                    }
+                    return new JsonResponse(['Aucune lettre a changer' => $LettreChanger], 404);
+
+                } elseif ($commandeAider === "aider") {
+                    return new JsonResponse(['Plasser un lettre' => "!placer g15v bonjour : joue le mot bonjour à la verticale et le b est positionné en g15",
+                        'changer un lettre' => "!changer mwb : remplace les lettres m, w et b. !changer e* :remplace une seule des lettres e et une lettre blanche",
+                        'Passer son tour' => '!passer',
+                        'Besoin d aide ' => '!aider',
+                    ], 200);
 
                 }
 
