@@ -2,6 +2,7 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {PartieService} from "../../services/partie.service";
 import {Router} from "@angular/router";
 import {JoueurService} from "../../services/joueur.service";
+import {PusherService} from "../../services/pusher.service";
 
 @Component({
   selector: 'app-salle-dattente',
@@ -9,6 +10,7 @@ import {JoueurService} from "../../services/joueur.service";
   styleUrls: ['./salle-dattente.component.css']
 })
 export class SalleDattenteComponent implements OnInit {
+  private idPlayer: any;
   @HostListener('window:keydown.escape', ['$event'])
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -24,6 +26,7 @@ export class SalleDattenteComponent implements OnInit {
   display: any ;
   interval: any;
   id :any;
+  channel : any;
   private typePartie: any;
   startTimer() {
     console.log("=====>");
@@ -44,13 +47,22 @@ export class SalleDattenteComponent implements OnInit {
     clearInterval(this.interval);
   }
 
-  constructor(private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
+  constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
     this.id = localStorage.getItem('idJoueur');
+    this.pusherService.channel.bind("SendPlayer", function(data:any) {
+      console.log("hello",data);
+    });
     this.getPartieByIdJoueur();
+    //console.log("id SendPlayer",this.idPlayer);
+
     this.startTimer()
    // this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
-    console.log("Players",this.players);
+   // console.log("Players",this.players);
+  }
+  inscrire(){
+
+
   }
   quitGame(){
     this.joueurService.quitGame(this.id).subscribe(
@@ -68,16 +80,16 @@ export class SalleDattenteComponent implements OnInit {
       this.partieService.getPartieByIdJoueur(this.id).subscribe(
         res => {
          // console.log(this.id);
-          console.log("le res : ",res);
+          //console.log("le res : ",res);
           this.joueurs = res.joueurs;
-          console.log("Joueurs from result",this.joueurs);
+         // console.log("Joueurs from result",this.joueurs);
           this.typePartie = res.typePartie;
-          console.log("typePartie",this.typePartie);
+          //console.log("typePartie",this.typePartie);
           this.players = [];
           for(var i=0;i<this.typePartie;i++){
             this.players.push(this.joueurs[i]);
           }
-          console.log("players from interval",this.players)
+         // console.log("players from interval",this.players)
         },
         err => {
           console.log(err);

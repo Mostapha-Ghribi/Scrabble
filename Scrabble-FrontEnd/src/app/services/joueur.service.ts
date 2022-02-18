@@ -14,10 +14,7 @@ export class JoueurService {
 
   constructor(private http: HttpClient) { }
   public addPlayer(joueur: any) {
-    const headers = new HttpHeaders();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('Accept', 'application/json');
-    return this.http.post<any>(this.InscriptionAPI, joueur,{headers: headers});
+    return this.http.post<any>(this.InscriptionAPI, joueur);
   }
   public quitGame(id: any) {
     const headers = new HttpHeaders();
