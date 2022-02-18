@@ -285,8 +285,8 @@ class MessageController extends Controller
                 $commandeAider = substr($commande, 1, 5);
 
                 if ($commandePlacer === "placer") {
-                     // la taille de la commande <=12
-                    if (strlen($commande)<=11) {
+                    // la taille de la commande <=12
+                    if (strlen($commande) <= 11) {
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
@@ -333,14 +333,14 @@ class MessageController extends Controller
                         }
                         // message erreur de ligne
 
-                         if (!$ligneCommande) {
-                             return new JsonResponse([
-                                 "nom" => $joueur->nom,
-                                 "partie" => $partie->idPartie,
-                                 'message' => "$joueur->nom  vous devez entrer une ligne correcte ",
-                                 'mot' => "$motAplacer",
-                             ], 404);
-                         }
+                        if (!$ligneCommande) {
+                            return new JsonResponse([
+                                "nom" => $joueur->nom,
+                                "partie" => $partie->idPartie,
+                                'message' => "$joueur->nom  vous devez entrer une ligne correcte ",
+                                'mot' => "$motAplacer",
+                            ], 404);
+                        }
 
                         // message erreur de colonne
                         if (!$colonneisNumber) {
@@ -391,7 +391,7 @@ class MessageController extends Controller
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
-                           //return new JsonResponse(['commande placer correcte' => "ok"], 200);
+                            //return new JsonResponse(['commande placer correcte' => "ok"], 200);
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
@@ -415,7 +415,7 @@ class MessageController extends Controller
                     if (!empty($LettreChanger)) {
                         // TODO lettre alphabetiue et  le contiennet *
                         // TODO verifier si les lettres sont inclus dans le chavalet du joueur
-                       // return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
+                        // return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
@@ -452,13 +452,63 @@ class MessageController extends Controller
             }
 
         } else {
-          //  return new JsonResponse(['Erreur' => "Impossible d'envoyer un message dans cette partie"], 404);
+            //  return new JsonResponse(['Erreur' => "Impossible d'envoyer un message dans cette partie"], 404);
             return new JsonResponse([
                 "nom" => $joueur->nom,
                 "partie" => $partie->idPartie,
-                'message' => "$joueur->nom vous n'etes pas autorisée a envoyer des message dans cette partie",
+                'message' => "$joueur->nom vous n'êtes pas autorisée a envoyer des message dans cette partie",
             ], 404);
         }
 
     }
+
+
+    public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
+    {
+        //TODO verier si LE mot est existante dans le chevalet
+        //! (ord('O')-ord(strtoupper($ligne)))*15+$colonne-1
+        // g15v bonjour
+        $longeurchaine = strlen($mot);
+        if ($pos === 'v') {
+            $limiteLigne = ord('P') - ord(strtoupper($ligne));
+            return $limiteLigne >= $longeurchaine;
+        }
+        $limiteColonne = 16 - $colonne;
+        return $limiteColonne >= $longeurchaine;
+
+    }
+
+
+// verifier si le mot est dans grille est-elle dans le chevalet
+/*    public function placerMot($ligne, $colonne, $pos, $mot, $grille)
+    {
+        // retourner le position  du mot dans le tableau du  mot
+        $posCoLigGrille = (ord('O') - ord(strtoupper($ligne))) * 15 + $colonne - 1;
+     // ajouter +16 dans la boucle
+        $motGrille = [];
+        switch ($pos) {
+
+            case 'v' :
+                for ($i = $posCoLigGrille, $iMax = $posCoLigGrille + strlen($mot); $i <= $iMax; $i++) {
+                    array_push($motGrille, $grille[$i]);
+                }
+
+
+        }
+
+    }*/
+
+
+    public function verifiermotvalide($mot)
+    {
+
+
+    }
+
+    public function verifierlettre($lettre)
+    {
+
+    }
+
+
 }
