@@ -278,7 +278,7 @@ class MessageController extends Controller
             // verifier le type de la commande
             $commande = trim($request->contenu);
             if (str_starts_with($commande, "!")) {
-                //verifier si  c'est une commande placer EXEMPLE  !placer g15v bonjour
+                //verifier si c'est une commande placée EXEMPLE  !placer g15v bonjour
                 $commandePlacer = substr($commande, 1, 6);
                 $commandeChanger = substr($commande, 1, 7);
                 $commandePasser = substr($commande, 1, 7);
@@ -290,7 +290,7 @@ class MessageController extends Controller
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
-                            'message' => "$joueur->nom  vous devez entrer une une commande correcte ",
+                            'message' => "$joueur->nom  Entrée invalide",
                         ], 404);
                     }
                     //nouvelle commande contiennent par  EXEMPLE g15v
@@ -316,18 +316,29 @@ class MessageController extends Controller
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
-                                "mot" => "Le mot a  placée est Inexistante"
+                                "message" => "$joueur->nom  Erreur de syntaxe"
                             ], 404);
                             //return new JsonResponse(['le mot a  placer est  inexistante' => "ok"], 404);
                         }
                         // TODO verfier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos) {
+
+                            //creer le message dans la base de donnes
+                            /*$request->statutMessage = 0;
+                            $messageCreated = Message::create($request->all());
+                            $msg = Message::where('idMessage',$messageCreated->$messageCreated)->update(['statutMessage'=>false]);*/
+
+
+
+
+
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
                                 'message' => "$joueur->nom a Placée le mot  $motAplacer",
                                 'mot' => "$motAplacer",
+                                'statutMessage' => "$request->statutMessage",
                             ],
                                 200);
                         }
@@ -337,7 +348,7 @@ class MessageController extends Controller
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
-                                'message' => "$joueur->nom  vous devez entrer une ligne correcte ",
+                                'message' => "$joueur->nom Erreur de syntaxe ",
                                 'mot' => "$motAplacer",
                             ], 404);
                         }
@@ -347,7 +358,7 @@ class MessageController extends Controller
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
-                                'message' => "$joueur->nom vous devez entrer une colonne correcte ",
+                                'message' => "$joueur->nom Erreur de syntaxe",
                                 'mot' => "$motAplacer",
                             ], 404);
                         }
@@ -356,7 +367,7 @@ class MessageController extends Controller
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
-                                'message' => "$joueur->nom  vous devez entrer une position correcte (h,v)",
+                                'message' => "$joueur->nom  Erreur de syntaxe",
                                 'mot' => "$motAplacer",
                             ], 404);
                         }
@@ -365,7 +376,7 @@ class MessageController extends Controller
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
-                            'message' => "$joueur->nom  probleme de ligne ou colonne ou ",
+                            'message' => "$joueur->nom  Erreur de syntaxe",
                             'mot' => "$motAplacer",
                         ], 404);
 
@@ -382,13 +393,13 @@ class MessageController extends Controller
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
-                                'message' => "$joueur->nom vous devez taper le mot a placée",
+                                'message' => "$joueur->nom Erreur de syntaxe",
                                 'mot' => "$mot",
                             ], 404);
                         }
 
 
-                        // TODO verfier si la chaine est correcte ou non
+                        // TODO verifier si la chaine est correcte ou non
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
                             //return new JsonResponse(['commande placer correcte' => "ok"], 200);
@@ -403,7 +414,7 @@ class MessageController extends Controller
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
-                            'message' => "$joueur->nom a entrée une commande placer erronée",
+                            'message' => "$joueur->nom Erreur de syntaxe",
                             'mot' => "$mot",
                         ], 404);
                     }
@@ -428,7 +439,7 @@ class MessageController extends Controller
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom vous devez taper des lettres a échangé ",
+                        'message' => "$joueur->nom Erreur de syntaxe ",
                         'mot' => "$LettreChanger",
                     ], 404);
 
@@ -443,6 +454,12 @@ class MessageController extends Controller
                           Besoin d aide ===>  !aider "
                     ], 200);
 
+                } else {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom Entrée invalide",
+                    ], 404);
                 }
 
             } else {
@@ -478,25 +495,20 @@ class MessageController extends Controller
 
     }
 
-
 // verifier si le mot est dans grille est-elle dans le chevalet
-/*    public function placerMot($ligne, $colonne, $pos, $mot, $grille)
-    {
-        // retourner le position  du mot dans le tableau du  mot
-        $posCoLigGrille = (ord('O') - ord(strtoupper($ligne))) * 15 + $colonne - 1;
-     // ajouter +16 dans la boucle
-        $motGrille = [];
-        switch ($pos) {
-
-            case 'v' :
-                for ($i = $posCoLigGrille, $iMax = $posCoLigGrille + strlen($mot); $i <= $iMax; $i++) {
-                    array_push($motGrille, $grille[$i]);
-                }
-
-
-        }
-
-    }*/
+    /*    public function placerMot($ligne, $colonne, $pos, $mot, $grille)
+        {
+            // retourner le position  du mot dans le tableau du  mot
+            $posCoLigGrille = (ord('O') - ord(strtoupper($ligne))) * 15 + $colonne - 1;
+         // ajouter +16 dans la boucle
+            $motGrille = [];
+            switch ($pos) {
+                case 'v' :
+                    for ($i = $posCoLigGrille, $iMax = $posCoLigGrille + strlen($mot); $i <= $iMax; $i++) {
+                        array_push($motGrille, $grille[$i]);
+                    }
+            }
+        }*/
 
 
     public function verifiermotvalide($mot)
