@@ -507,8 +507,6 @@ class MessageController extends Controller
 
     public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
     {
-        //TODO verier si LE mot est existante dans le chevalet
-        //! (ord('O')-ord(strtoupper($ligne)))*15+$colonne-1
         // g15v bonjour
         $longeurchaine = strlen($mot);
         if ($pos === 'v') {
@@ -521,31 +519,57 @@ class MessageController extends Controller
     }
 
 // verifier si le mot est dans grille est-elle dans le chevalet
-     public function placerMot($ligne, $colonne, $pos, $mot, $grille)
-        {
-            // retourner le position  du mot dans le tableau (grille sous forme d'un tableau)
-            $posMotTableau= ( ord(strtoupper($ligne)-ord('A') )) * 15 + $colonne - 1;
-         // tableu de lettres dans la postion  de la grille
-            $motGrille = [];
-            switch ($pos) {
-                case 'v' :
+    public function placerMot($ligne, $colonne, $pos, $mot, $grille)
+    {
+        // retourner le position  du mot dans le tableau (grille sous forme d'un tableau)
+        $posMotTableau = (ord(strtoupper($ligne) - ord('A'))) * 15 + $colonne - 1;
+        // tableu de lettres dans la postion  de la grille
+        $motGrille = [];
+
+        if (!$this->verifierPostionMotValable($ligne, $colonne, $pos, $mot)) {
+            return false;
+        }
+        switch ($pos) {
+            case 'v' :
+                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                    $motGrille[] = $grille[$i];
+                }
+                if (emptyArray(implode($motGrille))) {
+                    // si la position  de mot dans la grille est  vide on la place
+                    $counter = 0;
                     for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                        $motGrille[] = $grille[$i];
-                    } break ;
-            }
+                        $grille[$i] = $motGrille[$counter];
+                        $counter++;
+                    }
+                    return true;
+
+
+                } else {
+         //TODO
+
+                }
+
+
+                break;
         }
 
 
-    public function verifiermotvalide($mot)
-    {
-
-
     }
+}
 
-    public function verifierlettre($lettre)
-    {
 
-    }
+public
+function verifiermotvalide($mot)
+{
+
+
+}
+
+public
+function verifierlettre($lettre)
+{
+
+}
 
 
 }
