@@ -328,9 +328,12 @@ class MessageController extends Controller
                             /*$request->statutMessage = 0;
                             $messageCreated = Message::create($request->all());
                             $msg = Message::where('idMessage',$messageCreated->$messageCreated)->update(['statutMessage'=>false]);*/
-
-
-
+                            $message = new Message;
+                            $message->contenu = $request->contenu;
+                            $message->envoyeur = $request->envoyeur;
+                            $message->partie = $request->partie;
+                            $message->statutMessage = 0;
+                            $message->save();
 
 
                             return new JsonResponse([
@@ -338,7 +341,7 @@ class MessageController extends Controller
                                 "partie" => $partie->idPartie,
                                 'message' => "$joueur->nom a Placée le mot  $motAplacer",
                                 'mot' => "$motAplacer",
-                                'statutMessage' => "$request->statutMessage",
+                                'statutMessage' => "$message->statutMessage",
                             ],
                                 200);
                         }
@@ -403,6 +406,14 @@ class MessageController extends Controller
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte) {
                             //return new JsonResponse(['commande placer correcte' => "ok"], 200);
+
+                            $message = new Message;
+                            $message->contenu = $request->contenu;
+                            $message->envoyeur = $request->envoyeur;
+                            $message->partie = $request->partie;
+                            $message->statutMessage = 0;
+                            $message->save();
+
                             return new JsonResponse([
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
@@ -427,6 +438,12 @@ class MessageController extends Controller
                         // TODO lettre alphabetiue et  le contiennet *
                         // TODO verifier si les lettres sont inclus dans le chavalet du joueur
                         // return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
+                        $message = new Message;
+                        $message->contenu = $request->contenu;
+                        $message->envoyeur = $request->envoyeur;
+                        $message->partie = $request->partie;
+                        $message->statutMessage = 0;
+                        $message->save();
                         return new JsonResponse([
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
@@ -444,6 +461,12 @@ class MessageController extends Controller
                     ], 404);
 
                 } elseif ($commandeAider === "aider") {
+                    $message = new Message;
+                    $message->contenu = $request->contenu;
+                    $message->envoyeur = $request->envoyeur;
+                    $message->partie = $request->partie;
+                    $message->statutMessage = 0;
+                    $message->save();
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
