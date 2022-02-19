@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InscriptionJoueur;
 use App\Events\SendPlayer;
 use App\Http\Requests\JoueurRequest;
 use App\Http\Requests\StationPostRequest;
@@ -161,8 +162,7 @@ class JoueurController extends Controller
                     Partie::find($partie->idPartie)->increment('nombreJoueurs');
                 }
             }
-            event(new SendPlayer($joueur->idJoueur));
-            //broadcast(new SendPlayer($joueur));
+            event(new InscriptionJoueur());
             return new JsonResponse($joueur);
 
         }

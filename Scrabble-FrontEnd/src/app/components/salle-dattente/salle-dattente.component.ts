@@ -11,6 +11,7 @@ import {PusherService} from "../../services/pusher.service";
 })
 export class SalleDattenteComponent implements OnInit {
   private idPlayer: any;
+  private result: any;
   @HostListener('window:keydown.escape', ['$event'])
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -49,20 +50,24 @@ export class SalleDattenteComponent implements OnInit {
 
   constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
-    this.id = localStorage.getItem('idJoueur');
-    this.pusherService.channel.bind("SendPlayer", function(data:any) {
-      console.log("hello",data);
+    //this.id = localStorage.getItem('idJoueur');
+    this.pusherService.channel.bind("SendPlayer", (data: any)=> {
+      //console.log(data);
+      this.joueurs = data.partie.joueurs;
+      console.log("from send player",data.partie.joueurs);
+      this.typePartie = data.partie.typePartie;
+      this.players = [];
+      for(var i=0;i<this.typePartie;i++){
+        this.players.push(this.joueurs[i]);
+      }
     });
-    this.getPartieByIdJoueur();
-    //console.log("id SendPlayer",this.idPlayer);
+      this.getPartieByIdJoueur();
 
+    //this.getPartieByIdJoueur();
+    //console.log("id SendPlayer",this.id);
     this.startTimer()
    // this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
    // console.log("Players",this.players);
-  }
-  inscrire(){
-
-
   }
   quitGame(){
     this.joueurService.quitGame(this.id).subscribe(
@@ -75,29 +80,34 @@ export class SalleDattenteComponent implements OnInit {
     )
   }
   getPartieByIdJoueur() {
-    setInterval(() => {
-
-      this.partieService.getPartieByIdJoueur(this.id).subscribe(
-        res => {
-         // console.log(this.id);
-          //console.log("le res : ",res);
-          this.joueurs = res.joueurs;
-         // console.log("Joueurs from result",this.joueurs);
-          this.typePartie = res.typePartie;
-          //console.log("typePartie",this.typePartie);
-          this.players = [];
-          for(var i=0;i<this.typePartie;i++){
-            this.players.push(this.joueurs[i]);
-          }
-         // console.log("players from interval",this.players)
-        },
-        err => {
-          console.log(err);
+    this.id = localStorage.getItem('idJoueur');
+    //console.log("id joueur",this.id);
+      this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
+        console.log(data);
+        this.joueurs = data.joueurs;
+        this.typePartie = data.typePartie;
+        this.players = [];
+        for(var i=0;i<this.typePartie;i++){
+        this.players.push(this.joueurs[i]);
         }
-      )
-    }, 5000);
+      })
 
+    //this.pusherService.getPlayers(this.id);
+    //if(this.pusherService.getPlayers(this.id)){
+     // console.log(this.pusherService.joueurs);
+    //}
+
+    //console.log(this.pusherService.result);
+    //this.result = this.pusherService.result;
+    //this.joueurs = this.result.joueurs;
+    //this.typePartie = this.result.typePartie;
+    //this.players = [];
+    //for(var i=0;i<this.typePartie;i++){
+      //this.players.push(this.joueurs[i]);
+    //}
     }
+
+
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendPlayer;
 use App\Models\Joueur;
 use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
@@ -107,7 +108,8 @@ class PartieController extends Controller
         //return new JsonResponse($p);
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
        // if(in_array($joueur, $p->joueurs)){
-            return new JsonResponse($p);
+        event(new SendPlayer($p));
+        return new JsonResponse($p);
         //}else{
          //   return new JsonResponse();
        // }

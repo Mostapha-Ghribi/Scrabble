@@ -10,20 +10,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendPlayer implements ShouldBroadcast
+class InscriptionJoueur implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $partie;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($partie)
+    public function __construct()
     {
-        $this->partie = $partie;
-
+        //
     }
 
     /**
@@ -36,7 +34,6 @@ class SendPlayer implements ShouldBroadcast
         return ['player'];
     }
     public function broadcastAs() {
-        return 'SendPlayer';
+        return 'InscriptionJoueur';
     }
-
 }
