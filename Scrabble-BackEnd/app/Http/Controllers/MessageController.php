@@ -418,7 +418,7 @@ class MessageController extends Controller
                                 "nom" => $joueur->nom,
                                 "partie" => $partie->idPartie,
                                 'message' => "$joueur->nom  a Placée le mot $mot",
-                                'mot' => "$mot",
+                                'statutMessage' => "$message->statutMessage",
                             ], 200);
                         }
                         //return new JsonResponse(['Erreur' => "commande placer erronée"], 200);
@@ -448,7 +448,7 @@ class MessageController extends Controller
                             "nom" => $joueur->nom,
                             "partie" => $partie->idPartie,
                             'message' => "$joueur->nom a changer les lettres $LettreChanger",
-                            'mot' => "$LettreChanger",
+                            'statutMessage' => "$message->statutMessage",
                         ], 200);
 
                     }
@@ -470,11 +470,13 @@ class MessageController extends Controller
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
+                        'statutMessage' => "$message->statutMessage",
                         'message' => "!placer g15v bonjour  ===> joue le mot bonjour à la verticale et le b est positionné en g15
                         changer un lettre avec  ===>  !changer mwb : remplace les lettres m, w et b.
                         !changer e*  =>  remplace une seule des lettres e et une lettre blanche
                         Passer son tour ===> !passer
-                          Besoin d aide ===>  !aider "
+                          Besoin d aide ===>  !aider ",
+
                     ], 200);
 
                 } else {
@@ -519,19 +521,19 @@ class MessageController extends Controller
     }
 
 // verifier si le mot est dans grille est-elle dans le chevalet
-    /*    public function placerMot($ligne, $colonne, $pos, $mot, $grille)
+     public function placerMot($ligne, $colonne, $pos, $mot, $grille)
         {
-            // retourner le position  du mot dans le tableau du  mot
-            $posCoLigGrille = (ord('O') - ord(strtoupper($ligne))) * 15 + $colonne - 1;
-         // ajouter +16 dans la boucle
+            // retourner le position  du mot dans le tableau (grille sous forme d'un tableau)
+            $posMotTableau= ( ord(strtoupper($ligne)-ord('A') )) * 15 + $colonne - 1;
+         // tableu de lettres dans la postion  de la grille
             $motGrille = [];
             switch ($pos) {
                 case 'v' :
-                    for ($i = $posCoLigGrille, $iMax = $posCoLigGrille + strlen($mot); $i <= $iMax; $i++) {
-                        array_push($motGrille, $grille[$i]);
-                    }
+                    for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                        $motGrille[] = $grille[$i];
+                    } break ;
             }
-        }*/
+        }
 
 
     public function verifiermotvalide($mot)
