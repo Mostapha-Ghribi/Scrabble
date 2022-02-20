@@ -168,16 +168,16 @@
                 }
             }
         },
-        "/v1/partie/{idJoueur}": {
+        "/v1/partie/{idPartie}": {
             "get": {
                 "tags": [
                     "partie"
                 ],
-                "summary": "retourne la partie et ses joueurs avec id partie",
-                "operationId": "getPartieById",
+                "summary": "retourne les joueurs d'une partie",
+                "operationId": "getJoueursByIdPartie",
                 "parameters": [
                     {
-                        "name": "idJoueur",
+                        "name": "idPartie",
                         "in": "path",
                         "required": true,
                         "schema": {

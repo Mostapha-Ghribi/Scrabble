@@ -13,16 +13,18 @@ use Illuminate\Queue\SerializesModels;
 class SendPlayer implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $partie;
+    public $idPartie;
+    public $typePartie;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($partie)
+    public function __construct($idPartie,$typePartie)
     {
-        $this->partie = $partie;
+        $this->idPartie = $idPartie;
+        $this->typePartie = $typePartie;
 
     }
 

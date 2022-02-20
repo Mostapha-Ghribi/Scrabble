@@ -10,8 +10,8 @@ import {PusherService} from "../../services/pusher.service";
   styleUrls: ['./salle-dattente.component.css']
 })
 export class SalleDattenteComponent implements OnInit {
-  private idPlayer: any;
-  private result: any;
+
+  private idPartie: any;
   @HostListener('window:keydown.escape', ['$event'])
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -50,16 +50,19 @@ export class SalleDattenteComponent implements OnInit {
 
   constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
-    //this.id = localStorage.getItem('idJoueur');
     this.pusherService.channel.bind("SendPlayer", (data: any)=> {
-      //console.log(data);
-      this.joueurs = data.partie.joueurs;
-      console.log("from send player",data.partie.joueurs);
-      this.typePartie = data.partie.typePartie;
-      this.players = [];
-      for(var i=0;i<this.typePartie;i++){
-        this.players.push(this.joueurs[i]);
-      }
+      console.log(data);
+      this.idPartie = data.idPartie;
+      this.typePartie = data.typePartie;
+      this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
+        this.joueurs = data;
+        this.players = [];
+        for(let i=0; i<this.typePartie; i++){
+          this.players.push(this.joueurs[i]);
+        }
+      })
+
+
     });
       this.getPartieByIdJoueur();
 
@@ -81,7 +84,6 @@ export class SalleDattenteComponent implements OnInit {
   }
   getPartieByIdJoueur() {
     this.id = localStorage.getItem('idJoueur');
-    //console.log("id joueur",this.id);
       this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
         console.log(data);
         this.joueurs = data.joueurs;
@@ -91,20 +93,6 @@ export class SalleDattenteComponent implements OnInit {
         this.players.push(this.joueurs[i]);
         }
       })
-
-    //this.pusherService.getPlayers(this.id);
-    //if(this.pusherService.getPlayers(this.id)){
-     // console.log(this.pusherService.joueurs);
-    //}
-
-    //console.log(this.pusherService.result);
-    //this.result = this.pusherService.result;
-    //this.joueurs = this.result.joueurs;
-    //this.typePartie = this.result.typePartie;
-    //this.players = [];
-    //for(var i=0;i<this.typePartie;i++){
-      //this.players.push(this.joueurs[i]);
-    //}
     }
 
 
