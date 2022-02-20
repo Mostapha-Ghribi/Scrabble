@@ -48,7 +48,7 @@ export class InscriptionComponent implements OnInit {
   }
 
   uploadFile(event : any) {
-    let reader = new FileReader();
+    let reader= new FileReader();
     let photo = event.target.files[0];
     if (event.target.files && event.target.files[0]) {
       reader.readAsDataURL(photo);
