@@ -26,22 +26,27 @@ export class SalleDattenteComponent implements OnInit {
   }
   players: Array<any> = [];
   joueurs:[] |any;
-  time: number = 0;
+  time: any;
   display: any ;
   interval: any;
   id :any;
   channel : any;
   private typePartie: any;
   startTimer() {
+    this.time = 0;
     console.log("=====>");
     this.interval = setInterval(() => {
-      if (this.time === 0) {
-        this.time++;
-      } else {
-        this.time++;
+
+      if(this.typePartie == this.joueurs.length){
+        this.time--;
+      }else {
+          this.time++;
       }
       this.display=this.transform( this.time)
     }, 1000);
+  }
+  restartTimer(){
+    this.time == 0;
   }
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);

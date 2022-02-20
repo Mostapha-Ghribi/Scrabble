@@ -20,7 +20,7 @@
                 "tags": [
                     "joueur"
                 ],
-                "summary": "Trouver un joueur a partir  de son id",
+                "summary": "Trouver un joueur par son id",
                 "operationId": "getJoueur",
                 "parameters": [
                     {
