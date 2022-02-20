@@ -16,10 +16,13 @@ export class SalleDattenteComponent implements OnInit {
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     this.quitGame();
-
-    this.router.navigate(['/inscription'])
-
-
+    this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
+      this.joueurs = data;
+      this.players = [];
+      for(let i=0; i<this.typePartie; i++){
+        this.players.push(this.joueurs[i]);
+      }
+    })
   }
   players: Array<any> = [];
   joueurs:[] |any;
@@ -50,31 +53,21 @@ export class SalleDattenteComponent implements OnInit {
 
   constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {
-    this.pusherService.channel.bind("SendPlayer", (data: any)=> {
-      console.log(data);
+    this.pusherService.channel.bind("getJoueurs", (data: any)=> {
       this.idPartie = data.idPartie;
       this.typePartie = data.typePartie;
-      this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
-        this.joueurs = data;
-        this.players = [];
-        for(let i=0; i<this.typePartie; i++){
-          this.players.push(this.joueurs[i]);
-        }
-      })
-
-
+      this.getJoueursByIdPartie();
     });
-      this.getPartieByIdJoueur();
-
-    //this.getPartieByIdJoueur();
-    //console.log("id SendPlayer",this.id);
+    this.pusherService.channel.bind("quitJoueur",(data : any)=>{
+      this.getJoueursByIdPartie();
+    })
+    this.getPartieByIdJoueur();
     this.startTimer()
-   // this.players = [{name : "mostapha",avatar:"mostapha.jpg"},{name : "haithem",avatar:"haithem.jpg"},"",""];
-   // console.log("Players",this.players);
   }
   quitGame(){
     this.joueurService.quitGame(this.id).subscribe(
       res =>{
+        this.router.navigate(['/inscription']);
         console.log(res);
       },
       err =>{
@@ -91,6 +84,15 @@ export class SalleDattenteComponent implements OnInit {
         this.players = [];
         for(var i=0;i<this.typePartie;i++){
         this.players.push(this.joueurs[i]);
+        }
+      })
+    }
+    getJoueursByIdPartie(){
+      this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
+        this.joueurs = data;
+        this.players = [];
+        for(let i=0; i<this.typePartie; i++){
+          this.players.push(this.joueurs[i]);
         }
       })
     }

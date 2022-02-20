@@ -10,10 +10,8 @@ import {PartieService} from "./partie.service";
 export class PusherService {
     private pusher: any;
     channel: any;
-    public result: any;
-    public joueurs: any;
 
-  constructor(private partieService:PartieService,private router :Router,private joueurService : JoueurService) {
+  constructor() {
       Pusher.logToConsole = true;
       this.pusher = new Pusher(environment.pusher.key, {
           cluster: environment.pusher.cluster,
@@ -22,14 +20,8 @@ export class PusherService {
       this.pusher.connection
       this.channel = this.pusher.subscribe('player');
   }
-  inscrire(joueur : any){
-    this.joueurService.addPlayer(joueur).subscribe(data => {
-        this.router.navigate(['/room']);
-        console.log(data);
-        localStorage.setItem('idJoueur',data.idJoueur);
-        console.log("Inscription Reussite");
-    });
-  }
+
+
 
 
 

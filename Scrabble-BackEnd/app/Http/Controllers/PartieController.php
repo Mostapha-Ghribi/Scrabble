@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\SendPlayer;
+use App\Events\getJoueurs;
 use App\Models\Joueur;
 use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
@@ -110,7 +110,7 @@ class PartieController extends Controller
         $partie2 = Partie::find($joueur->partie);
         $p = $partie->first();
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
-        event(new SendPlayer($p->idPartie,$p->typePartie));
+        event(new getJoueurs($p->idPartie,$p->typePartie));
         return new JsonResponse($p);
 
     }

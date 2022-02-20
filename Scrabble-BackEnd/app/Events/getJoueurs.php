@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendPlayer implements ShouldBroadcast
+class getJoueurs implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $idPartie;
@@ -38,7 +38,7 @@ class SendPlayer implements ShouldBroadcast
         return ['player'];
     }
     public function broadcastAs() {
-        return 'SendPlayer';
+        return 'getJoueurs';
     }
 
 }

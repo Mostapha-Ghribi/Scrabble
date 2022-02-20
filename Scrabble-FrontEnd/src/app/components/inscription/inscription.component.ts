@@ -36,38 +36,15 @@ export class InscriptionComponent implements OnInit {
   get nom() { return this.inscriptionForm.get('nom'); }
   get partie() { return this.inscriptionForm.get('partie'); }
   get photo() { return this.inscriptionForm.get('photo'); }
-  id = 0;
   ngOnInit(): void {
     localStorage.clear();
     this.pusherService.channel.bind("InscriptionJoueur");
 
   }
-
   inscrire() {
     let data = this.inscriptionForm.value ;
     let joueur = {"nom" : data.nom,"photo" : data.photo, "partie" : data.partie}
-    this.pusherService.inscrire(joueur);
-
-    /*this.joueurService.addPlayer(joueur).subscribe(
-      res=>{
-        console.log(res);
-        this.id = res.idJoueur;
-        if(this.id==res.idJoueur){
-          localStorage.setItem('idJoueur',String(this.id));
-        }
-        if(localStorage.getItem('idJoueur')==res.idJoueur){
-          this.router.navigate(['/room'])
-        }
-        this.cd.markForCheck();
-
-
-      },
-      err=>{
-        this.isError = true;
-        this.messageError = err.error.message;
-        console.log(err);
-      }
-    )*/
+    this.joueurService.inscrire(joueur);
   }
 
   uploadFile(event : any) {
