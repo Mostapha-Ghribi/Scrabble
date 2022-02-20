@@ -15,6 +15,6 @@ export class PartieService {
     return this.http.get<any>(this.getPartieByIdJoueurAPI+id,{headers: headers});
   }
   public getJoueursByIdPartie(id :any){
-    return this.http.get<any>(this.getJoueursByIdPartieAPI+id);
+    return this.http.get<any>(this.getJoueursByIdPartieAPI+id+"/joueurs");
   }
 }

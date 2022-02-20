@@ -14,7 +14,7 @@ class PartieController extends Controller
     /**
      *
      * @OA\Get(
-     *      path="/v1/partie/{idPartie}",
+     *      path="/v1/partie/{idPartie}/joueurs",
      *      operationId="getJoueursByIdPartie",
      *      tags={"partie"},
      *      summary="retourne les joueurs d'une partie",
