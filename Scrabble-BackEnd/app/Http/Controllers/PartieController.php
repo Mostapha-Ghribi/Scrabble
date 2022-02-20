@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\getJoueurs;
 use App\Models\Joueur;
 use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
@@ -13,13 +14,13 @@ class PartieController extends Controller
     /**
      *
      * @OA\Get(
-     *      path="/v1/partie/{idJoueur}",
-     *      operationId="getPartieById",
+     *      path="/v1/partie/{idPartie}/joueurs",
+     *      operationId="getJoueursByIdPartie",
      *      tags={"partie"},
-     *      summary="retourne la partie et ses joueurs avec id partie",
+     *      summary="retourne les joueurs d'une partie",
      *
      *  @OA\Parameter(
-     *      name="idJoueur",
+     *      name="idPartie",
      *      in="path",
      *      required=true,
      *      @OA\Schema(
@@ -48,9 +49,15 @@ class PartieController extends Controller
      *   ),
      *  )
      */
-    public function getPartieById($idJoueur)
+    public function getJoueursByIdPartie($idPartie)
     {
-
+        $partie = Partie::where('idPartie',$idPartie)->first();
+        if(empty(json_decode($partie))){
+            return Response()->json(['message'=>'Partie inexistant'],404);
+        }
+        $partie2 = Partie::find($idPartie);
+        $joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        return new JsonResponse($joueurs);
 
 
     }
@@ -96,21 +103,15 @@ class PartieController extends Controller
     public function getPartieByIdJoueur($idJoueur)
     {
         $joueur = Joueur::where('idJoueur',$idJoueur)->first();
-
         if(empty(json_decode($joueur))){
             return Response()->json(['message'=>'Joueur inexistant'],404);
         }
         $partie = Partie::where('idPartie',$joueur->partie);
         $partie2 = Partie::find($joueur->partie);
-
         $p = $partie->first();
-        //return new JsonResponse($p);
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
-       // if(in_array($joueur, $p->joueurs)){
-            return new JsonResponse($p);
-        //}else{
-         //   return new JsonResponse();
-       // }
+        event(new getJoueurs($p->idPartie,$p->typePartie));
+        return new JsonResponse($p);
 
     }
 

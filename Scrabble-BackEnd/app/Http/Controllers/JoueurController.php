@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InscriptionJoueur;
+use App\Events\getJoueurs;
+use App\Events\quitJoueur;
 use App\Http\Requests\JoueurRequest;
 use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
@@ -22,7 +25,7 @@ class JoueurController extends Controller
      *      path="/v1/joueur/{idJoueur}",
      *      operationId="getJoueur",
      *      tags={"joueur"},
-     *      summary="Trouver un joueur a partir  de son id",
+     *      summary="Trouver un joueur par son id",
      *
      *  @OA\Parameter(
      *      name="idJoueur",
@@ -60,51 +63,41 @@ class JoueurController extends Controller
         if (!empty(json_decode($joueur))) {
             return new JsonResponse($joueur);
         }
-        return Response()->json(["Erreur" => "le joueur n'existe pas"], 404);
+        return Response()->json(["message" => "le joueur n'existe pas"], 404);
 
     }
 
-
-
-
-
-
-
-
-/**
-*
-* @OA\Post(
-*   tags={"joueur"},
-*   path="/v1/inscrire",
- *     summary="Inscrire un joueur",
-*   @OA\Response(
-*     response="200",
-*     description="joueur inscrit avec succées",
-*     @OA\JsonContent(
-*       type="array",
-*       @OA\Items(ref="#/components/schemas/Joueur")
-*     )
-*   ),
- *     @OA\Response(
- *          response="422",
- *          description="L'un des champs est invalide",
- *     @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
- *        )
- *      ),
- *
- *
-*   @OA\RequestBody(
-*     description="Creer un joueur avec son nom,photo,partie ",
-*     required=true,
-*     @OA\MediaType(
-*       mediaType="application/json",
-*       @OA\Schema(ref="#/components/schemas/JoueurRequest")
-*     )
-*   )
-* )
-*
- */
+    /**
+    *
+    * @OA\Post(
+    * tags={"joueur"},
+    * path="/v1/inscrire",
+    * summary="Inscrire un joueur",
+    * @OA\Response(
+    *   response="200",
+    *   description="joueur inscrit avec succées",
+    *   @OA\JsonContent(
+    *       type="array",
+    *           @OA\Items(ref="#/components/schemas/Joueur")
+    *       )
+    * ),
+    * @OA\Response(
+    *    response="422",
+    *    description="L'un des champs est invalide",
+    *    @OA\JsonContent(
+    *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+    *       )
+    *    ),
+    * @OA\RequestBody(
+    *    description="Creer un joueur avec son nom,photo,partie ",
+    *    required=true,
+    *    @OA\MediaType(
+    *       mediaType="application/json",
+    *       @OA\Schema(ref="#/components/schemas/JoueurRequest")
+    *    )
+    * )
+    * )
+    */
     public function inscrire(JoueurRequest $request)
     {
         $validData = $request->validate([
@@ -117,8 +110,12 @@ class JoueurController extends Controller
         if(!$request->has('partie')){
             return Response()->json(["message" => "il faut selectionner un type de partie"], 404);
         }
+        if(!$request->has('nom')){
+            return Response()->json(["message" => "il faut saisir le nom du joueur"], 404);
+        }
         //recuper le joueur qui a le meme nom
         $joueur = Joueur::where('nom', $request->nom)->first();
+        // tester si le joueur est actif ou non
         if ($joueur) {
             $actif = $joueur->statutJoueur;
         }
@@ -160,6 +157,7 @@ class JoueurController extends Controller
                     Partie::find($partie->idPartie)->increment('nombreJoueurs');
                 }
             }
+            event(new InscriptionJoueur());
             return new JsonResponse($joueur);
 
         }
@@ -243,6 +241,12 @@ class JoueurController extends Controller
     public function quitPlayer($idJoueur)
     {
         $joueur = Joueur::where('idJoueur',$idJoueur)->first();
+        if(empty($joueur)){
+            return new JsonResponse(["message" => "joueur n'existe pas"],404);
+        }
+        if($joueur->statutJoueur == 0){
+            return new JsonResponse(["message" => "le joueur n'est pas déjà en jeu"],404);
+        }
         $joueur->decrement('statutJoueur');
         $partie = Partie::where('idPartie',$joueur->partie)->first();
         if($partie->nombreJoueurs == $partie->typePartie){
@@ -259,9 +263,10 @@ class JoueurController extends Controller
         if (!empty($chercheRoom)) {
             $partie2 = Partie::find($joueur->partie);
             $getOneJoueur = $partie2->joueurs()->where('statutJoueur',1)->first();
-            $switched = $this->switchRoom($getOneJoueur, $chercheRoom->idPartie);
+            $this->switchRoom($getOneJoueur, $chercheRoom->idPartie);
         }
-        return true;
+        event(new quitJoueur());
+        return new JsonResponse($joueur);
     }
 
     private function switchRoom($getOneJoueur, mixed $idPartie)
@@ -274,7 +279,6 @@ class JoueurController extends Controller
             $partieToJoin->update(['statutPartie'=>'EnCours']);
         }
         $partieToJoin->increment('nombreJoueurs');
-        return $getOneJoueur;
     }
 
 
