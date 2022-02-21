@@ -534,42 +534,47 @@ class MessageController extends Controller
                 for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
                     $motGrille[] = $grille[$i];
                 }
+                //TODO verifier si la mot est correcte
                 if (emptyArray(implode($motGrille))) {
-                    // si la position  de mot dans la grille est  vide on la place
+                    // si la position de mot dans la grille est vide on la place
                     $counter = 0;
                     for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
                         $grille[$i] = $motGrille[$counter];
                         $counter++;
                     }
                     return true;
+                }
+                //TODO verifier si la mot est correcte
+                $counter = 0;
+                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                    $grille[$i] = $motGrille[$counter];
+                    $counter++;
+                }
+                return true;
+                break;
 
-
-                } else {
-                    //TODO
-
+            case 'h' :
+                for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i = 16) {
+                    $motGrille[] = $grille[$i];
                 }
 
 
-                break;
+        }
+    }
 
+
+    public
+    function verifiermotvalide($mot)
+    {
 
 
     }
-}
 
+    public
+    function verifierlettre($lettre)
+    {
 
-public
-function verifiermotvalide($mot)
-{
-
-
-}
-
-public
-function verifierlettre($lettre)
-{
-
-}
+    }
 
 
 }
