@@ -12,6 +12,7 @@ import {PusherService} from "../../services/pusher.service";
 export class SalleDattenteComponent implements OnInit {
 
   private idPartie: any;
+  private isFive: boolean = true;
   @HostListener('window:keydown.escape', ['$event'])
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -32,28 +33,40 @@ export class SalleDattenteComponent implements OnInit {
   id :any;
   channel : any;
   private typePartie: any;
-  startTimer() {
-    this.time = 0;
+ five(){
+   if(this.isFive){
+     this.time = 6;
+     this.isFive = false;
+   }
+  // this.interval = setInterval(() => {
+       this.time--;
+       if(this.time == 0){
+         this.router.navigate(['/jeu']);
+       }
+  // }, 1000);
+ }
+  startTimer(time : any) {
+    this.time = time;
     console.log("=====>");
     this.interval = setInterval(() => {
-
       if(this.typePartie == this.joueurs.length){
-        this.time--;
+       // this.time = 5;
+        this.five();
       }else {
           this.time++;
       }
       this.display=this.transform( this.time)
     }, 1000);
   }
-  restartTimer(){
-    this.time == 0;
-  }
+
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);
   }
   pauseTimer() {
     clearInterval(this.interval);
+    //this.time == 5;
+
   }
 
   constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
@@ -67,7 +80,7 @@ export class SalleDattenteComponent implements OnInit {
       this.getJoueursByIdPartie();
     })
     this.getPartieByIdJoueur();
-    this.startTimer()
+    this.startTimer(0);
   }
   quitGame(){
     this.joueurService.quitGame(this.id).subscribe(
