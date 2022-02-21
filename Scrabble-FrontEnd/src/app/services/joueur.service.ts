@@ -10,6 +10,8 @@ export class JoueurService {
 
   private InscriptionAPI = "http://localhost:8000/api/v1/inscrire";
   private quitGameAPI = "http://localhost:8000/api/v1/quitter/joueur/";
+  public messageError: any;
+  public isError: any = false;
 
 
 
@@ -28,5 +30,6 @@ export class JoueurService {
       this.router.navigate(['/room']);
       localStorage.setItem('idJoueur',data.idJoueur);
     });
+
   }
 }
