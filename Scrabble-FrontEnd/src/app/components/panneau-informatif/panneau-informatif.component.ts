@@ -10,6 +10,7 @@ export class PanneauInformatifComponent implements OnInit {
   private idJoueur: any;
   public joueurs: any;
   public reserve: any;
+  private grille: any;
 
   constructor(private partieService : PartieService) { }
 
@@ -18,8 +19,9 @@ export class PanneauInformatifComponent implements OnInit {
     this.partieService.getPartieByIdJoueur(this.idJoueur).subscribe( data =>{
       this.joueurs = data.joueurs;
       this.reserve = data.reserve;
-      console.log(data);
+
     })
   }
+
 
 }
