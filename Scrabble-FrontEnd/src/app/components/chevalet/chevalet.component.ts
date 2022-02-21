@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {PartieService} from "../../services/partie.service";
 
 @Component({
   selector: 'app-chevalet',
@@ -7,12 +8,36 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChevaletComponent implements OnInit {
   LettreChevalet: String[] | any;
+  private idJoueur: any;
+  private joueurs: any;
+  private reserve: any;
+  private chevalet : any;
 
 
-  constructor() { }
+  constructor(private partieService : PartieService) { }
 
   ngOnInit(): void {
-    this.LettreChevalet = ['J','O','U','E','U','R','S'];
+    this.idJoueur = localStorage.getItem('idJoueur');
+    this.partieService.getPartieByIdJoueur(this.idJoueur).subscribe( data =>{
+      this.joueurs = data.joueurs;
+      this.reserve = data.reserve;
+      for (let i = 0; i < this.joueurs.length; i++) {
+        let Add = this.AddToChevalet(this.joueurs[i].chevalet,this.reserve);
+        this.joueurs.chevalet = Add.chevaletPlayer;
+        this.reserve = Add.ReservePartie;
+      }
+      console.log(this.reserve.length);
+    })
+  }
+  AddToChevalet(chevaletPlayer : String , ReservePartie : String){
+      while (chevaletPlayer.length < 7) {
+        chevaletPlayer += ReservePartie[Math.floor(Math.random() * ReservePartie.length)];
+      }
+    for (let i = 0; i < 7; i++) {
+      let index = ReservePartie.indexOf(chevaletPlayer[i]);
+      ReservePartie = ReservePartie.slice(0, index - 1) + ReservePartie.slice(index, ReservePartie.length);
+    }
+    return { chevaletPlayer, ReservePartie };
   }
   valueLettre(tile: String) {
     let value: number;
