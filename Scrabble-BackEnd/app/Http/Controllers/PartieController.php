@@ -14,6 +14,56 @@ class PartieController extends Controller
     /**
      *
      * @OA\Get(
+     *      path="/v1/partie/joueurs/joueur/{idJoueur}",
+     *      operationId="getJoueursPartieByIdJoueur",
+     *      tags={"partie"},
+     *      summary="retourne les joueurs d'une partie par id Joueur",
+     *
+     *  @OA\Parameter(
+     *      name="idJoueur",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      ),
+     *   ),
+     *    @OA\Response(
+     *          response=200,
+     *          description="Opération réussie",
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="partie inexistant"
+     *   ),
+     *  )
+     */
+    public function getJoueursPartieByIdJoueur($idJoueur)
+    {
+
+        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
+
+        if(empty(json_decode($joueur))){
+            return Response()->json(['message'=>'Joueur inexistant'],404);
+        }
+        $partie2 = Partie::find($joueur->partie);
+        $p = $partie2->joueurs()->where('statutJoueur',1)->get();
+        return new JsonResponse($p);
+    }
+    /**
+     *
+     * @OA\Get(
      *      path="/v1/partie/{idPartie}/joueurs",
      *      operationId="getJoueursByIdPartie",
      *      tags={"partie"},

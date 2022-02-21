@@ -10,6 +10,7 @@ export class PanneauInformatifComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
 }
