@@ -1,0 +1,178 @@
+/*!  Grille */
+.grille{
+    position: absolute;
+    left: 150px;
+    width: 600px;
+    margin: 50px;
+}
+.BoardBlock {
+    background-color: #ffbead;
+    height: 40px;
+    width: 40px;
+    float: left;
+    display: block;
+    -moz-box-shadow: inset 0 3px 5px #acacac;
+    -webkit-box-shadow:inset 0 3px 5px #acacac;
+    box-shadow: inset 0 0 5px #acacac;
+}
+.BoardLetterDL {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #5d94c5;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 5px;
+    margin-left: -7px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterTM {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #f8bdb4;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -10px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterTL {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #c3f5f7;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -7px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterDM {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #b86e74;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -10px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+
+.BoardLetterii {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0.7em solid #fc0;
+    border-left: 0.3em solid transparent;
+    font-size: 16px;
+}
+.BoardLetterii:before, .BoardLetterii:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0.6em;
+    left: -1em;
+    border-right: 1em solid transparent;
+    border-bottom: 0.7em solid #fc0;
+    border-left: 1em solid transparent;
+    transform: rotate(-35deg);
+}
+.BoardLetterii:after {
+    transform: rotate(35deg);
+}
+
+.Lettre {
+    background: #f6e1a6;
+    height: 39px;
+    width: 39px;
+    margin-left: -12px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    -moz-box-shadow:0 3px 5px #000;
+    -webkit-box-shadow:0 3px 5px #000;
+    box-shadow:0 0 1px #000;
+    float: left;
+    text-align: center;
+    border-top-width: 1px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #f8e6b1;
+    border-right-color: #d7c293;
+    border-bottom-color: #cab06b;
+    border-left-color: #f8e6b1;
+    user-select: none;
+}
+.ScrabbleLetter {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 30px;
+    color: #272832;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: -9px;
+    margin-left: -16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+}
+.ScrabbleNumber {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 15px;
+    color: #272832;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: 14px;
+    margin-left: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+}
+.numbers{
+    background-color: #a8b8be;
+    width: 40px;
+    height: 40px;
+    float: left;
+    display: block;
+    font-weight: bold;
+    text-align: center;
+    font-size: 24px;
+    box-shadow: inset 0 0 5px #acacac;
+}
+.alphabets{
+    position: absolute;
+    top: 50px;
+    left: 160px;
+
+}
+.alphabet_Lettre{
+    position:relative;
+    display: block;
+    background-color: #a8b8be;
+    width: 40px;
+    height: 40px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: inset 0 0 5px #acacac;
+}
