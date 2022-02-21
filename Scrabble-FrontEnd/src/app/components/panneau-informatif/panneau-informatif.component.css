@@ -32,12 +32,14 @@
 }
 
 .panneau-informatif .temps {
+  position: absolute;
   padding-left: 4px;
   padding-right: 4px;
   background-color: #D1E7DD;
   border: 2px solid rgba(35, 229, 229, 0.63);
   border-radius: 15px;
   margin-left: 15px;
+  top: 65px;
 }
 
 .panneau-informatif .timeout {

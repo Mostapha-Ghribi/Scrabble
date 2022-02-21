@@ -7,6 +7,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 export class PartieService {
   private getPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueur/";
   private getJoueursByIdPartieAPI = "http://localhost:8000/api/v1/partie/";
+  private getJoueursPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueurs/joueur/";
   constructor(private http: HttpClient) { }
   public getPartieByIdJoueur(id: any) {
     const headers = new HttpHeaders();
@@ -16,5 +17,8 @@ export class PartieService {
   }
   public getJoueursByIdPartie(id :any){
     return this.http.get<any>(this.getJoueursByIdPartieAPI+id+"/joueurs");
+  }
+  public getJoueursPartieByIdJoueur(id :any){
+    return this.http.get<any>(this.getJoueursPartieByIdJoueurAPI+id);
   }
 }
