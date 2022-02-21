@@ -518,7 +518,7 @@ class MessageController extends Controller
 
     }
 
-// verifier si le mot est dans grille est-elle dans le chevalet
+// verifier si le mot est dans grille est-elle dans le chevalet et placer un mot dans la grile
     public function placerMot($ligne, $colonne, $pos, $mot, $grille)
     {
         // retourner le position  du mot dans le tableau (grille sous forme d'un tableau)
@@ -552,12 +552,19 @@ class MessageController extends Controller
                 }
                 return true;
                 break;
-
             case 'h' :
                 for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i = 16) {
                     $motGrille[] = $grille[$i];
                 }
-
+                // placer le mot
+            // TODO verfier si la mot est valide ou non
+                $counter = 0;
+                for ($i = $posMotTableau, $iMax =  strlen($mot); $i <= $iMax; $i=16) {
+                    $grille[$i] = $motGrille[$counter];
+                    $counter++;
+                }
+                return true;
+                break ;
 
         }
     }
