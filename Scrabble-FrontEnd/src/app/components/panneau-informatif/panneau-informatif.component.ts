@@ -9,13 +9,16 @@ import {PartieService} from "../../services/partie.service";
 export class PanneauInformatifComponent implements OnInit {
   private idJoueur: any;
   public joueurs: any;
+  public reserve: any;
 
   constructor(private partieService : PartieService) { }
 
   ngOnInit(): void {
     this.idJoueur = localStorage.getItem('idJoueur');
-    this.partieService.getJoueursPartieByIdJoueur(this.idJoueur).subscribe( data =>{
-      this.joueurs = data;
+    this.partieService.getPartieByIdJoueur(this.idJoueur).subscribe( data =>{
+      this.joueurs = data.joueurs;
+      this.reserve = data.reserve;
+      console.log(data);
     })
   }
 
