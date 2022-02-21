@@ -308,6 +308,8 @@ class MessageController extends Controller
                         // TODO verfier si la chaine est correcte ou non
                         //$this->verifiermotvalide($motAplacer)
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
+                         //$nouvelleCommande = substr($commande, 8, 4);
+
                         if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos
                             && $this->verifierPostionMotValable($lg, $col, $posit, $motAplacer)  ) {
                             //creer le message dans la base de donnes
@@ -338,6 +340,7 @@ class MessageController extends Controller
                         ], 404);
 
                     } else {
+                        //$nouvelleCommande = substr($commande, 8, 4);
                         $ligneCorrecte = in_array($nouvelleCommande[0], $ligneArray, true);
                         $colIsNumber = substr($nouvelleCommande, 1, 2);
                         $coloneCorrecte = is_numeric($colIsNumber) && ((int)$colIsNumber <= 15);
@@ -356,7 +359,7 @@ class MessageController extends Controller
 
                         // TODO verifier si la chaine est correcte ou non
 
-                      $verifierMot=$this->verifierPostionMotValable($nouvelleCommande[0],  $colIsNumber, $nouvelleCommande[2], $mot) ;
+                      $verifierMot=$this->verifierPostionMotValable($nouvelleCommande[0], (int)$colIsNumber, $nouvelleCommande[3], $mot) ;
                         // TODO changer la valeur de statutMessage=false dans la base de donnes
                         if ($ligneCorrecte && $coloneCorrecte && $posCorrecte  && $verifierMot    ) {
 
@@ -383,6 +386,8 @@ class MessageController extends Controller
                             'mot' => "$mot",
                         ], 404);
                     }
+
+
 
 
                     //  ============================================CHANGER LETTRE=======================================================================>
@@ -460,6 +465,10 @@ class MessageController extends Controller
         }
 
     }
+
+
+
+
 
 
     public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
