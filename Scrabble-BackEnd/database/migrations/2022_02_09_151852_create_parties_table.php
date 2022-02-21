@@ -15,8 +15,8 @@ return new class extends Migration {
         Schema::create('parties', function (Blueprint $table) {
             $table->increments("idPartie");
             $table->integer("typePartie");
-            $table->string("reserve", 109)->default("");
-            $table->string("grille", 225)->default("");
+            $table->string("reserve", 102)->default("AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFFGGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRRSSSSSSTTTTTTUUUUUUVVWXYZ**");
+            $table->string("grille", 225)->default("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             $table->integer('nombreJoueurs')->default(1);
             $table->timestamp("dateCreation")->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp("dateDebutPartie")->default(\DB::raw('CURRENT_TIMESTAMP'));

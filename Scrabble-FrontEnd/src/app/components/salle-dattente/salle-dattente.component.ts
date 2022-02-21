@@ -38,19 +38,16 @@ export class SalleDattenteComponent implements OnInit {
      this.time = 6;
      this.isFive = false;
    }
-  // this.interval = setInterval(() => {
        this.time--;
        if(this.time == 0){
          this.router.navigate(['/jeu']);
        }
-  // }, 1000);
  }
   startTimer(time : any) {
     this.time = time;
     console.log("=====>");
     this.interval = setInterval(() => {
       if(this.typePartie == this.joueurs.length){
-       // this.time = 5;
         this.five();
       }else {
           this.time++;
@@ -63,11 +60,7 @@ export class SalleDattenteComponent implements OnInit {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);
   }
-  pauseTimer() {
-    clearInterval(this.interval);
-    //this.time == 5;
 
-  }
 
   constructor(private pusherService : PusherService,private joueurService : JoueurService,private partieService : PartieService,private router: Router) { }
   ngOnInit(): void {

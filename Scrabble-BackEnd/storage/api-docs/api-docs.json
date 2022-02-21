@@ -168,6 +168,42 @@
                 }
             }
         },
+        "/v1/partie/joueurs/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "partie"
+                ],
+                "summary": "retourne les joueurs d'une partie par id Joueur",
+                "operationId": "getJoueursPartieByIdJoueur",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "partie inexistant"
+                    }
+                }
+            }
+        },
         "/v1/partie/{idPartie}/joueurs": {
             "get": {
                 "tags": [
