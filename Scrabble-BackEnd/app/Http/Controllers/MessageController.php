@@ -327,15 +327,16 @@ class MessageController extends Controller
 
                 //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
                 // ? verifier que la longeur du mot <= chevalet
+                // ? verifier que la chaine est alphabetique
 
                 if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer))
-                    || strlen($motAplacer) > strlen($joueur->chevalet)+1) {
+                    || strlen($motAplacer) > strlen($joueur->chevalet) + 1) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
                         'message' => "$joueur->nom  Commande impossible a realiser",
                         'mot' => $motAplacer,
-                        "test"=>strlen($motAplacer) > strlen($joueur->chevalet)
+                        "test" => strlen($motAplacer) > strlen($joueur->chevalet)
                     ], 404);
                 }
 
@@ -382,13 +383,13 @@ class MessageController extends Controller
                 // ? la chaine doit etre alphabetique
                 //? la longeur du mot doit etre <= longeur de chevalet
                 if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot))
-                    || (strlen($mot) > strlen($joueur->chevalet)+1)) {
+                    || (strlen($mot) > strlen($joueur->chevalet) + 1)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
                         'message' => "$joueur->nom  Commande impossible a realiser",
                         'mot' => $mot,
-                        "test"=>strlen($mot) > strlen($joueur->chevalet)
+                        "test" => strlen($mot) > strlen($joueur->chevalet)
                     ], 404);
                 }
                 if (empty($mot)) {
@@ -492,12 +493,30 @@ class MessageController extends Controller
     }
 
 
-    //? fonction retirer lettre de chevalet apres un place avec toutes le verification  neccesaire du chevalet
+    //? fonction retirer lettre de chevalet apres un place avec toutes le verification neccesaire du chevalet
 
-    public function retirerLettresDuChevalet($mot, $chevalet)
+    public function verfierMotDansChevalet($mot, $chevalet)
     {
         // ? verifier que la longeur mot < longeur chevalet
 
+        $chevaletCopie = $chevalet;
+        $x = 0;
+        while ($x < strlen($mot)) {
+            $char = $mot[$x];
+            if (str_contains($chevaletCopie, $char)) {
+                $pos = strpos($chevaletCopie, $char);
+                $chevaletCopie = substr($chevaletCopie, 0, $pos) . substr($chevaletCopie, $pos + 1);
+                $x++;
+            } else {
+                return false;
+            }
+        }
+        // verifier si toute la chaine est minuscule
+        if(!ctype_lower($mot) && !str_contains($chevalet, '*')) {
+            return false;
+        }
+
+        return true;
 
     }
 
