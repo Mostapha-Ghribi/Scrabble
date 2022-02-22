@@ -325,20 +325,12 @@ class MessageController extends Controller
                 //! majuscule. Le mot doit être écrit au complet en y incluant, si nécessaire, les lettres se trouvant
                 //! déjà sur le plateau de jeu
 
-                //? verifier l'inexistance des espace entres les caracteres
-                if (str_contains(trim($motAplacer), ' ')) {
+                //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
+                if (str_contains(trim($motAplacer), ' ') || strlen(trim($motAplacer))<2 ) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
                         'message' => "$joueur->nom  Commande impossible a realiser",
-                        'mot' => $motAplacer,
-                    ], 404);
-                }
-                if ($this->verifierMotContientLettreMajuscule($motAplacer) === false) {
-                    return new JsonResponse([
-                        "nom" => $joueur->nom,
-                        "partie" => $partie->idPartie,
-                        'test' => $this->verifierMotContientLettreMajuscule($motAplacer),
                         'mot' => $motAplacer,
                     ], 404);
                 }
@@ -391,7 +383,6 @@ class MessageController extends Controller
                         'mot' => $mot,
                     ], 404);
                 }
-
 
                 if (empty($mot)) {
                     return new JsonResponse([
