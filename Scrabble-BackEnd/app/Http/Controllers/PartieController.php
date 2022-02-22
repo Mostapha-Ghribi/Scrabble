@@ -194,19 +194,21 @@ class PartieController extends Controller
        // return new JsonResponse(count($p->joueurs));
         for ($i = 0;$i<count($p->joueurs);$i++){
            $idJoueur =  $p->joueurs[$i]->idJoueur;
-            $chevaletJoueur = "";
-            for ($j = 0; $j < 7; $j++) {
-                $chevaletJoueur .= $reserve[rand(0, strlen($reserve) - 1)];
-                $strpos = strpos($reserve, $chevaletJoueur[$j]);
-                $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
-            }
-            //return new JsonResponse(["chevalet" =>$chevaletJoueur , "reserve" => $reserve]);
-             DB::table('joueurs')
-                ->where('idJoueur', $idJoueur)
-                ->update(['chevalet' => $chevaletJoueur]);
-            DB::table('parties')
-                ->where('idPartie', $idPartie)
-                ->update(['reserve' => $reserve]);
+           if(strlen($p->joueurs[$i]->chevalet)==0) {
+               $chevaletJoueur = "";
+               for ($j = 0; $j < 7; $j++) {
+                   $chevaletJoueur .= $reserve[rand(0, strlen($reserve) - 1)];
+                   $strpos = strpos($reserve, $chevaletJoueur[$j]);
+                   $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+               }
+               //return new JsonResponse(["chevalet" =>$chevaletJoueur , "reserve" => $reserve]);
+               DB::table('joueurs')
+                   ->where('idJoueur', $idJoueur)
+                   ->update(['chevalet' => $chevaletJoueur]);
+               DB::table('parties')
+                   ->where('idPartie', $idPartie)
+                   ->update(['reserve' => $reserve]);
+           }
         }
         $partieAfter = Partie::where('idPartie',$idPartie);
         $partieAfter2 = Partie::find($idPartie);
