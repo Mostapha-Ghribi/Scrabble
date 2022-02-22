@@ -329,12 +329,13 @@ class MessageController extends Controller
                 // ? verifier que la longeur du mot <= chevalet
 
                 if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer))
-                    || (strlen($motAplacer) > strlen($joueur->chevalet))) {
+                    || strlen($motAplacer) > strlen($joueur->chevalet)+1) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
                         'message' => "$joueur->nom  Commande impossible a realiser",
                         'mot' => $motAplacer,
+                        "test"=>strlen($motAplacer) > strlen($joueur->chevalet)
                     ], 404);
                 }
 
@@ -380,12 +381,14 @@ class MessageController extends Controller
                 //? verifier l'inexistance des espace entres les caracteres
                 // ? la chaine doit etre alphabetique
                 //? la longeur du mot doit etre <= longeur de chevalet
-                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot)) || strlen($mot) > strlen($joueur->chevalet)) {
+                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot))
+                    || (strlen($mot) > strlen($joueur->chevalet)+1)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
                         'message' => "$joueur->nom  Commande impossible a realiser",
                         'mot' => $mot,
+                        "test"=>strlen($mot) > strlen($joueur->chevalet)
                     ], 404);
                 }
                 if (empty($mot)) {
