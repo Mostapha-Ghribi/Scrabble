@@ -530,12 +530,22 @@ class MessageController extends Controller
 
     public function StringToArray($string)
     {
-        $array = str_split($string);
-        return str_ireplace($array, '-', '');
+        return str_ireplace(str_split($string), '-', '');
     }
 
+//? la chaine contient des -
     public function ArrayToString($array)
     {
+        $chaine = "";
+        for ($i = 0, $iMax = count($array); $i <= $iMax; $i++) {
+            if ($array[$i] === "") {
+                $chaine .= "-";
+            } else {
+                $chaine += $chaine[$i];
+            }
+
+        }
+        return $chaine;
 
     }
 
