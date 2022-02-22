@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {PartieService} from "../../services/partie.service";
+import {Joueur} from "../../model/joueur.model";
+import {JoueurService} from "../../services/joueur.service";
 
 @Component({
   selector: 'app-chevalet',
@@ -6,13 +9,26 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chevalet.component.css']
 })
 export class ChevaletComponent implements OnInit {
-  LettreChevalet: String[] | any;
+  LettreChevalet: any;
+  private idJoueur: any;
 
 
-  constructor() { }
-
+  constructor(private joueurService : JoueurService) { }
   ngOnInit(): void {
-    this.LettreChevalet = ['J','O','U','E','U','R','S'];
+    this.idJoueur = localStorage.getItem('idJoueur');
+    this.joueurService.getJoueur(this.idJoueur).subscribe( data =>{
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet);
+      console.log(this.LettreChevalet);
+    })
+  }
+  ChevaletToArray(grille : any){
+    let Arraygrille = grille.split('');
+    for (let i=0;i<Arraygrille.length;i++){
+      if(Arraygrille[i]=='*'){
+        Arraygrille[i]=" ";
+      }
+    }
+    return Arraygrille;
   }
   valueLettre(tile: String) {
     let value: number;

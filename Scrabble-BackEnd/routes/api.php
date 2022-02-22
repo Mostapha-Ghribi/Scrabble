@@ -23,6 +23,7 @@ Route::controller(PartieController::class)->prefix("v1")->group(static function 
     Route::get("/partie/{idPartie}/joueurs",[PartieController::class ,"getJoueursByIdPartie"]);
     Route::get("/partie/joueur/{idJoueur}",[PartieController::class ,"getPartieByIdJoueur"]);
     Route::get("/partie/joueurs/joueur/{idJoueur}",[PartieController::class ,"getJoueursPartieByIdJoueur"]);
+    Route::get("/addChevalet/partie/{idPartie}",[PartieController::class ,"InitChevaletAndReserve"]);
 });
 
 

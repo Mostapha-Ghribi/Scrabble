@@ -164,7 +164,54 @@ class PartieController extends Controller
         return new JsonResponse($p);
 
     }
-
-
-
+    /**
+     *
+     * @OA\Get(
+     * tags={"partie"},
+     * path="/v1/addChevalet/partie/{idPartie}",
+     * summary="//TODO",
+     * @OA\Response(
+     *    response="422",
+     *    description="L'un des champs est invalide",
+     *    ),
+     *   @OA\Parameter(
+     *      name="idPartie",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      ),
+     *   ),
+     * )
+     */
+    public function InitChevaletAndReserve($idPartie)
+    {
+        $partie = Partie::where('idPartie',$idPartie);
+        $partie2 = Partie::find($idPartie);
+        $p = $partie->first();
+        $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $reserve = $p->reserve;
+       // return new JsonResponse(count($p->joueurs));
+        for ($i = 0;$i<count($p->joueurs);$i++){
+           $idJoueur =  $p->joueurs[$i]->idJoueur;
+            $chevaletJoueur = "";
+            for ($j = 0; $j < 7; $j++) {
+                $chevaletJoueur .= $reserve[rand(0, strlen($reserve) - 1)];
+                $strpos = strpos($reserve, $chevaletJoueur[$j]);
+                $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+            }
+            //return new JsonResponse(["chevalet" =>$chevaletJoueur , "reserve" => $reserve]);
+             DB::table('joueurs')
+                ->where('idJoueur', $idJoueur)
+                ->update(['chevalet' => $chevaletJoueur]);
+            DB::table('parties')
+                ->where('idPartie', $idPartie)
+                ->update(['reserve' => $reserve]);
+        }
+        $partieAfter = Partie::where('idPartie',$idPartie);
+        $partieAfter2 = Partie::find($idPartie);
+        $pAfter = $partieAfter->first();
+        $pAfter->joueurs = $partieAfter2->joueurs()->where('statutJoueur',1)->get();
+        return new JsonResponse($pAfter);
+    }
 }

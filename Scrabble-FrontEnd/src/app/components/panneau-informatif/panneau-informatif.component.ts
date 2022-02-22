@@ -10,7 +10,6 @@ export class PanneauInformatifComponent implements OnInit {
   private idJoueur: any;
   public joueurs: any;
   public reserve: any;
-  private grille: any;
 
   constructor(private partieService : PartieService) { }
 
