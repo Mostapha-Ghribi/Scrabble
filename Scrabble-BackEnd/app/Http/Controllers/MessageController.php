@@ -498,11 +498,13 @@ class MessageController extends Controller
     public function verfierMotDansChevalet($mot, $chevalet)
     {
         // ? verifier que la longeur mot < longeur chevalet
-
         $chevaletCopie = $chevalet;
         $x = 0;
         while ($x < strlen($mot)) {
             $char = $mot[$x];
+            if (ctype_upper($char)) {
+                $char = '*';
+            }
             if (str_contains($chevaletCopie, $char)) {
                 $pos = strpos($chevaletCopie, $char);
                 $chevaletCopie = substr($chevaletCopie, 0, $pos) . substr($chevaletCopie, $pos + 1);
@@ -511,13 +513,7 @@ class MessageController extends Controller
                 return false;
             }
         }
-        // verifier si toute la chaine est minuscule
-        if(!ctype_lower($mot) && !str_contains($chevalet, '*')) {
-            return false;
-        }
-
         return true;
-
     }
 
 
