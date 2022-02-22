@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMessageRequest;
-use App\Http\Resources\MessageResource;
+
 use App\Models\Joueur;
 use App\Models\Message;
 
@@ -279,7 +278,6 @@ class MessageController extends Controller
                 "partie" => $partie->idPartie,
                 'message' => "$joueur->nom vous n'êtes pas autorisée a envoyer des message dans cette partie",
             ], 404);
-
         }
         //? verifier les champs qui doivent etre obligatoire
         if (!$request->has("contenu") || !$request->has("envoyeur") || !$request->has("partie")) {
@@ -320,9 +318,15 @@ class MessageController extends Controller
                 //? recuperer le mot a remplacer
                 $motAplacer = substr($commande, 11, strlen($commande));
 
-                //! sauf lorsqu’il s’agit d’une lettre blanche, qui elle, doit être entrée en
-                //! majuscule. Le mot doit être écrit au complet en y incluant, si nécessaire, les lettres se trouvant
-                //! déjà sur le plateau de jeu
+                // ? verifier si les lettres sont inclus dans le chevalet du joueur
+                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet))===false) {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom  Commande impossible a realiser",
+                        'mot' => $motAplacer,
+                    ], 404);
+                }
 
                 //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
                 // ? verifier que la longeur du mot <= chevalet
@@ -338,6 +342,7 @@ class MessageController extends Controller
                     ], 404);
                 }
 
+
                 //? verifier l'existance des condition
                 if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos
                     && $this->verifierPostionMotValable($lg, $col, $posit, $motAplacer) && $this->verfierMotFranacaisValide(trim($motAplacer))) {
@@ -350,7 +355,7 @@ class MessageController extends Controller
                     $message->save();
                     // ? retourner les information de placement de lettres
                     // TODO verfier si la mot est valable dans  le chevalet placer le mot
-                    // verfierMotDansChevalet($mot, $chevalet)
+                    // $this->verfierMotDansChevalet($motAplacer, $joueur->chevalet);
 
 
                     return new JsonResponse([
@@ -380,6 +385,16 @@ class MessageController extends Controller
                 //? verifier si la chaine est inexistante
                 $mot = substr($commande, 12);
 
+                // ? verifier si les lettres sont (inclus) dans le chevalet du joueur
+                if ($this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet))===false) {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom  Commande impossible a realiser",
+                        'mot' => $mot,
+                    ], 404);
+                }
+
                 //? verifier l'inexistance des espace entres les caracteres
                 // ? la chaine doit etre alphabetique
                 //? la longeur du mot doit etre <= longeur de chevalet
@@ -405,7 +420,6 @@ class MessageController extends Controller
                 $verifierMot = $this->verifierPostionMotValable($nouvelleCommande[0], (int)$colIsNumber, $nouvelleCommande[3], $mot);
                 // ? tester l'existance des conditions
                 if ($ligneCorrecte && $coloneCorrecte && $posCorrecte && $verifierMot && $this->verfierMotFranacaisValide(trim($mot))) {
-
 
                     // TODO verfier si la mot est valable dans  le chevalet placer le mot
                     // verfierMotDansChevalet($mot, $chevalet)
@@ -499,7 +513,7 @@ class MessageController extends Controller
     }
 
 
-    //? fonction retirer lettre de chevalet apres un place avec toutes le verification neccesaire du chevalet
+    //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
     public function verfierMotDansChevalet($mot, $chevalet)
     {
         // ? verifier que la longeur mot < longeur chevalet
@@ -522,8 +536,7 @@ class MessageController extends Controller
     }
 
 
-//? verifier si un mot contient un  caractere Majuscule
-
+//? verifier si un mot contient un caractere Majuscule
     public function verifierMotContientLettreMajuscule($mot): bool
     {
         // ? verfier si toute la chaine est en Minuscule
@@ -535,7 +548,6 @@ class MessageController extends Controller
         return false;
     }
 
-
     public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
     {
         // g15v bonjour
@@ -546,7 +558,6 @@ class MessageController extends Controller
         }
         $limiteColonne = 16 - $colonne;
         return ($limiteColonne >= $longeurchaine);
-
     }
 
 
