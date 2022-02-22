@@ -375,7 +375,7 @@ class MessageController extends Controller
                 $mot = substr($commande, 12);
 
                 //? verifier l'inexistance des espace entres les caracteres
-                if (str_contains(trim($mot), ' ')) {
+                if (str_contains(trim($mot), ' ') || strlen(trim($mot))<2) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
