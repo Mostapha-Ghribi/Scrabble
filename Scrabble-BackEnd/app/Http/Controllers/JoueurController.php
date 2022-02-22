@@ -14,8 +14,6 @@ use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
-
-
 class JoueurController extends Controller
 {
 
@@ -59,7 +57,7 @@ class JoueurController extends Controller
      */
     public function getJoueur($idJoueur)
     {
-        $joueur = Joueur::find($idJoueur)->first();
+        $joueur = Joueur::where(['idJoueur'=>$idJoueur])->first();
         if (!empty(json_decode($joueur))) {
             return new JsonResponse($joueur);
         }
