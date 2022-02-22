@@ -10,6 +10,7 @@ export class JoueurService {
 
   private InscriptionAPI = "http://localhost:8000/api/v1/inscrire";
   private quitGameAPI = "http://localhost:8000/api/v1/quitter/joueur/";
+  private getJoueurAPI = "http://localhost:8000/api/v1/joueur/";
   public messageError: any;
   public isError: any = false;
 
@@ -18,6 +19,9 @@ export class JoueurService {
   constructor(private http: HttpClient, private router :Router) { }
   public addPlayer(joueur: any) {
     return this.http.post<any>(this.InscriptionAPI, joueur);
+  }
+  public getJoueur(id: any) {
+    return this.http.get<any>(this.getJoueurAPI+id);
   }
   public quitGame(id: any) {
     const headers = new HttpHeaders();

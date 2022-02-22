@@ -59,7 +59,7 @@ class JoueurController extends Controller
      */
     public function getJoueur($idJoueur)
     {
-        $joueur = DB::table('joueurs')->where('idJoueur', "=", $idJoueur)->get();
+        $joueur = Joueur::find($idJoueur)->first();
         if (!empty(json_decode($joueur))) {
             return new JsonResponse($joueur);
         }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PartieService} from "../../services/partie.service";
+import {Joueur} from "../../model/joueur.model";
+import {JoueurService} from "../../services/joueur.service";
 
 @Component({
   selector: 'app-chevalet',
@@ -7,37 +9,26 @@ import {PartieService} from "../../services/partie.service";
   styleUrls: ['./chevalet.component.css']
 })
 export class ChevaletComponent implements OnInit {
-  LettreChevalet: String[] | any;
+  LettreChevalet: any;
   private idJoueur: any;
-  private joueurs: any;
-  private reserve: any;
-  private chevalet : any;
 
 
-  constructor(private partieService : PartieService) { }
-
+  constructor(private joueurService : JoueurService) { }
   ngOnInit(): void {
     this.idJoueur = localStorage.getItem('idJoueur');
-    this.partieService.getPartieByIdJoueur(this.idJoueur).subscribe( data =>{
-      this.joueurs = data.joueurs;
-      this.reserve = data.reserve;
-      for (let i = 0; i < this.joueurs.length; i++) {
-        let Add = this.AddToChevalet(this.joueurs[i].chevalet,this.reserve);
-        this.joueurs.chevalet = Add.chevaletPlayer;
-        this.reserve = Add.ReservePartie;
-      }
-      console.log(this.reserve.length);
+    this.joueurService.getJoueur(this.idJoueur).subscribe( data =>{
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet);
+      console.log(this.LettreChevalet);
     })
   }
-  AddToChevalet(chevaletPlayer : String , ReservePartie : String){
-      while (chevaletPlayer.length < 7) {
-        chevaletPlayer += ReservePartie[Math.floor(Math.random() * ReservePartie.length)];
+  ChevaletToArray(grille : any){
+    let Arraygrille = grille.split('');
+    for (let i=0;i<Arraygrille.length;i++){
+      if(Arraygrille[i]=='*'){
+        Arraygrille[i]=" ";
       }
-    for (let i = 0; i < 7; i++) {
-      let index = ReservePartie.indexOf(chevaletPlayer[i]);
-      ReservePartie = ReservePartie.slice(0, index - 1) + ReservePartie.slice(index, ReservePartie.length);
     }
-    return { chevaletPlayer, ReservePartie };
+    return Arraygrille;
   }
   valueLettre(tile: String) {
     let value: number;
