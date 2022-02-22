@@ -300,9 +300,8 @@ class MessageController extends Controller
         $commandePasser = substr($commande, 1, 7);
         $commandeAider = substr($commande, 1, 5);
         if ($commandePlacer === "placer") {
-            //! sauf lorsqu’il s’agit d’une lettre blanche, qui elle, doit être entrée en
-            //! majuscule. Le mot doit être écrit au complet en y incluant, si nécessaire, les lettres se trouvant
-            //! déjà sur le plateau de jeu
+
+
             //? nouvelle commande contiennent par EXEMPLE g15v
             $nouvelleCommande = substr($commande, 8, 4);
             //? verifier si la longeur de la chaine est égale a 3 exemples g5v
@@ -321,6 +320,28 @@ class MessageController extends Controller
                 $pos = in_array($nouvelleCommande[2], $posArray);
                 //? recuperer le mot a remplacer
                 $motAplacer = substr($commande, 11, strlen($commande));
+
+                //! sauf lorsqu’il s’agit d’une lettre blanche, qui elle, doit être entrée en
+                //! majuscule. Le mot doit être écrit au complet en y incluant, si nécessaire, les lettres se trouvant
+                //! déjà sur le plateau de jeu
+
+                //? verifier l'inexistance des espace entres les caracteres
+                if (str_contains(trim($motAplacer), ' ')) {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom  Commande impossible a realiser",
+                        'mot' => $motAplacer,
+                    ], 404);
+                }
+                if ($this->verifierMotContientLettreMajuscule($motAplacer) === false) {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'test' => $this->verifierMotContientLettreMajuscule($motAplacer),
+                        'mot' => $motAplacer,
+                    ], 404);
+                }
 
                 //? verifier l'existance des condition
                 if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos
@@ -360,6 +381,18 @@ class MessageController extends Controller
                 $posCorrecte = in_array($nouvelleCommande[3], $posArray, true);
                 //? verifier si la chaine est inexistante
                 $mot = substr($commande, 12);
+
+                //? verifier l'inexistance des espace entres les caracteres
+                if (str_contains(trim($mot), ' ')) {
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom  Commande impossible a realiser",
+                        'mot' => $mot,
+                    ], 404);
+                }
+
+
                 if (empty($mot)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
@@ -458,6 +491,29 @@ class MessageController extends Controller
         }
 
 
+    }
+
+
+    //? fonction retirer lettre de chevalet apres un placement
+
+    public function retirerLettresDuChevalet($mot, $chevalet)
+    {
+
+
+    }
+
+
+//? verifier si un mot contient un  caractere Majusculet et verfier l'existance de ce caractere dans le chevalet
+
+    public function verifierMotContientLettreMajuscule($mot): bool
+    {
+        // ? verfier si toute la chaine est en Minuscule
+        $mot = trim($mot);
+        $chaineMinuscule = ctype_lower($mot);
+        if ($chaineMinuscule) {
+            return true;
+        }
+        return false;
     }
 
 
