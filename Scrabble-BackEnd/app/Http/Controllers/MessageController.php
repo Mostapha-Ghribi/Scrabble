@@ -326,7 +326,7 @@ class MessageController extends Controller
                 //! déjà sur le plateau de jeu
 
                 //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
-                if (str_contains(trim($motAplacer), ' ') || strlen(trim($motAplacer))<2 ) {
+                if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer)) ){
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -375,7 +375,7 @@ class MessageController extends Controller
                 $mot = substr($commande, 12);
 
                 //? verifier l'inexistance des espace entres les caracteres
-                if (str_contains(trim($mot), ' ') || strlen(trim($mot))<2) {
+                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot))  ) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -485,16 +485,18 @@ class MessageController extends Controller
     }
 
 
-    //? fonction retirer lettre de chevalet apres un placement
+    //? fonction retirer lettre de chevalet apres un place avec toutes le verification  neccesaire du chevalet
 
     public function retirerLettresDuChevalet($mot, $chevalet)
     {
 
 
+
+
     }
 
 
-//? verifier si un mot contient un  caractere Majusculet et verfier l'existance de ce caractere dans le chevalet
+//? verifier si un mot contient un  caractere Majuscule
 
     public function verifierMotContientLettreMajuscule($mot): bool
     {
