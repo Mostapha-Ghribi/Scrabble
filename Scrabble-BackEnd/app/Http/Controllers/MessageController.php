@@ -314,7 +314,7 @@ class MessageController extends Controller
                 $ligneCommande = in_array($lg, $ligneArray);
                 //? verifier si la colonne est correcte => retourne boolean
                 $colonneisNumber = is_numeric($nouvelleCommande[1]);
-                //? verifier si la colonne est un numero valid
+                //? verifier si la colonne est un numero valide
                 $colonneisNumberValid = (((int)$nouvelleCommande[1]) <= 9) && ((int)$nouvelleCommande[1] >= 1);
                 //? verifier si la position est correcte => retourne boolean
                 $pos = in_array($nouvelleCommande[2], $posArray);
@@ -326,7 +326,10 @@ class MessageController extends Controller
                 //! déjà sur le plateau de jeu
 
                 //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
-                if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer)) ){
+                // ? verifier que la longeur du mot <= chevalet
+
+                if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer))
+                    || (strlen($motAplacer) > strlen($joueur->chevalet))) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -375,7 +378,9 @@ class MessageController extends Controller
                 $mot = substr($commande, 12);
 
                 //? verifier l'inexistance des espace entres les caracteres
-                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot))  ) {
+                // ? la chaine doit etre alphabetique
+                //? la longeur du mot doit etre <= longeur de chevalet
+                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot)) || strlen($mot) > strlen($joueur->chevalet)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -383,7 +388,6 @@ class MessageController extends Controller
                         'mot' => $mot,
                     ], 404);
                 }
-
                 if (empty($mot)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
@@ -489,8 +493,7 @@ class MessageController extends Controller
 
     public function retirerLettresDuChevalet($mot, $chevalet)
     {
-
-
+        // ? verifier que la longeur mot < longeur chevalet
 
 
     }
