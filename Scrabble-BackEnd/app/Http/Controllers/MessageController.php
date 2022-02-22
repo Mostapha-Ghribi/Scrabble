@@ -319,7 +319,7 @@ class MessageController extends Controller
                 $motAplacer = substr($commande, 11, strlen($commande));
 
                 // ? verifier si les lettres sont inclus dans le chevalet du joueur
-                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet))===false) {
+                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet)) === false) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -386,7 +386,7 @@ class MessageController extends Controller
                 $mot = substr($commande, 12);
 
                 // ? verifier si les lettres sont (inclus) dans le chevalet du joueur
-                if ($this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet))===false) {
+                if ($this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet)) === false) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -508,10 +508,7 @@ class MessageController extends Controller
                 'message' => "$joueur->nom fait une commande impossible à realiser",
             ], 404);
         }
-
-
     }
-
 
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
     public function verfierMotDansChevalet($mot, $chevalet)
@@ -559,6 +556,7 @@ class MessageController extends Controller
         $limiteColonne = 16 - $colonne;
         return ($limiteColonne >= $longeurchaine);
     }
+
 
 
     // verifier si le mot est dans grille est-elle dans le chevalet et placer un mot dans la grille
