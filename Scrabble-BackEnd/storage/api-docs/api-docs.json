@@ -275,6 +275,30 @@
                     }
                 }
             }
+        },
+        "/v1/addChevalet/partie/{idPartie}": {
+            "get": {
+                "tags": [
+                    "partie"
+                ],
+                "summary": "//TODO",
+                "operationId": "f8434933a22cbddd915f696e8092c7dd",
+                "parameters": [
+                    {
+                        "name": "idPartie",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "422": {
+                        "description": "L'un des champs est invalide"
+                    }
+                }
+            }
         }
     },
     "components": {

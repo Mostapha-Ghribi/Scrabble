@@ -41,6 +41,11 @@ export class SalleDattenteComponent implements OnInit {
        this.time--;
        if(this.time == 0){
          this.router.navigate(['/jeu']);
+         this.partieService.InitChevaletAndReserve(this.idPartie).subscribe(res=>{
+           console.log(res);
+         },err =>{
+           console.log(err)
+         })
        }
  }
   startTimer(time : any) {

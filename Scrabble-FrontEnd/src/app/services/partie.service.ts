@@ -8,6 +8,7 @@ export class PartieService {
   private getPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueur/";
   private getJoueursByIdPartieAPI = "http://localhost:8000/api/v1/partie/";
   private getJoueursPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueurs/joueur/";
+  private InitChevaletAndReserveAPI = "http://localhost:8000/api/v1/addChevalet/partie/";
   constructor(private http: HttpClient) { }
   public getPartieByIdJoueur(id: any) {
     const headers = new HttpHeaders();
@@ -20,6 +21,9 @@ export class PartieService {
   }
   public getJoueursPartieByIdJoueur(id :any){
     return this.http.get<any>(this.getJoueursPartieByIdJoueurAPI+id);
+  }
+  public InitChevaletAndReserve(id :any){
+    return this.http.get<any>(this.InitChevaletAndReserveAPI+id);
   }
   StringToArray(grille : any){
     let Arraygrille = grille.split('');
