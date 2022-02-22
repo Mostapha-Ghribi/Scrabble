@@ -301,7 +301,6 @@ class MessageController extends Controller
         $commandeAider = substr($commande, 1, 5);
         if ($commandePlacer === "placer") {
 
-
             //? nouvelle commande contiennent par EXEMPLE g15v
             $nouvelleCommande = substr($commande, 8, 4);
             //? verifier si la longeur de la chaine est égale a 3 exemples g5v
@@ -328,7 +327,6 @@ class MessageController extends Controller
                 //? verifier l'inexistance des espace entres les caracteres et la chaine doit contenir au moins deux caracteres
                 // ? verifier que la longeur du mot <= chevalet
                 // ? verifier que la chaine est alphabetique
-
                 if (str_contains(trim($motAplacer), ' ') || (strlen(trim($motAplacer)) < 2) || !ctype_alpha(trim($motAplacer))
                     || strlen($motAplacer) > strlen($joueur->chevalet) + 1) {
                     return new JsonResponse([
@@ -351,7 +349,10 @@ class MessageController extends Controller
                     $message->statutMessage = 0;
                     $message->save();
                     // ? retourner les information de placement de lettres
-                    // TODO placer le mot
+                    // TODO verfier si la mot est valable dans  le chevalet placer le mot
+                    // verfierMotDansChevalet($mot, $chevalet)
+
+
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -404,7 +405,12 @@ class MessageController extends Controller
                 $verifierMot = $this->verifierPostionMotValable($nouvelleCommande[0], (int)$colIsNumber, $nouvelleCommande[3], $mot);
                 // ? tester l'existance des conditions
                 if ($ligneCorrecte && $coloneCorrecte && $posCorrecte && $verifierMot && $this->verfierMotFranacaisValide(trim($mot))) {
-                    // ?  creer un message dans la base de donnes
+
+
+                    // TODO verfier si la mot est valable dans  le chevalet placer le mot
+                    // verfierMotDansChevalet($mot, $chevalet)
+
+                    // ? creer un message dans la base de donnes
                     $message = new Message;
                     $message->contenu = $request->contenu;
                     $message->envoyeur = $request->envoyeur;
@@ -494,7 +500,6 @@ class MessageController extends Controller
 
 
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification neccesaire du chevalet
-
     public function verfierMotDansChevalet($mot, $chevalet)
     {
         // ? verifier que la longeur mot < longeur chevalet
