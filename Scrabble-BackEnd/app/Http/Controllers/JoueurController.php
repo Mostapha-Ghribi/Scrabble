@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\InscriptionJoueur;
 use App\Events\getJoueurs;
 use App\Events\quitJoueur;
+use App\Events\quitJoueurPartie;
 use App\Http\Requests\JoueurRequest;
 use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
@@ -14,8 +15,6 @@ use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
-
-
 class JoueurController extends Controller
 {
 
@@ -59,7 +58,7 @@ class JoueurController extends Controller
      */
     public function getJoueur($idJoueur)
     {
-        $joueur = Joueur::find($idJoueur)->first();
+        $joueur = Joueur::where(['idJoueur'=>$idJoueur])->first();
         if (!empty(json_decode($joueur))) {
             return new JsonResponse($joueur);
         }
@@ -285,6 +284,64 @@ class JoueurController extends Controller
             $partieToJoin->update(['statutPartie'=>'EnCours']);
         }
         $partieToJoin->increment('nombreJoueurs');
+    }
+    /**
+     *
+     * @OA\Get(
+     *      path="/v1/quitter/partie/joueur/{idJoueur}",
+     *      operationId="quitPlayerPartie",
+     *      tags={"joueur"},
+     *      summary="quit game",
+     *
+     *  @OA\Parameter(
+     *      name="idJoueur",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      ),
+     *   ),
+     *    @OA\Response(
+     *          response=200,
+     *          description="Opération réussie",
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     * @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     * @OA\Response(
+     *      response=404,
+     *      description="joueur inexistant"
+     *   ),
+     *  )
+     */
+    public function quitPlayerPartie($idJoueur)
+    {
+        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
+        if(empty($joueur)){
+            return new JsonResponse(["message" => "joueur n'existe pas"],404);
+        }
+        if($joueur->statutJoueur == 0){
+            return new JsonResponse(["message" => "le joueur n'est pas déjà en jeu"],404);
+        }
+        $chevalet = $joueur->chevalet;
+        $partie = Partie::where('idPartie',$joueur->partie)->first();
+        $joueur->decrement('statutJoueur');
+        $reserve = $partie->reserve.$chevalet;
+        DB::table('parties')
+            ->where('idPartie', $joueur->partie)
+            ->update(['reserve' => $reserve]);
+        event(new quitJoueurPartie());
+        $partie2 = Partie::where('idPartie',$joueur->partie)->first();
+        return new JsonResponse($partie2);
     }
 
 
