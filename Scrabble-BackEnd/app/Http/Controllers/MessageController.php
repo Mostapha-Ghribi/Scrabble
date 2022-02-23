@@ -453,10 +453,10 @@ class MessageController extends Controller
         } elseif ($commandeChanger === "changer") {
             // changer des lettre exemple !changer mw*
             $LettreChanger = substr($commande, 8, strlen($commande));
-            if (!empty($LettreChanger)) {
-                // TODO lettre alphabetiue et  le contiennet *
-                // TODO verifier si les lettres sont inclus dans le chavalet du joueur
-                // return new JsonResponse(['Les lettres a echanger' => $LettreChanger], 200);
+            if ($this->changerlettres($LettreChanger, $joueur->chevalet)) {
+                // TODO lettre alphabétique et  le contient *
+                // TODO verifier si les lettres sont inclus dans le chevalet du joueur
+
                 $message = new Message;
                 $message->contenu = $request->contenu;
                 $message->envoyeur = $request->envoyeur;
@@ -475,7 +475,7 @@ class MessageController extends Controller
             return new JsonResponse([
                 "nom" => $joueur->nom,
                 "partie" => $partie->idPartie,
-                'message' => "$joueur->nom Erreur de syntaxe ",
+                'message' => "$joueur->nom commande impossible à realiser",
                 'mot' => "$LettreChanger",
             ], 404);
             //  ============================================AIDER=======================================================================>
@@ -512,15 +512,29 @@ class MessageController extends Controller
 
 
     //? changer lettres
-    public  function changerlettres($lettre,$chevalet) {
-        $lettres =trim($lettre)  ;
-   if (ctype_upper($lettres)) {
-       return false ;
-   }
+    public function changerlettres($lettre, $chevalet)
+    {
+        $lettres = trim($lettre);
+        // ?  La longeur de la chaine doit etre 1 ou 7 lettre au  maximum  et les lettres doivent etre minuscule
+        if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7) {
+            return false;
+        }
+        //?  verfier si lechavalet contient des lettres  blanche *
+        if (str_contains($lettres, "*") && !str_contains($chevalet, "*")) {
+            return false;
+        }
 
+        // ? verifier l'existance des lettres dans le chevalet
+        $valid = true;
+        for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
+            if (str_contains($chevalet, $lettres[$i]) === false) {
+                $valid = false;
+                return false;
 
+            }
 
-
+        }
+        return true;
 
     }
 
@@ -529,7 +543,7 @@ class MessageController extends Controller
 
 
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
-               // ! les parametres ,$grille,$ligne,$colonne,$pos
+    // ! les parametres ,$grille,$ligne,$colonne,$pos
     public function verfierMotDansChevalet($mot, $chevalet)
     {
 
@@ -631,55 +645,55 @@ class MessageController extends Controller
 
 
     // verifier si le mot est dans grille est-elle dans le chevalet et placer un mot dans la grille
-   /* public function placerMot($ligne, $colonne, $pos, $mot, $grille)
-    {
-        $tabMot = str_split($mot);
-        //? convertir la grille en d'une chaine vers un tableau
-        $grillTab = $this->StringToArray($grille);
-        //? retourner la position du mot dans le tableau (grille sous forme d'un tableau)
-        $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
-        //? tableau de lettres dans la position de la grille
-        $motGrille = [];
-        switch ($pos) {
-            case 'v' :
-                for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
-                    $motGrille[$i] = $grillTab[$i];
-                }
-                //? verifier si le mot dans la grille est disponible dans le mot actuel
-                // ? convertir la chaine de grille
-                // ? verifier si la chaine a placer contient les lettres de la chaine de grille (cas a completer)
-                // ? placer le mot
-                $counter = 0;
-                for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
-                    $grillTab[$i] = $motGrille[$counter];
-                    $counter++;
-                }
-                return true;
-                break;
-            case 'h' :
-                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                    $motGrille[$i] = $grillTab[$i];
-                }
-                if (emptyArray(implode($motGrille))) {
-                    // si la position de mot dans la grille est vide on la place
-                    $counter = 0;
-                    for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                        $grillTab[$i] = $motGrille[$counter];
-                        $counter++;
-                    }
-                    return true;
-                }
-                $counter = 0;
-                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                    $grillTab[$i] = $motGrille[$counter];
-                    $counter++;
-                }
-                return true;
-                break;
+    /* public function placerMot($ligne, $colonne, $pos, $mot, $grille)
+     {
+         $tabMot = str_split($mot);
+         //? convertir la grille en d'une chaine vers un tableau
+         $grillTab = $this->StringToArray($grille);
+         //? retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+         $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+         //? tableau de lettres dans la position de la grille
+         $motGrille = [];
+         switch ($pos) {
+             case 'v' :
+                 for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
+                     $motGrille[$i] = $grillTab[$i];
+                 }
+                 //? verifier si le mot dans la grille est disponible dans le mot actuel
+                 // ? convertir la chaine de grille
+                 // ? verifier si la chaine a placer contient les lettres de la chaine de grille (cas a completer)
+                 // ? placer le mot
+                 $counter = 0;
+                 for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
+                     $grillTab[$i] = $motGrille[$counter];
+                     $counter++;
+                 }
+                 return true;
+                 break;
+             case 'h' :
+                 for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                     $motGrille[$i] = $grillTab[$i];
+                 }
+                 if (emptyArray(implode($motGrille))) {
+                     // si la position de mot dans la grille est vide on la place
+                     $counter = 0;
+                     for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                         $grillTab[$i] = $motGrille[$counter];
+                         $counter++;
+                     }
+                     return true;
+                 }
+                 $counter = 0;
+                 for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                     $grillTab[$i] = $motGrille[$counter];
+                     $counter++;
+                 }
+                 return true;
+                 break;
 
 
-        }
-    }*/
+         }
+     }*/
 
 
     public function verfierMotFranacaisValide($mot)
