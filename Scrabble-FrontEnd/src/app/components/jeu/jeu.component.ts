@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {JoueurService} from "../../services/joueur.service";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
@@ -15,36 +15,44 @@ export class JeuComponent implements OnInit {
   public reserve: any;
   private idPartie: any;
   public LettreChevalet: any;
+  public reserveLength: any;
+  @ViewChild('message') searchElement: ElementRef | undefined;
   @HostListener('window:keydown.escape', ['$event'])
-  //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     this.quitGamePartie();
+  }
+  @HostListener('window:keydown.tab') hasPressed() {
+    // @ts-ignore
+    this.searchElement.nativeElement.focus();
   }
   tiles: [] | undefined;
 
   constructor(private joueurService : JoueurService,private router : Router,private pusherService : PusherService, private partieService : PartieService) { }
 
   ngOnInit(): void {
+   // console.log(this.input.nativeElement.value);
     this.id = localStorage.getItem('idJoueur');
     this.pusherService.channel.bind("getJoueurs", (data: any)=> {
       this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-        console.log(data);
+        //console.log(data);
         this.joueurs = data.joueurs;
-        this.reserve = data.reserve;
+        this.reserve = data.reserve.length;
       })
     });
     this.pusherService.channel.bind("quitJoueurPartie");
     this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-      console.log(data);
+      //console.log(data);
       this.joueurs = data.joueurs;
-      this.reserve = data.reserve;
+      this.reserve = data.reserve.length;
 
     })
+    //this.pusherService.channel.unbind("getJoueurs");
     // @ts-ignore
-    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","B","O","N","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
     this.joueurService.getJoueur(this.id).subscribe( data =>{
       this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
     })
+
   }
   quitGamePartie(){
     this.joueurService.quitGamePartie(this.id).subscribe(
@@ -112,7 +120,7 @@ export class JeuComponent implements OnInit {
         break;
       case "F":
       case "H":
-      case "v":
+      case "V":
         value = 4;
         break;
       case "J":

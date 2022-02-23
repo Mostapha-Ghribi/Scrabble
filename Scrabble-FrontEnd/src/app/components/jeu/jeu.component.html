@@ -50,7 +50,7 @@
         <div class="image-reserve">
             <img src="assets/images/reserve.png" width="40" height="40" class="rounded-circle" alt="image">
         </div>
-        <p class="nombre-reserve">Nombre de lettres dans la reserve <i class="nombre-lettre-reserve">{{reserve.length}}</i> </p>
+        <p class="nombre-reserve">Nombre de lettres dans la reserve  <span class="nombre-lettre-reserve">{{reserve}}</span>  </p>
     </div>
     <br>
 </div>
@@ -60,20 +60,20 @@
     <div class="column justify-content-center">
         <div class="mb-6">
       <textarea class="form-control message" id="exampleFormControlTextarea1" rows="3" cols="50" readonly>
-       haithem :  bonjour
+        haithem :  bonjour
         haithem : a fait une erreur
         le tour de mostapha
       </textarea>
         </div>
         <br>
         <div class="mb-6">
-            <input type="text" class="form-control form-control-sm" name="message"
+            <input type="text" class="form-control form-control-sm" name="message" #message
                    placeholder="Entrer une commande ou un message">
         </div>
         <br>
     </div>
 </div>
-<br><br>
+
 <div class="Chevalet">
     <div class="LettreChevalet" *ngFor="let lettre of LettreChevalet">
         <span class="ScrabbleLetter">{{lettre}}</span>
@@ -81,8 +81,6 @@
     </div>
 </div>
 
-
-<app-chevalet></app-chevalet>
 </body>
 </html>
 
