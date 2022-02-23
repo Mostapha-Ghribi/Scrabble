@@ -54,8 +54,34 @@
     </div>
     <br>
 </div>
+<br>
+<div class="container boite-communication">
 
-<app-boite-communication></app-boite-communication>
+    <div class="column justify-content-center">
+        <div class="mb-6">
+      <textarea class="form-control message" id="exampleFormControlTextarea1" rows="3" cols="50" readonly>
+       haithem :  bonjour
+        haithem : a fait une erreur
+        le tour de mostapha
+      </textarea>
+        </div>
+        <br>
+        <div class="mb-6">
+            <input type="text" class="form-control form-control-sm" name="message"
+                   placeholder="Entrer une commande ou un message">
+        </div>
+        <br>
+    </div>
+</div>
+<br><br>
+<div class="Chevalet">
+    <div class="LettreChevalet" *ngFor="let lettre of LettreChevalet">
+        <span class="ScrabbleLetter">{{lettre}}</span>
+        <span class="ScrabbleNumber">{{this.valueLettre(lettre)}}</span>
+    </div>
+</div>
+
+
 <app-chevalet></app-chevalet>
 </body>
 </html>

@@ -14,6 +14,7 @@ export class JeuComponent implements OnInit {
   public joueurs: any;
   public reserve: any;
   private idPartie: any;
+  public LettreChevalet: any;
   @HostListener('window:keydown.escape', ['$event'])
   //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -41,7 +42,9 @@ export class JeuComponent implements OnInit {
     })
     // @ts-ignore
     this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
-
+    this.joueurService.getJoueur(this.id).subscribe( data =>{
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+    })
   }
   quitGamePartie(){
     this.joueurService.quitGamePartie(this.id).subscribe(
@@ -73,6 +76,15 @@ export class JeuComponent implements OnInit {
     return tile.length == 1
   }
 
+  ChevaletToArray(grille : any){
+    let Arraygrille = grille.split('');
+    for (let i=0;i<Arraygrille.length;i++){
+      if(Arraygrille[i]=='*'){
+        Arraygrille[i]=" ";
+      }
+    }
+    return Arraygrille;
+  }
   valueLettre(tile: String) {
     let value: number;
     switch(tile){
