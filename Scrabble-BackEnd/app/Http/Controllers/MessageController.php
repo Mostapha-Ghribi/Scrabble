@@ -519,12 +519,12 @@ class MessageController extends Controller
         if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7) {
             return false;
         }
-        //?  verfier si lechavalet contient des lettres  blanche *
+        //?  verifier si le chevalet contient des lettres  blanche *
         if (str_contains($lettres, "*") && !str_contains($chevalet, "*")) {
             return false;
         }
 
-        // ? verifier l'existance des lettres dans le chevalet
+        // ? verifier l'existence des lettres dans le chevalet
         $valid = true;
         for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
             if (str_contains($chevalet, $lettres[$i]) === false) {
