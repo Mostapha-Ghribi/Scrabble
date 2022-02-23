@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -512,11 +513,11 @@ class MessageController extends Controller
 
 
     //? changer lettres
-    public function changerlettres($lettre, $chevalet)
+    public function changerlettres($lettre, $chevalet, $reserve, $idjoueur, $idpartie)
     {
         $lettres = trim($lettre);
         // ?  La longeur de la chaine doit etre 1 ou 7 lettre au  maximum  et les lettres doivent etre minuscule
-        if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7) {
+        if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7 || str_contains($lettres, ' ')) {
             return false;
         }
         //?  verifier si le chevalet contient des lettres  blanche *
@@ -534,6 +535,30 @@ class MessageController extends Controller
             }
 
         }
+
+        for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
+            // retourner le charactere random
+
+            $char = $reserve[random_int(0, strlen($reserve) - 1)];
+
+            // retourner la posistion  du character de random  de $reserve
+
+            $charPos = strpos($reserve, $char);
+            // remplacer dans le chavalet
+            str_replace($lettres[$i], $char, $chevalet, 1);
+            // retirer de reserve
+              $reserve =substr($reserve, $charPos, $charPos+1);
+            // mise a jour dans la base de donnes
+            DB::table('joueurs')
+                ->where('idJoueur', $idjoueur)
+                ->update(['chevalet' => $chevalet]);
+            DB::table('parties')
+                ->where('idPartie', $idpartie)
+                ->update(['reserve' => $reserve]);
+
+        }
+
+
         return true;
 
     }
