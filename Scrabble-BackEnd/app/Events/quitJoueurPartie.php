@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class quitJoueurPartie
+class quitJoueurPartie implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -31,6 +31,9 @@ class quitJoueurPartie
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return ['player'];
+    }
+    public function brodcastAs(){
+        return 'quitJoueurPartie';
     }
 }

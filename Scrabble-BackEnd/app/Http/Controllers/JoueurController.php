@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\InscriptionJoueur;
 use App\Events\getJoueurs;
 use App\Events\quitJoueur;
+use App\Events\quitJoueurPartie;
 use App\Http\Requests\JoueurRequest;
 use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
@@ -338,7 +339,7 @@ class JoueurController extends Controller
         DB::table('parties')
             ->where('idPartie', $joueur->partie)
             ->update(['reserve' => $reserve]);
-        //event(new quitJoueurPartie());
+        event(new quitJoueurPartie());
         $partie2 = Partie::where('idPartie',$joueur->partie)->first();
         return new JsonResponse($partie2);
     }

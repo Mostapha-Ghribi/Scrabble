@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
+import {JoueurService} from "../../services/joueur.service";
+import {Router} from "@angular/router";
+import {PusherService} from "../../services/pusher.service";
+import {PartieService} from "../../services/partie.service";
 
 @Component({
   selector: 'app-jeu',
@@ -6,15 +10,51 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./jeu.component.css']
 })
 export class JeuComponent implements OnInit {
+  private id: any;
+  public joueurs: any;
+  public reserve: any;
+  private idPartie: any;
+  @HostListener('window:keydown.escape', ['$event'])
+  //@HostListener('window:beforeunload', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    this.quitGamePartie();
+  }
   tiles: [] | undefined;
 
-  constructor() { }
+  constructor(private joueurService : JoueurService,private router : Router,private pusherService : PusherService, private partieService : PartieService) { }
 
   ngOnInit(): void {
+    this.id = localStorage.getItem('idJoueur');
+    this.pusherService.channel.bind("getJoueurs", (data: any)=> {
+      this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
+        console.log(data);
+        this.joueurs = data.joueurs;
+        this.reserve = data.reserve;
+      })
+    });
+    this.pusherService.channel.bind("quitJoueurPartie");
+    this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
+      console.log(data);
+      this.joueurs = data.joueurs;
+      this.reserve = data.reserve;
+
+    })
     // @ts-ignore
-    this.tiles=["A","D","B","Q","X","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
 
   }
+  quitGamePartie(){
+    this.joueurService.quitGamePartie(this.id).subscribe(
+        res =>{
+          this.router.navigate(['/inscription']);
+          console.log(res);
+        },
+        err =>{
+          console.log(err);
+        }
+    )
+  }
+
   public BackGroundColor(l : String){
     let color : string = "#D6EDFF";
     switch(l){

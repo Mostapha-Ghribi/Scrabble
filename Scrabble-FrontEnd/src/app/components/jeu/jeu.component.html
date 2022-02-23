@@ -30,7 +30,31 @@
         </div>
     </div>
 </div>
-<app-panneau-informatif></app-panneau-informatif>
+<br>
+<div class="container panneau-informatif">
+    <div *ngFor="let joueur of joueurs">
+        <div class=" joueurContainers card">
+            <img src="{{joueur.photo}}" width="80" height="80" class="rounded-circle image-joueur" alt="image">
+            <div class="infojoueur">
+                <p class="nom-joueur">{{joueur.nom}}</p>
+                <p><span class="lettre-chevalet">{{joueur.chevalet.length}}</span> lettres sur son chevalet </p>
+                <div>
+                    Score: <span class="score-joueur">{{joueur.score}}</span>
+                    <span class="temps">Temps 5:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="reserve card">
+        <div class="image-reserve">
+            <img src="assets/images/reserve.png" width="40" height="40" class="rounded-circle" alt="image">
+        </div>
+        <p class="nombre-reserve">Nombre de lettres dans la reserve <i class="nombre-lettre-reserve">{{reserve.length}}</i> </p>
+    </div>
+    <br>
+</div>
+
 <app-boite-communication></app-boite-communication>
 <app-chevalet></app-chevalet>
 </body>
