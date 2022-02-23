@@ -17,6 +17,7 @@ Route::controller(JoueurController::class)->prefix("v1")->group(static function 
     Route::get("/joueurs", [JoueurController::class ,"getJoueurs"]);
     Route::get("/joueur/{idJoueur}", [JoueurController::class ,"getJoueur"]);
     Route::get("/quitter/joueur/{idJoueur}",[JoueurController::class ,"quitPlayer"]);
+    Route::get("/quitter/partie/joueur/{idJoueur}",[JoueurController::class ,"quitPlayerPartie"]);
 
 });
 Route::controller(PartieController::class)->prefix("v1")->group(static function () {

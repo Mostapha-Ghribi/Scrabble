@@ -17,8 +17,7 @@ export class ChevaletComponent implements OnInit {
   ngOnInit(): void {
     this.idJoueur = localStorage.getItem('idJoueur');
     this.joueurService.getJoueur(this.idJoueur).subscribe( data =>{
-      this.LettreChevalet = this.ChevaletToArray(data.chevalet);
-      console.log(this.LettreChevalet);
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
     })
   }
   ChevaletToArray(grille : any){
@@ -57,7 +56,7 @@ export class ChevaletComponent implements OnInit {
         break;
       case "F":
       case "H":
-      case "v":
+      case "V":
         value = 4;
         break;
       case "J":

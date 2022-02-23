@@ -191,7 +191,6 @@ class PartieController extends Controller
         $p = $partie->first();
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
         $reserve = $p->reserve;
-       // return new JsonResponse(count($p->joueurs));
         for ($i = 0;$i<count($p->joueurs);$i++){
            $idJoueur =  $p->joueurs[$i]->idJoueur;
            if(strlen($p->joueurs[$i]->chevalet)==0) {
@@ -201,7 +200,6 @@ class PartieController extends Controller
                    $strpos = strpos($reserve, $chevaletJoueur[$j]);
                    $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
                }
-               //return new JsonResponse(["chevalet" =>$chevaletJoueur , "reserve" => $reserve]);
                DB::table('joueurs')
                    ->where('idJoueur', $idJoueur)
                    ->update(['chevalet' => $chevaletJoueur]);
