@@ -319,7 +319,7 @@ class MessageController extends Controller
                 $motAplacer = substr($commande, 11, strlen($commande));
 
                 // ? verifier si les lettres sont inclus dans le chevalet du joueur
-                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet),$lg,$col,$posit,$partie->grille) === false) {
+                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet)) === false) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -510,17 +510,40 @@ class MessageController extends Controller
         }
     }
 
+
+    //? changer lettres
+    public  function changerlettres($lettre,$chevalet) {
+        $lettres =trim($lettre)  ;
+   if (ctype_upper($lettres)) {
+       return false ;
+   }
+
+
+
+
+
+    }
+
+
+
+
+
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
-    public function verfierMotDansChevalet($mot, $chevalet,$ligne, $colonne, $pos, $grille)
+               // ! les parametres ,$grille,$ligne,$colonne,$pos
+    public function verfierMotDansChevalet($mot, $chevalet)
     {
 
-        $tabMot = str_split($mot);
+        /*$tabMot = str_split($mot);
         //? convertir la grille en d'une chaine vers un tableau
         $grillTab = $this->StringToArray($grille);
+
         //? retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+
         $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+
         //? tableau de lettres dans la position de la grille
         $motGrille = [];
+
         switch ($pos) {
             case 'v' :
                 for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
@@ -559,7 +582,7 @@ class MessageController extends Controller
                 break;
 
 
-        }
+        }*/
 
 
         // ? verifier que la longeur mot < longeur chevalet
