@@ -519,8 +519,7 @@ class MessageController extends Controller
     public function changerlettres($lettre, $chevalet, $reserve, $idjoueur, $idpartie)
     {
         $lettres = trim($lettre);
-        $chevaletCopie = $chevalet;
-        $reserveCopie = $reserve;
+
         // ?  La longeur de la chaine doit etre 1 ou 7 lettre au  maximum  et les lettres doivent etre minuscule
         if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7 || str_contains($lettres, ' ')) {
             return false;
@@ -542,24 +541,24 @@ class MessageController extends Controller
         $i = 0;
         while ($i < strlen($lettres)) {
             // generer des lettres aleatoire dans la reserve
-            $posChar = random_int(0, strlen($reserveCopie) );
+            $posChar = random_int(0, strlen($reserve) );
             // recuperer le charactere du  reserve
-            $charReserve = $reserveCopie[$posChar];
+            $charReserve = $reserve[$posChar];
             // remplacer par un /
-            $reserveCopie[$posChar] = '/';
+            $reserve[$posChar] = '/';
             //  remplacer dans le chevalet
-            $posLettreChevalet = strpos($chevaletCopie, $lettres[$i]);
+            $posLettreChevalet = strpos($chevalet, $lettres[$i]);
             // replacer lettre dans le chevalet
-            str_replace($chevaletCopie[$posLettreChevalet], $charReserve, $chevaletCopie);
+            str_replace($chevalet[$posLettreChevalet], $charReserve, $chevalet);
 
             //  remplcaer le / dan sla reserve
-            for ($j = 0, $jMax = strlen($reserveCopie); $j < $jMax; $j++) {
-                if ($reserveCopie[$j] !== '/') {
-                    $reservefinal .= $reserveCopie[$j];
+            for ($j = 0, $jMax = strlen($reserve); $j < $jMax; $j++) {
+                if ($reserve[$j] !== '/') {
+                    $reservefinal .= $reserve[$j];
                 }
 
             }
-            $reserveCopie = $reservefinal;
+            $reserve = $reservefinal;
             $i++;
 
         }
@@ -568,7 +567,7 @@ class MessageController extends Controller
 // mise a jour dans la base de donnes
         DB::table('joueurs')
             ->where('idJoueur', $idjoueur)
-            ->update(['chevalet' => $chevaletCopie]);
+            ->update(['chevalet' => $chevalet]);
         DB::table('parties')
             ->where('idPartie', $idpartie)
             ->update(['reserve' => $reservefinal]);
