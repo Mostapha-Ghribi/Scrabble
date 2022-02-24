@@ -1,8 +1,10 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {JoueurService} from "../../services/joueur.service";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
 import {PartieService} from "../../services/partie.service";
+import {any, arrayIndexOf} from "pusher-js/types/src/core/utils/collections";
+import {K} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-jeu',
@@ -14,34 +16,125 @@ export class JeuComponent implements OnInit {
   public joueurs: any;
   public reserve: any;
   private idPartie: any;
-  @HostListener('window:keydown.escape', ['$event'])
-  //@HostListener('window:beforeunload', ['$event'])
+  public LettreChevalet: any;
+  public reserveLength: any;
+  @ViewChild('messageBoit') searchElement: ElementRef | any;
+  @ViewChild('chevalet') chevalet: ElementRef | any;
+  public ChevaletTabed: boolean = false;
+  public copieChevalet: any;
+  public KeyCode : any = -1;
+  public indexlastArray: any;
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (!this.isTabed) {
+      let index = -1;
+      if(event.keyCode == 106){
+        index = this.LettreChevalet.indexOf(" ");
+      }else{
+        index = this.LettreChevalet.indexOf(String.fromCharCode(event.keyCode));
+      }
+      if ((event.keyCode >= 65 && event.keyCode <= 90) || event.keyCode == 106) {
+        if (event.keyCode == this.KeyCode) {
+          let arrayNext = this.LettreChevalet.slice(this.indexlastArray + 1,);
+          let arrayPrevious = this.LettreChevalet.slice(0, this.indexlastArray);
+          let fusionArray = arrayNext.concat(arrayPrevious);
+          let fusionIndex = -1;
+          if(event.keyCode == 106){
+            fusionIndex = fusionArray.indexOf(" ");
+          }else{
+            fusionIndex = fusionArray.indexOf(String.fromCharCode(event.keyCode))
+          }
+          if (fusionIndex != -1) {
+            this.indexlastArray = (fusionIndex + arrayPrevious.length + 1) % 7;
+          }
+        } else {
+          this.KeyCode = event.keyCode;
+          this.indexlastArray = index % 7;
+        }
+      }
+      if(event.keyCode == 39){
+        let aux = this.LettreChevalet[this.indexlastArray];
+        if(this.indexlastArray==6){
+          for (let i = 6; i >0; --i) {
+            this.LettreChevalet[i] = this.LettreChevalet[i-1];
+          }
+          this.LettreChevalet[0] = aux;
+          this.indexlastArray = 0;
+        }
+        else if(this.indexlastArray!= -1 && this.indexlastArray!=6){
+          this.LettreChevalet[this.indexlastArray] = this.LettreChevalet[this.indexlastArray+1];
+          this.LettreChevalet[this.indexlastArray+1] = aux;
+          this.indexlastArray = this.indexlastArray+1;
+        }
+      }if(event.keyCode == 37){
+          let auxLeft = this.LettreChevalet[this.indexlastArray];
+        if(this.indexlastArray==0){
+          for (let i = 0; i <6; i++) {
+            this.LettreChevalet[i] = this.LettreChevalet[i+1];
+          }
+          this.LettreChevalet[6] = auxLeft;
+          this.indexlastArray = 6;
+        }
+        else if(this.indexlastArray!= -1 && this.indexlastArray!=0){
+          this.LettreChevalet[this.indexlastArray] = this.LettreChevalet[this.indexlastArray-1];
+          this.LettreChevalet[this.indexlastArray-1] = auxLeft;
+          this.indexlastArray = this.indexlastArray-1;
+        }
+      }
+    }
+  }
+  @HostListener('window:keydown.tab', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+    event.preventDefault();
+    if(this.isTabed){
+      this.searchElement.nativeElement.blur();
+    this.ChevaletTabed = true;
+    this.isTabed = false;
+    }else{
+      this.ChevaletTabed = false;
+      this.indexlastArray = -1;
+      this.searchElement.nativeElement.focus();
+      this.isTabed = true;
+    }
+  }
+  @HostListener('window:keydown.escape') hasPressed() {
     this.quitGamePartie();
   }
+  isTabed : boolean = false;
   tiles: [] | undefined;
 
   constructor(private joueurService : JoueurService,private router : Router,private pusherService : PusherService, private partieService : PartieService) { }
 
   ngOnInit(): void {
+   // console.log(this.input.nativeElement.value);
     this.id = localStorage.getItem('idJoueur');
     this.pusherService.channel.bind("getJoueurs", (data: any)=> {
       this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-        console.log(data);
+        //console.log(data);
         this.joueurs = data.joueurs;
-        this.reserve = data.reserve;
+        this.reserve = data.reserve.length;
       })
     });
     this.pusherService.channel.bind("quitJoueurPartie");
     this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-      console.log(data);
+      //console.log(data);
       this.joueurs = data.joueurs;
-      this.reserve = data.reserve;
+      this.reserve = data.reserve.length;
 
     })
+    //this.pusherService.channel.unbind("getJoueurs");
     // @ts-ignore
-    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","B","O","N","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.joueurService.getJoueur(this.id).subscribe( data =>{
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+    })
 
+  }
+  searchlettre(lettre : any ,lettres : any){
+    console.log(lettres)
+let copieChevalet2 = lettres;
+    let index = copieChevalet2.indexOf(lettre);
+    console.log(index);
   }
   quitGamePartie(){
     this.joueurService.quitGamePartie(this.id).subscribe(
@@ -73,6 +166,15 @@ export class JeuComponent implements OnInit {
     return tile.length == 1
   }
 
+  ChevaletToArray(grille : any){
+    let Arraygrille = grille.split('');
+    for (let i=0;i<Arraygrille.length;i++){
+      if(Arraygrille[i]=='*'){
+        Arraygrille[i]=" ";
+      }
+    }
+    return Arraygrille;
+  }
   valueLettre(tile: String) {
     let value: number;
     switch(tile){
@@ -100,7 +202,7 @@ export class JeuComponent implements OnInit {
         break;
       case "F":
       case "H":
-      case "v":
+      case "V":
         value = 4;
         break;
       case "J":

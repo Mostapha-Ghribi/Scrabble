@@ -50,13 +50,38 @@
         <div class="image-reserve">
             <img src="assets/images/reserve.png" width="40" height="40" class="rounded-circle" alt="image">
         </div>
-        <p class="nombre-reserve">Nombre de lettres dans la reserve <i class="nombre-lettre-reserve">{{reserve.length}}</i> </p>
+        <p class="nombre-reserve">Nombre de lettres dans la reserve  <span class="nombre-lettre-reserve">{{reserve}}</span>  </p>
     </div>
     <br>
 </div>
+<br>
+<div class="container boite-communication">
 
-<app-boite-communication></app-boite-communication>
-<app-chevalet></app-chevalet>
+    <div class="column justify-content-center">
+        <div class="mb-6">
+      <textarea class="form-control message" id="exampleFormControlTextarea1" rows="3" cols="50" readonly>
+        haithem :  bonjour
+        haithem : a fait une erreur
+        le tour de mostapha
+      </textarea>
+        </div>
+        <br>
+        <div class="mb-6">
+            <input type="text" class="form-control form-control-sm" name="message" #messageBoit placeholder="Entrer une commande ou un message"/>
+        </div>
+        <br>
+    </div>
+</div>
+
+<div [ngClass]="ChevaletTabed ? 'Chevalet tabbed' : 'Chevalet'" #chevalet>
+    <div  *ngFor="let lettre of LettreChevalet ;index as i">
+        <span [ngClass]=" i === indexlastArray ?'LettreChevalet borderLettre' : 'LettreChevalet'" id="{{i}}">
+        <span class="ScrabbleLetter">{{lettre}}</span>
+        <span class="ScrabbleNumber">{{this.valueLettre(lettre)}}</span>
+        </span>
+    </div>
+</div>
+
 </body>
 </html>
 

@@ -53,3 +53,10 @@
   margin-top: 15px;
   margin-left: 26px;
 }
+.borderLettre{
+  border-top-color: red !important;
+  border-right-color: red !important;
+  border-bottom-color: red !important;
+  border-left-color: red !important;
+  background: red !important;
+}

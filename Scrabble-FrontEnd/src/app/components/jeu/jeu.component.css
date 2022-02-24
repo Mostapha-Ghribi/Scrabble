@@ -274,3 +274,85 @@
     padding: 2px;
 
 }
+/*! boite de communication */
+.boite-communication {
+    position: absolute;
+    top: 650px;
+    left: 900px;
+    border: 2px solid black;
+    width: 390px;
+    height: 280px;
+    background-color: #D1E7DD;
+}
+.boite-communication .message{
+    margin-top: 10px;
+    resize: none;
+    height: 200px;
+}
+/*! chevalet */
+.Chevalet{
+    position: absolute;
+    width: 385px;
+    height: 60px;
+    top: 750px;
+    left: 250px;
+    margin-left: 15px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #D1E7DD;
+}
+.Chevalet .LettreChevalet{
+    background: #f6e1a6;
+    height: 50px;
+    width: 50px;
+    border-radius: 7px;
+    box-shadow:0 0 1px #000;
+    border-top-width: 1px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #f8e6b1;
+    border-right-color: #d7c293;
+    border-bottom-color: #cab06b;
+    border-left-color: #f8e6b1;
+    margin-top: 3px;
+    margin-left: 4px;
+    display: block;
+    float: left;
+}
+.Chevalet .ScrabbleLetter {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 30px;
+    color: #272832;
+    margin-left: 3px;
+    top: 1px;
+    text-shadow:1px 1px 0 #fff5d7;
+
+}
+.Chevalet .ScrabbleNumber {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #272832;
+    bottom: 3px;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: 15px;
+    margin-left: 26px;
+}
+.tabbed{
+    border: solid 1px red;
+}
+.borderLettre{
+    border-top-color: red !important;
+    border-right-color: red !important;
+    border-bottom-color: red !important;
+    border-left-color: red !important;
+}
+
+
