@@ -164,7 +164,8 @@ class PartieController extends Controller
                }
                DB::table('joueurs')
                    ->where('idJoueur', $idJoueur)
-                   ->update(['chevalet' => $chevaletJoueur]);
+                   ->update(['chevalet' => $chevaletJoueur])
+                   ->update(['ordre' => $i+1]);
                DB::table('parties')
                    ->where('idPartie', $idPartie)
                    ->update(['reserve' => $reserve]);

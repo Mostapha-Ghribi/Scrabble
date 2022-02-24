@@ -32,15 +32,15 @@
 </div>
 <br>
 <div class="container panneau-informatif">
-    <div *ngFor="let joueur of joueurs">
-        <div class=" joueurContainers card">
+    <div *ngFor="let joueur of joueurs;index as j">
+        <div [ngClass]=" ordre === j+1 ? 'joueurContainers card bordredCard' : 'joueurContainers card' ">
             <img src="{{joueur.photo}}" width="80" height="80" class="rounded-circle image-joueur" alt="image">
             <div class="infojoueur">
                 <p class="nom-joueur">{{joueur.nom}}</p>
                 <p><span class="lettre-chevalet">{{joueur.chevalet.length}}</span> lettres sur son chevalet </p>
                 <div>
                     Score: <span class="score-joueur">{{joueur.score}}</span>
-                    <span class="temps">Temps 5:00</span>
+                    <span id="{{j+1}}" [ngClass]=" time <= 60 && ordre === j+1 ? 'temps timeout' : 'temps'">{{ ordre === j+1 ?"Temps "+ display : "Temps 5:00"}}</span>
                 </div>
             </div>
         </div>
