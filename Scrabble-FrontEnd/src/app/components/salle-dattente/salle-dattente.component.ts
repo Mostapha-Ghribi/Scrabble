@@ -34,6 +34,7 @@ export class SalleDattenteComponent implements OnInit {
   channel : any;
   private typePartie: any;
  five(){
+   console.log(this.isFive);
    if(this.isFive){
      this.time = 6;
      this.isFive = false;
@@ -55,7 +56,8 @@ export class SalleDattenteComponent implements OnInit {
       if(this.typePartie == this.joueurs.length){
         this.five();
       }else {
-          this.time++;
+        this.isFive = true;
+        this.time++;
       }
       this.display=this.transform( this.time)
     }, 1000);
