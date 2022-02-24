@@ -354,5 +354,8 @@
     border-bottom-color: red !important;
     border-left-color: red !important;
 }
+.bordredCard{
+    border : solid 2px rgba(35, 229, 229, 0.63);
+}
 
 

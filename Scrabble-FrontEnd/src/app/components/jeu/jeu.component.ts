@@ -23,6 +23,12 @@ export class JeuComponent implements OnInit {
   public indexlastArray: any;
   isTabed : boolean = false;
   tiles: [] | undefined;
+  started :any = false;
+  time: any;
+  display: any ;
+  interval: any;
+  ordre: any = 1;
+  private typePartie: any;
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (!this.isTabed) {
@@ -107,6 +113,7 @@ export class JeuComponent implements OnInit {
       this.partieService.getPartieByIdJoueurBind(this.id).subscribe( data =>{
         this.joueurs = data.joueurs;
         this.reserve = data.reserve.length;
+        this.typePartie = data.typePartie;
       })
     });
     this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
@@ -119,6 +126,7 @@ export class JeuComponent implements OnInit {
     this.joueurService.getJoueur(this.id).subscribe( data =>{
       this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
     })
+    this.startTimer(300);
 
   }
   quitGamePartie(){
@@ -205,6 +213,31 @@ export class JeuComponent implements OnInit {
         value = 0;
     }
     return value;
+  }
+  startTimer(time : any) {
+    this.time = time;
+    console.log("=====>");
+    this.interval = setInterval(() => {
+
+      if(this.time == 0){
+        console.log("stop")
+        if(this.ordre == this.typePartie){
+          this.ordre = 1;
+          console.log(this.ordre);
+        }else{
+          this.ordre = this.ordre+1;
+          console.log(this.ordre);
+        }
+        this.time = 300;
+      }
+           this.time--;
+      this.display=this.transform( this.time)
+    }, 1000);
+  }
+
+  transform(value: number): string {
+    const minutes: number = Math.floor(value / 60);
+    return minutes + ':' + (value - minutes * 60);
   }
 
 }
