@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {JoueurService} from "../../services/joueur.service";
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {Joueur} from "../../model/joueur.model";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
 
@@ -38,7 +37,7 @@ export class InscriptionComponent implements OnInit {
   get photo() { return this.inscriptionForm.get('photo'); }
   ngOnInit(): void {
     localStorage.clear();
-    this.pusherService.channel.bind("InscriptionJoueur");
+   // this.pusherService.channel.bind("InscriptionJoueur");
   }
   inscrire() {
     let data = this.inscriptionForm.value ;

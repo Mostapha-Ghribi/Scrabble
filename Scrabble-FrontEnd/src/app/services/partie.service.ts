@@ -6,8 +6,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class PartieService {
   private getPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueur/";
+  private getPartieByIdJoueurBindAPI = "http://localhost:8000/api/v1/partie/joueurBind/";
   private getJoueursByIdPartieAPI = "http://localhost:8000/api/v1/partie/";
-  private getJoueursPartieByIdJoueurAPI = "http://localhost:8000/api/v1/partie/joueurs/joueur/";
   private InitChevaletAndReserveAPI = "http://localhost:8000/api/v1/addChevalet/partie/";
   constructor(private http: HttpClient) { }
   public getPartieByIdJoueur(id: any) {
@@ -16,11 +16,14 @@ export class PartieService {
     headers.append('Accept', 'application/json');
     return this.http.get<any>(this.getPartieByIdJoueurAPI+id,{headers: headers});
   }
+  public getPartieByIdJoueurBind(id: any) {
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+    return this.http.get<any>(this.getPartieByIdJoueurBindAPI+id,{headers: headers});
+  }
   public getJoueursByIdPartie(id :any){
     return this.http.get<any>(this.getJoueursByIdPartieAPI+id+"/joueurs");
-  }
-  public getJoueursPartieByIdJoueur(id :any){
-    return this.http.get<any>(this.getJoueursPartieByIdJoueurAPI+id);
   }
   public InitChevaletAndReserve(id :any){
     return this.http.get<any>(this.InitChevaletAndReserveAPI+id);
@@ -33,13 +36,5 @@ export class PartieService {
       }
     }
     return Arraygrille;
-  }
-  ArrayToString(grille : any){
-    for (let i=0;i<grille.length;i++){
-      if(grille[i]==""){
-        grille[i]="-";
-      }
-    }
-    return grille.join('');
   }
 }
