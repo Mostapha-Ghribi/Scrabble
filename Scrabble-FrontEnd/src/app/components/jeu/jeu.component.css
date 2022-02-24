@@ -348,4 +348,11 @@
 .tabbed{
     border: solid 1px red;
 }
+.borderLettre{
+    border-top-color: red !important;
+    border-right-color: red !important;
+    border-bottom-color: red !important;
+    border-left-color: red !important;
+}
+
 

@@ -3,7 +3,7 @@ import {JoueurService} from "../../services/joueur.service";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
 import {PartieService} from "../../services/partie.service";
-import {arrayIndexOf} from "pusher-js/types/src/core/utils/collections";
+import {any, arrayIndexOf} from "pusher-js/types/src/core/utils/collections";
 import {K} from "@angular/cdk/keycodes";
 
 @Component({
@@ -21,37 +21,78 @@ export class JeuComponent implements OnInit {
   @ViewChild('messageBoit') searchElement: ElementRef | any;
   @ViewChild('chevalet') chevalet: ElementRef | any;
   public ChevaletTabed: boolean = false;
-  private copieChevalet: any;
+  public copieChevalet: any;
   public KeyCode : any = -1;
+  public indexlastArray: any;
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    let index = this.LettreChevalet.indexOf(String.fromCharCode(event.keyCode));
-    let indexlastArray = this.LettreChevalet.indexOf(String.fromCharCode(this.KeyCode));
-    console.log("last keyCode",this.KeyCode);
-    console.log("current keyCode",event.keyCode);
-    if(event.keyCode >= 65 && event.keyCode <= 90){
-      if(event.keyCode == this.KeyCode){
-        let arrayNext = this.LettreChevalet.slice(indexlastArray+1,);
-        let arrayPrevious = this.LettreChevalet.slice(0,indexlastArray);
-        let otherArray = arrayNext+arrayPrevious;
-        this.copieChevalet = this.LettreChevalet.slice(0,indexlastArray);
-        console.log(otherArray);
+    if (!this.isTabed) {
+      let index = -1;
+      if(event.keyCode == 106){
+        index = this.LettreChevalet.indexOf(" ");
+      }else{
+        index = this.LettreChevalet.indexOf(String.fromCharCode(event.keyCode));
       }
-      this.KeyCode = event.keyCode;
-      console.log(index);
+      if ((event.keyCode >= 65 && event.keyCode <= 90) || event.keyCode == 106) {
+        if (event.keyCode == this.KeyCode) {
+          let arrayNext = this.LettreChevalet.slice(this.indexlastArray + 1,);
+          let arrayPrevious = this.LettreChevalet.slice(0, this.indexlastArray);
+          let fusionArray = arrayNext.concat(arrayPrevious);
+          let fusionIndex = -1;
+          if(event.keyCode == 106){
+            fusionIndex = fusionArray.indexOf(" ");
+          }else{
+            fusionIndex = fusionArray.indexOf(String.fromCharCode(event.keyCode))
+          }
+          if (fusionIndex != -1) {
+            this.indexlastArray = (fusionIndex + arrayPrevious.length + 1) % 7;
+          }
+        } else {
+          this.KeyCode = event.keyCode;
+          this.indexlastArray = index % 7;
+        }
+      }
+      if(event.keyCode == 39){
+        let aux = this.LettreChevalet[this.indexlastArray];
+        if(this.indexlastArray==6){
+          for (let i = 6; i >0; --i) {
+            this.LettreChevalet[i] = this.LettreChevalet[i-1];
+          }
+          this.LettreChevalet[0] = aux;
+          this.indexlastArray = 0;
+        }
+        else if(this.indexlastArray!= -1 && this.indexlastArray!=6){
+          this.LettreChevalet[this.indexlastArray] = this.LettreChevalet[this.indexlastArray+1];
+          this.LettreChevalet[this.indexlastArray+1] = aux;
+          this.indexlastArray = this.indexlastArray+1;
+        }
+      }if(event.keyCode == 37){
+          let auxLeft = this.LettreChevalet[this.indexlastArray];
+        if(this.indexlastArray==0){
+          for (let i = 0; i <6; i++) {
+            this.LettreChevalet[i] = this.LettreChevalet[i+1];
+          }
+          this.LettreChevalet[6] = auxLeft;
+          this.indexlastArray = 6;
+        }
+        else if(this.indexlastArray!= -1 && this.indexlastArray!=0){
+          this.LettreChevalet[this.indexlastArray] = this.LettreChevalet[this.indexlastArray-1];
+          this.LettreChevalet[this.indexlastArray-1] = auxLeft;
+          this.indexlastArray = this.indexlastArray-1;
+        }
+      }
     }
   }
   @HostListener('window:keydown.tab', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     event.preventDefault();
     if(this.isTabed){
-
-    this.searchlettre('T',this.LettreChevalet);
-    this.searchElement.nativeElement.blur();
+      this.searchElement.nativeElement.blur();
     this.ChevaletTabed = true;
     this.isTabed = false;
     }else{
       this.ChevaletTabed = false;
+      this.indexlastArray = -1;
       this.searchElement.nativeElement.focus();
       this.isTabed = true;
     }

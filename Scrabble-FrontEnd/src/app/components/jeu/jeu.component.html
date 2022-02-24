@@ -74,9 +74,11 @@
 </div>
 
 <div [ngClass]="ChevaletTabed ? 'Chevalet tabbed' : 'Chevalet'" #chevalet>
-    <div class="LettreChevalet" *ngFor="let lettre of LettreChevalet">
+    <div  *ngFor="let lettre of LettreChevalet ;index as i">
+        <span [ngClass]=" i === indexlastArray ?'LettreChevalet borderLettre' : 'LettreChevalet'" id="{{i}}">
         <span class="ScrabbleLetter">{{lettre}}</span>
         <span class="ScrabbleNumber">{{this.valueLettre(lettre)}}</span>
+        </span>
     </div>
 </div>
 
