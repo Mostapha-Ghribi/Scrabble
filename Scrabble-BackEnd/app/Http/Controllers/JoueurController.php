@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\InscriptionJoueur;
 use App\Events\getJoueurs;
+use App\Events\InscriptionJoueur;
 use App\Events\quitJoueur;
 use App\Events\quitJoueurPartie;
 use App\Http\Requests\JoueurRequest;
@@ -162,7 +162,7 @@ class JoueurController extends Controller
                 }
             }
 
-            event(new InscriptionJoueur($message));
+            //event(new InscriptionJoueur($message));
             return new JsonResponse($joueur);
 
         }
@@ -270,7 +270,7 @@ class JoueurController extends Controller
             $getOneJoueur = $partie2->joueurs()->where('statutJoueur',1)->first();
             $this->switchRoom($getOneJoueur, $chercheRoom->idPartie);
         }
-        event(new quitJoueur());
+        event(new getJoueurs($joueur->partie,$partie->typePartie));
         return new JsonResponse($joueur);
     }
 
@@ -339,9 +339,8 @@ class JoueurController extends Controller
         DB::table('parties')
             ->where('idPartie', $joueur->partie)
             ->update(['reserve' => $reserve]);
-        event(new quitJoueurPartie());
-        $partie2 = Partie::where('idPartie',$joueur->partie)->first();
-        return new JsonResponse($partie2);
+        event(new getJoueurs($joueur->partie,$partie->typePartie));
+        return new JsonResponse("success");
     }
 
 

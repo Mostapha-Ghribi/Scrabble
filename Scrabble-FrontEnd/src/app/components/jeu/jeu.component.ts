@@ -3,8 +3,7 @@ import {JoueurService} from "../../services/joueur.service";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
 import {PartieService} from "../../services/partie.service";
-import {any, arrayIndexOf} from "pusher-js/types/src/core/utils/collections";
-import {K} from "@angular/cdk/keycodes";
+
 
 @Component({
   selector: 'app-jeu',
@@ -15,15 +14,15 @@ export class JeuComponent implements OnInit {
   private id: any;
   public joueurs: any;
   public reserve: any;
-  private idPartie: any;
   public LettreChevalet: any;
   public reserveLength: any;
   @ViewChild('messageBoit') searchElement: ElementRef | any;
   @ViewChild('chevalet') chevalet: ElementRef | any;
   public ChevaletTabed: boolean = false;
-  public copieChevalet: any;
   public KeyCode : any = -1;
   public indexlastArray: any;
+  isTabed : boolean = false;
+  tiles: [] | undefined;
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (!this.isTabed) {
@@ -100,41 +99,27 @@ export class JeuComponent implements OnInit {
   @HostListener('window:keydown.escape') hasPressed() {
     this.quitGamePartie();
   }
-  isTabed : boolean = false;
-  tiles: [] | undefined;
-
   constructor(private joueurService : JoueurService,private router : Router,private pusherService : PusherService, private partieService : PartieService) { }
 
   ngOnInit(): void {
-   // console.log(this.input.nativeElement.value);
     this.id = localStorage.getItem('idJoueur');
-    this.pusherService.channel.bind("getJoueurs", (data: any)=> {
-      this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-        //console.log(data);
+    this.pusherService.channel.bind("getJoueurs", ()=> {
+      this.partieService.getPartieByIdJoueurBind(this.id).subscribe( data =>{
         this.joueurs = data.joueurs;
         this.reserve = data.reserve.length;
       })
     });
-    this.pusherService.channel.bind("quitJoueurPartie");
     this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-      //console.log(data);
       this.joueurs = data.joueurs;
       this.reserve = data.reserve.length;
 
     })
-    //this.pusherService.channel.unbind("getJoueurs");
     // @ts-ignore
     this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","B","O","N","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
     this.joueurService.getJoueur(this.id).subscribe( data =>{
       this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
     })
 
-  }
-  searchlettre(lettre : any ,lettres : any){
-    console.log(lettres)
-let copieChevalet2 = lettres;
-    let index = copieChevalet2.indexOf(lettre);
-    console.log(index);
   }
   quitGamePartie(){
     this.joueurService.quitGamePartie(this.id).subscribe(
