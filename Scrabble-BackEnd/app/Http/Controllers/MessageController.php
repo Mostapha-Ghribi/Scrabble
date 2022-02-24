@@ -454,7 +454,7 @@ class MessageController extends Controller
         } elseif ($commandeChanger === "changer") {
             // changer des lettre exemple !changer mw*
             $LettreChanger = substr($commande, 8, strlen($commande));
-            if ($this->changerlettres($LettreChanger, $joueur->chevalet)) {
+            if ($this->changerlettres($LettreChanger, $joueur->chevalet, $partie->reserve, $joueur->idJoueur, $partie->idPartie)) {
                 // TODO lettre alphabétique et  le contient *
                 // TODO verifier si les lettres sont inclus dans le chevalet du joueur
 
@@ -469,6 +469,9 @@ class MessageController extends Controller
                     "partie" => $partie->idPartie,
                     'message' => "$joueur->nom a changer les lettres $LettreChanger",
                     'statutMessage' => "$message->statutMessage",
+                    "chevalet"=>$joueur->chevalet ,
+                    "reserve"=>$partie->reserve,
+
                 ], 200);
 
             }
@@ -536,27 +539,39 @@ class MessageController extends Controller
 
         }
 
+
         for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
             // retourner le charactere random
 
             $char = $reserve[random_int(0, strlen($reserve) - 1)];
 
             // retourner la posistion  du character de random  de $reserve
-
             $charPos = strpos($reserve, $char);
+            // position lettre dans le chevalet
+            $lettrePositionchevalet = strpos($lettres[$i], $lettres);
+
             // remplacer dans le chavalet
-            str_replace($lettres[$i], $char, $chevalet, 1);
+            str_replace($lettres[$i], $char, $chevalet);
             // retirer de reserve
-              $reserve =substr($reserve, $charPos, $charPos+1);
+            str_replace($reserve[$charPos], '/', $reserve);
+            // parcourir reserve
+            $reserveCopie = '';
+            for ($j = 0, $jMax = strlen($reserve); $j < $jMax; $j++) {
+                if ($reserve[$j] !== '/') {
+                    $reserveCopie .= $reserve[$j];
+                }
+
+            }
             // mise a jour dans la base de donnes
             DB::table('joueurs')
                 ->where('idJoueur', $idjoueur)
                 ->update(['chevalet' => $chevalet]);
             DB::table('parties')
                 ->where('idPartie', $idpartie)
-                ->update(['reserve' => $reserve]);
+                ->update(['reserve' => $reserveCopie]);
 
         }
+
 
 
         return true;
