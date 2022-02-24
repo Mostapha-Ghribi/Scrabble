@@ -519,6 +519,8 @@ class MessageController extends Controller
     public function changerlettres($lettre, $chevalet, $reserve, $idjoueur, $idpartie)
     {
         $lettres = trim($lettre);
+        $chevaletCopie = $chevalet;
+        $reserveCopie = $reserve;
         // ?  La longeur de la chaine doit etre 1 ou 7 lettre au  maximum  et les lettres doivent etre minuscule
         if (ctype_upper($lettres) || $lettres === '' || strlen($lettres) > 7 || str_contains($lettres, ' ')) {
             return false;
@@ -534,52 +536,42 @@ class MessageController extends Controller
             if (str_contains($chevalet, $lettres[$i]) === false) {
                 $valid = false;
                 return false;
-
             }
-
         }
-        $resfinal = '';
-        $chevaletfinal = '';
+        $reservefinal = '';
+        $i = 0;
+        while ($i < strlen($lettres)) {
+            // generer des lettres aleatoire dans la reserve
+            $posChar = random_int(0, strlen($reserveCopie) );
+            // recuperer le charactere du  reserve
+            $charReserve = $reserveCopie[$posChar];
+            // remplacer par un /
+            $reserveCopie[$posChar] = '/';
+            //  remplacer dans le chevalet
+            $posLettreChevalet = strpos($chevaletCopie, $lettres[$i]);
+            // replacer lettre dans le chevalet
+            str_replace($chevaletCopie[$posLettreChevalet], $charReserve, $chevaletCopie);
 
-
-        for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
-
-            // get la postion  lettres dans le chevalet
-
-            $posLettreChevalet = strpos($reserve, $lettres[$i]);
-
-            // genrer un caractere random  de la reserve
-            $charReserve = $reserve[random_int(0, strlen($reserve) - 1)];
-
-            // retourner la posistion  du character de random  de reserve
-            $charPosReserve = strpos($reserve, $charReserve);
-
-
-            // retirer de reserve
-            str_replace($reserve[$charPosReserve], '/', $reserve);
-            // parcourir reserve
-            $reserveCopie = '';
-            for ($j = 0, $jMax = strlen($reserve); $j < $jMax; $j++) {
-                if ($reserve[$j] !== '/') {
-                    $reserveCopie .= $reserve[$j];
+            //  remplcaer le / dan sla reserve
+            for ($j = 0, $jMax = strlen($reserveCopie); $j < $jMax; $j++) {
+                if ($reserveCopie[$j] !== '/') {
+                    $reservefinal .= $reserveCopie[$j];
                 }
+
             }
-            $reserve = $reserveCopie;
+            $reserveCopie = $reservefinal;
+            $i++;
 
-            // remplacer le caractere dans le chevalet
-            str_replace($lettres[$i], $charReserve, $chevalet);
-
-            $resfinal = $reserve;
-            $chevaletfinal = $chevalet;
         }
+
 
 // mise a jour dans la base de donnes
         DB::table('joueurs')
             ->where('idJoueur', $idjoueur)
-            ->update(['chevalet' => $chevaletfinal]);
+            ->update(['chevalet' => $chevaletCopie]);
         DB::table('parties')
             ->where('idPartie', $idpartie)
-            ->update(['reserve' => $resfinal]);
+            ->update(['reserve' => $reservefinal]);
 
 
         return true;
