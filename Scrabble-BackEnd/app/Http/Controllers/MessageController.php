@@ -469,8 +469,8 @@ class MessageController extends Controller
                     "partie" => $partie->idPartie,
                     'message' => "$joueur->nom a changer les lettres $LettreChanger",
                     'statutMessage' => "$message->statutMessage",
-                    "chevalet"=>$joueur->chevalet ,
-                    "reserve"=>$partie->reserve,
+                    "chevalet" => $joueur->chevalet,
+                    "reserve" => $partie->reserve,
 
                 ], 200);
 
@@ -538,10 +538,58 @@ class MessageController extends Controller
             }
 
         }
+        $resfinal = '';
+        $chevaletfinal = '';
 
 
         for ($i = 0, $iMax = strlen($lettres); $i < $iMax; $i++) {
-            // retourner le charactere random
+
+            // get la postion  lettres dans le chevalet
+
+            $posLettreChevalet = strpos($reserve, $lettres[$i]);
+
+            // genrer un caractere random  de la reserve
+            $charReserve = $reserve[random_int(0, strlen($reserve) - 1)];
+
+            // retourner la posistion  du character de random  de reserve
+            $charPosReserve = strpos($reserve, $charReserve);
+
+
+            // retirer de reserve
+            str_replace($reserve[$charPosReserve], '/', $reserve);
+            // parcourir reserve
+            $reserveCopie = '';
+            for ($j = 0, $jMax = strlen($reserve); $j < $jMax; $j++) {
+                if ($reserve[$j] !== '/') {
+                    $reserveCopie .= $reserve[$j];
+                }
+            }
+            $reserve = $reserveCopie;
+
+            // remplacer le caractere dans le chevalet
+            str_replace($lettres[$i], $charReserve, $chevalet);
+
+            $resfinal = $reserve;
+            $chevaletfinal = $chevalet;
+        }
+
+// mise a jour dans la base de donnes
+        DB::table('joueurs')
+            ->where('idJoueur', $idjoueur)
+            ->update(['chevalet' => $chevaletfinal]);
+        DB::table('parties')
+            ->where('idPartie', $idpartie)
+            ->update(['reserve' => $resfinal]);
+
+
+        return true;
+
+    }
+
+
+
+    /*
+       // retourner le charactere random
 
             $char = $reserve[random_int(0, strlen($reserve) - 1)];
 
@@ -570,16 +618,10 @@ class MessageController extends Controller
                 ->where('idPartie', $idpartie)
                 ->update(['reserve' => $reserveCopie]);
 
-        }
 
 
 
-        return true;
-
-    }
-
-
-
+       */
 
 
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
