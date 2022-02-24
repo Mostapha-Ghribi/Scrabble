@@ -67,14 +67,13 @@
         </div>
         <br>
         <div class="mb-6">
-            <input type="text" class="form-control form-control-sm" name="message" #message
-                   placeholder="Entrer une commande ou un message">
+            <input type="text" class="form-control form-control-sm" name="message" #messageBoit placeholder="Entrer une commande ou un message"/>
         </div>
         <br>
     </div>
 </div>
 
-<div class="Chevalet">
+<div [ngClass]="ChevaletTabed ? 'Chevalet tabbed' : 'Chevalet'" #chevalet>
     <div class="LettreChevalet" *ngFor="let lettre of LettreChevalet">
         <span class="ScrabbleLetter">{{lettre}}</span>
         <span class="ScrabbleNumber">{{this.valueLettre(lettre)}}</span>

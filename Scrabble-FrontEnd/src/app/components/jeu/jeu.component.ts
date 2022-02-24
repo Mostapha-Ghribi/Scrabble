@@ -3,6 +3,8 @@ import {JoueurService} from "../../services/joueur.service";
 import {Router} from "@angular/router";
 import {PusherService} from "../../services/pusher.service";
 import {PartieService} from "../../services/partie.service";
+import {arrayIndexOf} from "pusher-js/types/src/core/utils/collections";
+import {K} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-jeu',
@@ -16,15 +18,48 @@ export class JeuComponent implements OnInit {
   private idPartie: any;
   public LettreChevalet: any;
   public reserveLength: any;
-  @ViewChild('message') searchElement: ElementRef | undefined;
-  @HostListener('window:keydown.escape', ['$event'])
+  @ViewChild('messageBoit') searchElement: ElementRef | any;
+  @ViewChild('chevalet') chevalet: ElementRef | any;
+  public ChevaletTabed: boolean = false;
+  private copieChevalet: any;
+  public KeyCode : any = -1;
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    let index = this.LettreChevalet.indexOf(String.fromCharCode(event.keyCode));
+    let indexlastArray = this.LettreChevalet.indexOf(String.fromCharCode(this.KeyCode));
+    console.log("last keyCode",this.KeyCode);
+    console.log("current keyCode",event.keyCode);
+    if(event.keyCode >= 65 && event.keyCode <= 90){
+      if(event.keyCode == this.KeyCode){
+        let arrayNext = this.LettreChevalet.slice(indexlastArray+1,);
+        let arrayPrevious = this.LettreChevalet.slice(0,indexlastArray);
+        let otherArray = arrayNext+arrayPrevious;
+        this.copieChevalet = this.LettreChevalet.slice(0,indexlastArray);
+        console.log(otherArray);
+      }
+      this.KeyCode = event.keyCode;
+      console.log(index);
+    }
+  }
+  @HostListener('window:keydown.tab', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+    event.preventDefault();
+    if(this.isTabed){
+
+    this.searchlettre('T',this.LettreChevalet);
+    this.searchElement.nativeElement.blur();
+    this.ChevaletTabed = true;
+    this.isTabed = false;
+    }else{
+      this.ChevaletTabed = false;
+      this.searchElement.nativeElement.focus();
+      this.isTabed = true;
+    }
+  }
+  @HostListener('window:keydown.escape') hasPressed() {
     this.quitGamePartie();
   }
-  @HostListener('window:keydown.tab') hasPressed() {
-    // @ts-ignore
-    this.searchElement.nativeElement.focus();
-  }
+  isTabed : boolean = false;
   tiles: [] | undefined;
 
   constructor(private joueurService : JoueurService,private router : Router,private pusherService : PusherService, private partieService : PartieService) { }
@@ -53,6 +88,12 @@ export class JeuComponent implements OnInit {
       this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
     })
 
+  }
+  searchlettre(lettre : any ,lettres : any){
+    console.log(lettres)
+let copieChevalet2 = lettres;
+    let index = copieChevalet2.indexOf(lettre);
+    console.log(index);
   }
   quitGamePartie(){
     this.joueurService.quitGamePartie(this.id).subscribe(
