@@ -462,7 +462,6 @@ class MessageController extends Controller
                 }
                 return $motCopie;
 
-
         }
     }
 
