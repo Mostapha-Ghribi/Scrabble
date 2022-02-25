@@ -418,7 +418,53 @@ class MessageController extends Controller
 
     }
 
+    public function retournerMotGrille($mot, $grille, $colonne, $ligne, $pos)
+    {
+        $tabMot = str_split($mot);
+        // convertir la grille en d'une chaine vers un tableau
+        $grillTab = $this->StringToArray($grille);
+        // retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+        $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+        // variable mot grille
+        $TabmotGrille = [];
+        $chaineGrille = '';
+        switch ($pos) {
+            case 'v' :
+                for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
+                    $chaineGrille .= $grillTab[$i];
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+                $motCopie = $mot;
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                return $motCopie;
+            case 'h' :
+                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                    $chaineGrille .= $grillTab[$i];
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+                $motCopie = $mot;
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                return $motCopie;
 
+
+        }
+    }
 
 
 }
