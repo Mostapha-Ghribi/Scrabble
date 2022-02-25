@@ -288,7 +288,6 @@ class MessageController extends Controller
 
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
         switch ($commande) {
-
             case 'placer' :
                 $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
                 $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
@@ -308,15 +307,14 @@ class MessageController extends Controller
                         'mot' => $mot,
                     ], 404);
                 }
-                //verifier l'inexistance des espace entres les caracteres d'un mot
+                //verifier l'inexistance des espace entres les characters d'un mot
                 //la chaine doit etre alphabetique
                 // la longeur du mot doit etre <= longeur de chevalet
                 if (str_contains(trim($mot), ' ') ||
                     strlen(trim($mot)) < 2 ||
                     !ctype_alpha(trim($mot)) ||
                     (strlen($mot) > strlen($joueur->chevalet) ) ||
-                    $this->verifierPostionMotValable($ligne, $colonne, $position, $mot)===false
-                ) {
+                    !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -325,6 +323,11 @@ class MessageController extends Controller
                         "test" => strlen($mot) > strlen($joueur->chevalet)
                     ], 404);
                 }
+
+
+
+
+
 
 
 
@@ -388,7 +391,32 @@ class MessageController extends Controller
 
 
 
+    public function StringToArray($string)
+    {
+        $array = str_split($string);
+        for ($i = 0, $iMax = strlen($string); $i < $iMax; $i++) {
+            if ($array[$i] === '-') {
+                $array[$i] = '';
+            }
+        }
+        return $array;
+    }
 
+    //? la chaine contient des -
+    public function ArrayToString($array)
+    {
+        $chaine = "";
+        for ($i = 0, $iMax = count($array); $i <= $iMax; $i++) {
+            if ($array[$i] === "") {
+                $chaine .= "-";
+            } else {
+                $chaine += $chaine[$i];
+            }
+
+        }
+        return $chaine;
+
+    }
 
 
 
