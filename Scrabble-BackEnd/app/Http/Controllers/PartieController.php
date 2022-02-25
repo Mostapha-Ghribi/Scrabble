@@ -47,11 +47,12 @@ class PartieController extends Controller
      *      description="partie inexistant"
      *   ),
      *  )
+     * @throws \JsonException
      */
-    public function getJoueursByIdPartie($idPartie)
+    public function getJoueursByIdPartie($idPartie): JsonResponse
     {
         $partie = Partie::where('idPartie',$idPartie)->first();
-        if(empty(json_decode($partie))){
+        if(empty(json_decode($partie, false, 512, JSON_THROW_ON_ERROR))){
             return Response()->json(['message'=>'Partie inexistant'],404);
         }
         $partie2 = Partie::find($idPartie);
@@ -98,11 +99,12 @@ class PartieController extends Controller
      *      description="Joueur inexistant"
      *   ),
      *  )
+     * @throws \JsonException
      */
-    public function getPartieByIdJoueur($idJoueur)
+    public function getPartieByIdJoueur($idJoueur): JsonResponse
     {
         $joueur = Joueur::where('idJoueur',$idJoueur)->first();
-        if(empty(json_decode($joueur))){
+        if(empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))){
             return Response()->json(['message'=>'Joueur inexistant'],404);
         }
         $partie = Partie::where('idPartie',$joueur->partie);
@@ -113,10 +115,10 @@ class PartieController extends Controller
         return new JsonResponse($p);
 
     }
-    public function getPartieByIdJoueurBind($idJoueur)
+    public function getPartieByIdJoueurBind($idJoueur): JsonResponse
     {
         $joueur = Joueur::where('idJoueur',$idJoueur)->first();
-        if(empty(json_decode($joueur))){
+        if(empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))){
             return Response()->json(['message'=>'Joueur inexistant'],404);
         }
         $partie = Partie::where('idPartie',$joueur->partie);
@@ -126,6 +128,7 @@ class PartieController extends Controller
         return new JsonResponse($p);
 
     }
+
     /**
      *
      * @OA\Get(
@@ -145,27 +148,27 @@ class PartieController extends Controller
      *      ),
      *   ),
      * )
+     * @throws \Exception
      */
-    public function InitChevaletAndReserve($idPartie)
+    public function InitChevaletAndReserve($idPartie): JsonResponse
     {
         $partie = Partie::where('idPartie',$idPartie);
         $partie2 = Partie::find($idPartie);
         $p = $partie->first();
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
         $reserve = $p->reserve;
-        for ($i = 0;$i<count($p->joueurs);$i++){
-           $idJoueur =  $p->joueurs[$i]->idJoueur;
-           if(strlen($p->joueurs[$i]->chevalet)==0) {
+        foreach ($p->joueurs as $i => $iValue) {
+           $idJoueur =  $iValue->idJoueur;
+           if($iValue->chevalet === '') {
                $chevaletJoueur = "";
                for ($j = 0; $j < 7; $j++) {
-                   $chevaletJoueur .= $reserve[rand(0, strlen($reserve) - 1)];
+                   $chevaletJoueur .= $reserve[random_int(0, strlen($reserve) - 1)];
                    $strpos = strpos($reserve, $chevaletJoueur[$j]);
                    $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
                }
                DB::table('joueurs')
                    ->where('idJoueur', $idJoueur)
-                   ->update(['chevalet' => $chevaletJoueur])
-                   ->update(['ordre' => $i+1]);
+                   ->update(['chevalet' => $chevaletJoueur,'ordre' => $i+1]);
                DB::table('parties')
                    ->where('idPartie', $idPartie)
                    ->update(['reserve' => $reserve]);

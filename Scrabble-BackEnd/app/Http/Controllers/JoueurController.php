@@ -56,10 +56,10 @@ class JoueurController extends Controller
      *   ),
      *  )
      */
-    public function getJoueur($idJoueur)
+    public function getJoueur($idJoueur): JsonResponse
     {
         $joueur = Joueur::where(['idJoueur'=>$idJoueur])->first();
-        if (!empty(json_decode($joueur))) {
+        if (!empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))) {
             return new JsonResponse($joueur);
         }
         return Response()->json(["message" => "le joueur n'existe pas"], 404);
@@ -97,7 +97,7 @@ class JoueurController extends Controller
     * )
     * )
     */
-    public function inscrire(JoueurRequest $request)
+    public function inscrire(JoueurRequest $request): JsonResponse
     {
         $message = "success";
         $validData = $request->validate([
@@ -141,20 +141,20 @@ class JoueurController extends Controller
             // si le joueur ajouter son image
 
             //si la partie n'est pas existe ou bien le status de la partie different de "EnAttente"
-            if (!$partie || $partie->statutPartie != "EnAttente") {
+            if (!$partie || $partie->statutPartie !== "EnAttente") {
                 $partieCreated = Partie::create(['typePartie' => $typePartie]);
                 $joueur = Joueur::create(['nom' => $request->nom, 'photo' =>  $request->photo, 'partie' => $partieCreated->idPartie]);
                 $joueur->increment('ordre');
             }
             //si la partie existe et sa statut == "EnAttente"
-            if ($partie && $partie->statutPartie == "EnAttente") {
+            if ($partie && $partie->statutPartie === "EnAttente") {
                 $joueur = Joueur::create(['nom' => $request->nom, 'photo' => $request->photo, 'partie' => $partie->idPartie]);
                 $nbJ = $partie->nombreJoueurs;
                 DB::table('joueurs')
                     ->where('idJoueur', $joueur->idJoueur)
                     ->update(['ordre' => $nbJ+1]);
 
-                if ($partie->typePartie - $partie->nombreJoueurs == 1) {
+                if ($partie->typePartie - $partie->nombreJoueurs === 1) {
                     Partie::find($partie->idPartie)->increment('nombreJoueurs');
                     Partie::find($partie->idPartie)->update(['statutPartie'=>"EnCours"]);
                 } else {
@@ -254,7 +254,7 @@ class JoueurController extends Controller
         }
         $joueur->decrement('statutJoueur');
         $partie = Partie::where('idPartie',$joueur->partie)->first();
-        if($partie->nombreJoueurs == $partie->typePartie){
+        if($partie->nombreJoueurs === $partie->typePartie){
             $partie->update(['statutPartie'=>'EnAttente']);
         }
         $partie->decrement('nombreJoueurs');
@@ -274,13 +274,13 @@ class JoueurController extends Controller
         return new JsonResponse($joueur);
     }
 
-    private function switchRoom($getOneJoueur, mixed $idPartie)
+    private function switchRoom($getOneJoueur, mixed $idPartie): void
     {
         $partie = Partie::where('idPartie',$getOneJoueur->partie)->first();
         $partie->decrement('nombreJoueurs');
         $getOneJoueur->update(['partie'=>$idPartie]);
         $partieToJoin = Partie::where('idPartie',$idPartie)->first();
-        if($partieToJoin->typePartie - $partieToJoin->nombreJoueurs == 1){
+        if($partieToJoin->typePartie - $partieToJoin->nombreJoueurs === 1){
             $partieToJoin->update(['statutPartie'=>'EnCours']);
         }
         $partieToJoin->increment('nombreJoueurs');
@@ -323,13 +323,13 @@ class JoueurController extends Controller
      *   ),
      *  )
      */
-    public function quitPlayerPartie($idJoueur)
+    public function quitPlayerPartie($idJoueur): JsonResponse
     {
         $joueur = Joueur::where('idJoueur',$idJoueur)->first();
         if(empty($joueur)){
             return new JsonResponse(["message" => "joueur n'existe pas"],404);
         }
-        if($joueur->statutJoueur == 0){
+        if($joueur->statutJoueur === 0){
             return new JsonResponse(["message" => "le joueur n'est pas déjà en jeu"],404);
         }
         $chevalet = $joueur->chevalet;
