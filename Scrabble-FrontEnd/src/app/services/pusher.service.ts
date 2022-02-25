@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
-import {JoueurService} from "./joueur.service";
-import {Router} from "@angular/router";
-import {PartieService} from "./partie.service";
 @Injectable({
   providedIn: 'root'
 })

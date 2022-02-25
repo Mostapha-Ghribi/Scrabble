@@ -133,7 +133,6 @@ export class JeuComponent implements OnInit {
     this.joueurService.quitGamePartie(this.id).subscribe(
         res =>{
           this.router.navigate(['/inscription']);
-          console.log(res);
         },
         err =>{
           console.log(err);
@@ -216,17 +215,13 @@ export class JeuComponent implements OnInit {
   }
   startTimer(time : any) {
     this.time = time;
-    console.log("=====>");
     this.interval = setInterval(() => {
 
       if(this.time == 0){
-        console.log("stop")
         if(this.ordre == this.typePartie){
           this.ordre = 1;
-          console.log(this.ordre);
         }else{
           this.ordre = this.ordre+1;
-          console.log(this.ordre);
         }
         this.time = 300;
       }

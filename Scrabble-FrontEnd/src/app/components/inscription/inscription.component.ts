@@ -42,7 +42,6 @@ export class InscriptionComponent implements OnInit {
   inscrire() {
     let data = this.inscriptionForm.value ;
     let joueur = {"nom" : data.nom,"photo" : data.photo, "partie" : data.partie}
-    //this.joueurService.inscrire(joueur);
     this.joueurService.addPlayer(joueur).subscribe(data => {
       this.router.navigate(['/room']);
       localStorage.setItem('idJoueur',data.idJoueur);

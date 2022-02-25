@@ -13,12 +13,13 @@ export class SalleDattenteComponent implements OnInit {
 
   private idPartie: any;
   private isFive: boolean = true;
+  private joueursLength: any;
   @HostListener('window:keydown.escape', ['$event'])
-  //@HostListener('window:beforeunload', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     this.quitGame();
     this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
       this.joueurs = data;
+      this.joueursLength = data.length;
       this.players = [];
       for(let i=0; i<this.typePartie; i++){
         this.players.push(this.joueurs[i]);
@@ -34,7 +35,6 @@ export class SalleDattenteComponent implements OnInit {
   channel : any;
   private typePartie: any;
  five(){
-   console.log(this.isFive);
    if(this.isFive){
      this.time = 6;
      this.isFive = false;
@@ -43,7 +43,6 @@ export class SalleDattenteComponent implements OnInit {
        if(this.time == 0){
          this.router.navigate(['/jeu']);
          this.partieService.InitChevaletAndReserve(this.idPartie).subscribe(res=>{
-           console.log(res);
          },err =>{
            console.log(err)
          })
@@ -51,9 +50,8 @@ export class SalleDattenteComponent implements OnInit {
  }
   startTimer(time : any) {
     this.time = time;
-    console.log("=====>");
     this.interval = setInterval(() => {
-      if(this.typePartie == this.joueurs.length){
+      if(this.typePartie === this.joueursLength){
         this.five();
       }else {
         this.isFive = true;
@@ -76,9 +74,7 @@ export class SalleDattenteComponent implements OnInit {
       this.typePartie = data.typePartie;
       this.getJoueursByIdPartie();
     });
-    this.pusherService.channel.bind("quitJoueur",(data : any)=>{
-      this.getJoueursByIdPartie();
-    })
+
     this.getPartieByIdJoueur();
     this.startTimer(0);
   }
@@ -86,7 +82,6 @@ export class SalleDattenteComponent implements OnInit {
     this.joueurService.quitGame(this.id).subscribe(
       res =>{
         this.router.navigate(['/inscription']);
-        console.log(res);
       },
       err =>{
         console.log(err);
@@ -96,8 +91,8 @@ export class SalleDattenteComponent implements OnInit {
   getPartieByIdJoueur() {
     this.id = localStorage.getItem('idJoueur');
       this.partieService.getPartieByIdJoueur(this.id).subscribe( data =>{
-        console.log(data);
         this.joueurs = data.joueurs;
+        this.joueursLength = data.length;
         this.typePartie = data.typePartie;
         this.players = [];
         for(var i=0;i<this.typePartie;i++){
@@ -108,6 +103,7 @@ export class SalleDattenteComponent implements OnInit {
     getJoueursByIdPartie(){
       this.partieService.getJoueursByIdPartie(this.idPartie).subscribe( data =>{
         this.joueurs = data;
+        this.joueursLength = data.length;
         this.players = [];
         for(let i=0; i<this.typePartie; i++){
           this.players.push(this.joueurs[i]);
