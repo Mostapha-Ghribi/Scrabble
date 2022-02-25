@@ -109,7 +109,6 @@ class MessageController extends Controller
         return Message::findOrFail($idMessage);
     }
 
-
     /*  =====================================================================================================================================
         =====================================================================================================================================
      */
@@ -117,7 +116,6 @@ class MessageController extends Controller
     /**
      * retourner  Tous les messaege d'unn joueur a partir de son id
      */
-
 
     /**
      *
@@ -158,7 +156,6 @@ class MessageController extends Controller
      *  )
      */
 
-
     public function getMessageByPlayerId($idJoueur)
     {
         return Joueur::find($idJoueur)->messages()
@@ -166,10 +163,7 @@ class MessageController extends Controller
             ->latest('dateCreation')
             ->get();
     }
-    /*  =====================================================================================================================================
-          =====================================================================================================================================
-       */
-
+    /*  ===================================================================================================================================== */
 
     /**
      * retourner  Tous les messages a partir d'un partie ID
@@ -307,8 +301,8 @@ class MessageController extends Controller
                         'mot' => $mot,
                     ], 404);
                 }
-                //verifier l'inexistance des espace entres les characters d'un mot
-                //la chaine doit etre alphabetique
+                // verifier l'inexistance des espace entres les characters d'un mot
+                // la chaine doit etre alphabetique
                 // la longeur du mot doit etre <= longeur de chevalet
                 if (str_contains(trim($mot), ' ') ||
                     strlen(trim($mot)) < 2 ||
@@ -318,13 +312,11 @@ class MessageController extends Controller
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom  Commande impossible a realiser",
+                        'message' => "$joueur->nom  Commande impossible à realiser",
                         'mot' => $mot,
                         "test" => strlen($mot) > strlen($joueur->chevalet)
                     ], 404);
                 }
-
-
 
 
 
@@ -415,7 +407,6 @@ class MessageController extends Controller
 
         }
         return $chaine;
-
     }
 
     public function retournerMotGrille($mot, $grille, $colonne, $ligne, $pos)
