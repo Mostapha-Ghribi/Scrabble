@@ -271,6 +271,8 @@ class MessageController extends Controller
         $joueur = Joueur::find($request->envoyeur);
         $partie = Partie::find($request->partie);
         $envoyeur = Joueur::find($request->envoyeur);
+        $ordre = $request->ordre;
+
 
         //? verifier si le joueur est deja partant de la partie courante
         if ($envoyeur->partie !== $request->partie) {
@@ -320,7 +322,8 @@ class MessageController extends Controller
                 $motAplacer = substr($commande, 11, strlen($commande));
 
                 // ? verifier si les lettres sont inclus dans le chevalet du joueur
-                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet)) === false) {
+                //verfierMotDansChevalet($mot, $chevalet, $grille, $colonne, $ligne, $pos)
+                if ($this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet), $partie->grille, $col, $lg, $posit, $ordre) === false) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -346,8 +349,10 @@ class MessageController extends Controller
 
                 //? verifier l'existance des condition
                 if ($ligneCommande && $colonneisNumber && $colonneisNumberValid && $pos
-                    && $this->verifierPostionMotValable($lg, $col, $posit, $motAplacer) && $this->verfierMotFranacaisValide(trim($motAplacer))) {
+                    && $this->verifierPostionMotValable($lg, $col, $posit, $motAplacer) && $this->verfierMotFranacaisValide(trim($motAplacer))
+                    && $this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet), $partie->grille, $col, $lg, $posit, $ordre)) {
                     //? creer le message dans la base de donnes
+
                     $message = new Message;
                     $message->contenu = $request->contenu;
                     $message->envoyeur = $request->envoyeur;
@@ -387,7 +392,12 @@ class MessageController extends Controller
                 $mot = substr($commande, 12);
 
                 // ? verifier si les lettres sont (inclus) dans le chevalet du joueur
-                if ($this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet)) === false) {
+                $ligne2 = $nouvelleCommande[0];
+                $col2 = substr($nouvelleCommande, 1, 2);
+                $pos2 = $nouvelleCommande[3];
+//verfierMotDansChevalet($mot, $chevalet, $grille, $colonne, $ligne, $pos)
+
+                if ($this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet), $partie->grille, $col2, $ligne2, $pos2, $ordre) === false) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -420,11 +430,10 @@ class MessageController extends Controller
                 //? verifier si la mot est en position valable dans la grille
                 $verifierMot = $this->verifierPostionMotValable($nouvelleCommande[0], (int)$colIsNumber, $nouvelleCommande[3], $mot);
                 // ? tester l'existance des conditions
-                if ($ligneCorrecte && $coloneCorrecte && $posCorrecte && $verifierMot && $this->verfierMotFranacaisValide(trim($mot))) {
-
+                if ($ligneCorrecte && $coloneCorrecte && $posCorrecte && $verifierMot && $this->verfierMotFranacaisValide(trim($mot))
+                    && $this->verfierMotDansChevalet(trim($mot), trim($joueur->chevalet), $partie->grille, $col2, $ligne2, $pos2, $ordre)) {
                     // TODO verfier si la mot est valable dans  le chevalet placer le mot
-                    // verfierMotDansChevalet($mot, $chevalet)
-
+                    // verfier MotDansChevalet($mot, $chevalet)
                     // ? creer un message dans la base de donnes
                     $message = new Message;
                     $message->contenu = $request->contenu;
@@ -457,7 +466,6 @@ class MessageController extends Controller
             if ($this->changerlettres($LettreChanger, $joueur->chevalet, $partie->reserve, $joueur->idJoueur, $partie->idPartie)) {
                 // TODO lettre alphabétique et  le contient *
                 // TODO verifier si les lettres sont inclus dans le chevalet du joueur
-
                 $message = new Message;
                 $message->contenu = $request->contenu;
                 $message->envoyeur = $request->envoyeur;
@@ -541,7 +549,7 @@ class MessageController extends Controller
         $i = 0;
         while ($i < strlen($lettres)) {
             // generer des lettres aleatoire dans la reserve
-            $posChar = random_int(0, strlen($reserve) );
+            $posChar = random_int(0, strlen($reserve));
             // recuperer le charactere du  reserve
             $charReserve = $reserve[$posChar];
             // remplacer par un /
@@ -563,7 +571,6 @@ class MessageController extends Controller
 
         }
 
-
 // mise a jour dans la base de donnes
         DB::table('joueurs')
             ->where('idJoueur', $idjoueur)
@@ -571,8 +578,6 @@ class MessageController extends Controller
         DB::table('parties')
             ->where('idPartie', $idpartie)
             ->update(['reserve' => $reservefinal]);
-
-
         return true;
 
     }
@@ -608,81 +613,145 @@ class MessageController extends Controller
             DB::table('parties')
                 ->where('idPartie', $idpartie)
                 ->update(['reserve' => $reserveCopie]);
-
-
-
-
        */
 
 
     //? fonction retirer lettre de chevalet apres un place avec toutes le verification necessaire du chevalet
     // ! les parametres ,$grille,$ligne,$colonne,$pos
-    public function verfierMotDansChevalet($mot, $chevalet)
+    /*
+       h6v bonbon
+     */
+
+
+    public function retournerMotGrille($mot, $grille, $colonne, $ligne, $pos)
     {
-
-        /*$tabMot = str_split($mot);
-        //? convertir la grille en d'une chaine vers un tableau
+        $tabMot = str_split($mot);
+        // convertir la grille en d'une chaine vers un tableau
         $grillTab = $this->StringToArray($grille);
-
-        //? retourner la position du mot dans le tableau (grille sous forme d'un tableau)
-
+        // retourner la position du mot dans le tableau (grille sous forme d'un tableau)
         $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
-
-        //? tableau de lettres dans la position de la grille
-        $motGrille = [];
-
+        // variable mot grille
+        $TabmotGrille = [];
+        $chaineGrille = '';
         switch ($pos) {
             case 'v' :
                 for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
-                    $motGrille[$i] = $grillTab[$i];
+                    $chaineGrille .= $grillTab[$i];
                 }
-                //? verifier si le mot dans la grille est disponible dans le mot actuel
-                // ? convertir la chaine de grille
-                // ? verifier si la chaine a placer contient les lettres de la chaine de grille (cas a completer)
-                // ? placer le mot
-                $counter = 0;
-                for ($i = $posMotTableau, $iMax = strlen($mot); $i <= $iMax; $i += 16) {
-                    $grillTab[$i] = $motGrille[$counter];
-                    $counter++;
+                // ? verifier que la longeur mot < longeur chevalet
+                $motCopie = $mot;
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
                 }
-                return true;
+                return $motCopie;
+            case 'h' :
+                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
+                    $chaineGrille .= $grillTab[$i];
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+                $motCopie = $mot;
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                return $motCopie;
+
+
+        }
+    }
+
+
+    public function verfierMotDansChevalet($mot, $chevalet, $grille, $colonne, $ligne, $pos, $order)
+    {
+        $resteMotGrille = '';
+        $isOrderOne = true;
+        // convertir la grille en d'une chaine vers un tableau
+        $grillTab = $this->StringToArray($grille);
+        // retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+        $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+        // variable mot grille
+        $TabmotGrille = [];
+        $chaineGrille = '';
+        $motCopie=$mot ;
+        switch ($pos) {
+            case 'v' :
+
+                for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) +strlen($mot)-1 ) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
+                   $chaineGrille .= $grillTab[$i];
+
+                    if ($i === 112) {
+                        $isOrderOne = false;
+                    }
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                $resteMotGrille = $motCopie;
                 break;
             case 'h' :
                 for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                    $motGrille[$i] = $grillTab[$i];
-                }
-                if (emptyArray(implode($motGrille))) {
-                    // si la position de mot dans la grille est vide on la place
-                    $counter = 0;
-                    for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                        $grillTab[$i] = $motGrille[$counter];
-                        $counter++;
+                    $chaineGrille .= $grillTab[$i];
+                    if ($i === 112) {
+                        $isOrderOne = false;
                     }
-                    return true;
                 }
-                $counter = 0;
-                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i <= $iMax; $i++) {
-                    $grillTab[$i] = $motGrille[$counter];
-                    $counter++;
+                // ? verifier que la longeur mot < longeur chevalet
+
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
                 }
-                return true;
+                $resteMotGrille = $motCopie;
                 break;
 
+        }
 
-        }*/
 
+        // ***************************************************************************************
+        //   $resteMotGrille = $this->retournerMotGrille($mot, $grille, $colonne, $ligne, $pos);
 
+        if ($isOrderOne && $order === 1) {
+            return false;
+        }
+
+        if ($resteMotGrille === '') {
+            return false;
+        }
         // ? verifier que la longeur mot < longeur chevalet
         $chevaletCopie = $chevalet;
         $x = 0;
-        while ($x < strlen($mot)) {
-            $char = $mot[$x];
+        while ($x < strlen($resteMotGrille)) {
+            $char = $resteMotGrille[$x];
             if (ctype_upper($char)) {
                 $char = '*';
             }
             if (str_contains($chevaletCopie, $char)) {
-                $pos = strpos($chevaletCopie, $char);
-                $chevaletCopie = substr($chevaletCopie, 0, $pos) . substr($chevaletCopie, $pos + 1);
+                $posChar = strpos($chevaletCopie, $char);
+                $chevaletCopie = substr($chevaletCopie, 0, $posChar) . substr($chevaletCopie, $posChar + 1);
                 $x++;
             } else {
                 return false;
@@ -774,10 +843,29 @@ class MessageController extends Controller
         return true;
     }
 
+    /*
+
+
+    StringToArray(grille : any){
+      let Arraygrille = grille.split('');
+      for (let i=0;i<Arraygrille.length;i++){
+        if(Arraygrille[i]=='-'){
+          Arraygrille[i]="";
+        }
+      }
+      return Arraygrille;
+    }
+     */
 
     public function StringToArray($string)
     {
-        return str_ireplace(str_split($string), '-', '');
+        $array = str_split($string);
+        for ($i = 0, $iMax = strlen($string); $i < $iMax; $i++) {
+            if ($array[$i] === '-') {
+                $array[$i] = '';
+            }
+        }
+        return $array;
     }
 
     //? la chaine contient des -
