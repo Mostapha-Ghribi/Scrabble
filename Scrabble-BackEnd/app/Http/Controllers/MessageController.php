@@ -353,6 +353,68 @@ class MessageController extends Controller
                     && $this->verfierMotDansChevalet(trim($motAplacer), trim($joueur->chevalet), $partie->grille, $col, $lg, $posit, $ordre)) {
                     //? creer le message dans la base de donnes
 
+
+                    $resteMotGrille = '';
+                    $isOrderOne = true;
+                    // convertir la grille en d'une chaine vers un tableau
+                    $grillTab = $this->StringToArray($partie->grille);
+                    $nouvelGrilleChaine = $partie->grille;
+                    // retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+                    $posMotTableau = (ord(strtoupper($lg)) - ord('A')) * 15 + ($col - 1);
+                    // variable mot grille
+                    $TabmotGrille = [];
+                    $chaineGrille = '';
+                    $motCopie = $motAplacer;
+                    $reserve = $partie->reserve;
+
+                    switch ($posit) {
+
+                        case 'v' :
+                            for ($i = $posMotTableau, $j = 0, $iMax = ((ord(strtoupper($lg)) - ord('A')) + strlen($motAplacer) - 1) * 15 + ($col - 1); $j < strlen($motAplacer) && $i <= $iMax; $j++, $i += 15) {
+                                $chaineGrille .= $grillTab[$i];
+                                $nouvelGrilleChaine[$i] = $motAplacer[$j];
+                            }
+
+                            break;
+                        case 'h' :
+                            for ($j = 0, $i = $posMotTableau, $iMax = $posMotTableau + strlen($motAplacer); $j < strlen($motAplacer) && $i <= $iMax; $j++, $i++) {
+                                $chaineGrille .= $grillTab[$i];
+                                $nouvelGrilleChaine[$i] = $motAplacer[$j];
+                            }
+                            break;
+                    }
+
+                    $x = 0;
+                    while ($x < strlen($chaineGrille)) {
+                        $char = $chaineGrille[$x];
+                        if (str_contains($motCopie, $char)) {
+                            $posCharMot = strpos($motCopie, $char);
+                            $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                            $x++;
+                        }
+                    }
+                    $resteMotGrille = $motCopie;
+
+                    $reserveMax = min(strlen($partie->reserve), strlen($resteMotGrille));
+
+                    for ($j = 0, $jMax = $reserveMax; $j < $jMax; $j++) {
+                        $resteMotGrille .= $reserve[random_int(0, strlen($reserve) - 1)];
+                        $strpos = strpos($reserve, $resteMotGrille[$j]);
+                        $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+                    }
+                    // grillle === $nouvelGrilleChaine     chavlet=$resteMotGrille     resrve=$reserve
+                    return new JsonResponse([
+                        "grille" => $nouvelGrilleChaine,
+                        "reserve" => $reserve,
+                        "chevalet" => $resteMotGrille
+
+                    ]);
+
+                    DB::table('parties')->where("idPartie", $partie->idPartie)
+                        ->update(["grille" => $nouvelGrilleChaine, "reserve" => $reserve]);
+                    DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $resteMotGrille]);
+
+                    /***********************************************/
                     $message = new Message;
                     $message->contenu = $request->contenu;
                     $message->envoyeur = $request->envoyeur;
@@ -683,12 +745,12 @@ class MessageController extends Controller
         // variable mot grille
         $TabmotGrille = [];
         $chaineGrille = '';
-        $motCopie=$mot ;
+        $motCopie = $mot;
         switch ($pos) {
             case 'v' :
 
-                for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) +strlen($mot)-1 ) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
-                   $chaineGrille .= $grillTab[$i];
+                for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
+                    $chaineGrille .= $grillTab[$i];
 
                     if ($i === 112) {
                         $isOrderOne = false;
