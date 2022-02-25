@@ -311,7 +311,12 @@ class MessageController extends Controller
                 //verifier l'inexistance des espace entres les caracteres d'un mot
                 //la chaine doit etre alphabetique
                 // la longeur du mot doit etre <= longeur de chevalet
-                if (str_contains(trim($mot), ' ') || strlen(trim($mot)) < 2 || !ctype_alpha(trim($mot)) || (strlen($mot) > strlen($joueur->chevalet) )) {
+                if (str_contains(trim($mot), ' ') ||
+                    strlen(trim($mot)) < 2 ||
+                    !ctype_alpha(trim($mot)) ||
+                    (strlen($mot) > strlen($joueur->chevalet) ) ||
+                    $this->verifierPostionMotValable($ligne, $colonne, $position, $mot)===false
+                ) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -348,6 +353,44 @@ class MessageController extends Controller
 
 
     }
+
+
+
+
+
+
+
+
+
+    //? verifier si un mot contient un caractere Majuscule
+    public function verifierMotContientLettreMajuscule($mot): bool
+    {
+        // ? verfier si toute la chaine est en Minuscule
+        $mot = trim($mot);
+        $chaineMinuscule = ctype_lower($mot);
+        if ($chaineMinuscule) {
+            return true;
+        }
+        return false;
+    }
+
+    public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
+    {
+        // g15v bonjour
+        $longeurchaine = strlen($mot);
+        if ($pos === 'v') {
+            $limiteLigne = ord('P') - ord(strtoupper(trim($ligne)));
+            return ($limiteLigne >= $longeurchaine);
+        }
+        $limiteColonne = 16 - $colonne;
+        return ($limiteColonne >= $longeurchaine);
+    }
+
+
+
+
+
+
 
 
 }
