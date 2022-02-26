@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('parties', function (Blueprint $table) {
             $table->increments("idPartie");
             $table->integer("typePartie");
+            $table->integer('nombreTours')->default(1);
             $table->string("reserve", 102)->default("aaaaaaaaabbccdddeeeeeeeeeeeeeeeffgghhiiiiiiiijklllllmmmnnnnnnooooooppqrrrrrrssssssttttttuuuuuuvvwxyz**");
             $table->string("grille", 225)->default("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             $table->integer('nombreJoueurs')->default(1);
