@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Resources;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @OA\Schema(schema="Message")
+ * @OA\Schema(schema="MessageResource")
  * {
  * @OA\Property(
  *     property="dateCreation",
@@ -37,23 +36,18 @@ use Illuminate\Database\Eloquent\Model;
  *
  * }
  */
-class Message extends Model
+class MessageResource extends JsonResource
 {
 
-    public function partie()
+    public function toArray($request)
     {
-        return $this->belongsTo(Partie::class);
+        return [
+            'dateCreation' => $this->dateCreation,
+            'contenu' => $this->contenu,
+            'statutMessage' => $this->statutMessage,
+            'partie' => $this->partie,
+            'envoyeur' => $this->envoyeur
+
+        ];
     }
-
-    public function joueur()
-    {
-        return $this->belongsTo(Joueur::class);
-    }
-
-
-    use HasFactory;
-
-    protected $fillable = ['contenu', 'partie','envoyeur'];
-    public $timestamps = false;
-    protected $primaryKey = 'idMessage';
 }

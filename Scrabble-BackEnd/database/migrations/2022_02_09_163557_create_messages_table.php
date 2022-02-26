@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->increments('idMessage');
             $table->timestamp('dateCreation')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->string('contenu', 50);
-            $table->boolean('statutMessage');
+            $table->boolean('statutMessage')->default(true);
             $table->integer('partie')->unsigned();
             $table->foreign('partie')->references('idPartie')->on('parties');
             $table->integer('envoyeur')->unsigned();

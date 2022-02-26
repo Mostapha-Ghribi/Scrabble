@@ -132,6 +132,80 @@
                 }
             }
         },
+        "/v1/messages": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "la liste des messages",
+                "description": "la liste des messages",
+                "operationId": "index",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/v1/message/{idMessage}": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Trouver un Message a partir  de son id",
+                "operationId": "getMessageById",
+                "parameters": [
+                    {
+                        "name": "idMessage",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
+        "/v1/messages/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Trouver un Message a partir  de l'ID d'un joueur",
+                "operationId": "getMessageByPlayerId",
+
         "/v1/quitter/joueur/{idJoueur}": {
             "get": {
                 "tags": [
@@ -168,6 +242,16 @@
                 }
             }
         },
+        "/v1/messages/partie/{partieId}": {
+            "get": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Trouver Tous les  Messages a partir  de l'ID d'une partie",
+                "operationId": "getMessageByPartieId",
+                "parameters": [
+                    {
+                        "name": "partieId",
         "/v1/quitter/partie/joueur/{idJoueur}": {
             "get": {
                 "tags": [
@@ -204,6 +288,59 @@
                 }
             }
         },
+        "/v1/message": {
+            "post": {
+                "tags": [
+                    "message"
+                ],
+                "summary": "Ecrire un message",
+                "operationId": "89cb9fce9100dab799a744281e2a300a",
+                "requestBody": {
+                    "description": "Creer un Message avec son contenu,envoyeur,partie ",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Message"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message envoyé avec succées",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Message"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "L'un des champs est invalide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, wrong email address or password. Please try again"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/partie/{idPartie}": {
+
         "/v1/partie/joueurs/joueur/{idJoueur}": {
             "get": {
                 "tags": [
@@ -394,6 +531,36 @@
                 },
                 "type": "object"
             },
+            "MessageResource": {
+                "properties": {
+                    "dateCreation": {
+                        "schema": "MessageResource",
+                        "description": "la dateCreation du message",
+                        "type": "string"
+                    },
+                    "contenu": {
+                        "schema": "MessageResource",
+                        "description": "Le contenu du message",
+                        "type": "string"
+                    },
+                    "statutMessage": {
+                        "schema": "MessageResource",
+                        "description": "le statut du  Message",
+                        "type": "boolean"
+                    },
+                    "partie": {
+                        "schema": "MessageResource",
+                        "description": "la partie du  Message ",
+                        "type": "integer"
+                    },
+                    "envoyeur": {
+                        "schema": "MessageResource",
+                        "description": "l envoyeur du Message ",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "Joueur": {
                 "properties": {
                     "nom": {
@@ -429,6 +596,36 @@
                     "partie": {
                         "schema": "Joueur",
                         "description": "la partie ",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Message": {
+                "properties": {
+                    "dateCreation": {
+                        "schema": "Message",
+                        "description": "la dateCreation du message",
+                        "type": "string"
+                    },
+                    "contenu": {
+                        "schema": "Message",
+                        "description": "Le contenu du message",
+                        "type": "string"
+                    },
+                    "statutMessage": {
+                        "schema": "Message",
+                        "description": "le statut du  Message",
+                        "type": "boolean"
+                    },
+                    "partie": {
+                        "schema": "Message",
+                        "description": "la partie du  Message ",
+                        "type": "integer"
+                    },
+                    "envoyeur": {
+                        "schema": "Message",
+                        "description": "l envoyeur du Message ",
                         "type": "integer"
                     }
                 },

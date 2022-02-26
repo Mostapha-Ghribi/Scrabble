@@ -7,13 +7,12 @@ use App\Events\InscriptionJoueur;
 use App\Events\quitJoueur;
 use App\Events\quitJoueurPartie;
 use App\Http\Requests\JoueurRequest;
-use App\Http\Requests\StationPostRequest;
 use App\Http\Resources\JoueurResource;
 use App\Models\Joueur;
 use App\Models\Partie;
-use http\Env\Response;
+
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
+
 use Illuminate\Support\Facades\DB;
 class JoueurController extends Controller
 {
