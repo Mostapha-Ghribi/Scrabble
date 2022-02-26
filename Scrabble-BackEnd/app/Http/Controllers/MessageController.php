@@ -10,6 +10,7 @@ use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function Sodium\add;
 
 class MessageController extends Controller
 {
@@ -256,6 +257,7 @@ class MessageController extends Controller
      *   )
      * )
      *
+     * @throws \Exception
      */
 
     public function creerMessage(Request $request)
@@ -280,6 +282,7 @@ class MessageController extends Controller
             ], 404);
         }
 
+
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
         switch ($commande) {
             case 'placer' :
@@ -290,10 +293,11 @@ class MessageController extends Controller
                 $coordonnes = substr($coordonnes, 1);
                 $position = substr($coordonnes, -1);
                 $coordonnes = substr($coordonnes, 0, -1);
-                $colonne = (int)$coordonnes;
+                $colonne = intval($coordonnes);
+
 
                 // tester si les coordonnes sont  invalide
-                if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot)) {
+                if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot) || ($colonne < 1 || $colonne > 15)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -307,8 +311,8 @@ class MessageController extends Controller
                 if (str_contains(trim($mot), ' ') ||
                     strlen(trim($mot)) < 2 ||
                     !ctype_alpha(trim($mot)) ||
-                    (strlen($mot) > strlen($joueur->chevalet) ) ||
-                    !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot)) {
+                    !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot) ||
+                    !$this->verfierMotDansChevalet($mot, $joueur->chevalet, $partie->grille, $colonne, $ligne, $position, $ordre)) {
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
@@ -317,11 +321,94 @@ class MessageController extends Controller
                         "test" => strlen($mot) > strlen($joueur->chevalet)
                     ], 404);
                 }
+                $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+                $nouvelGrilleChaine = $partie->grille;
+                $chaineGrille = '';
+                $grillTab = $this->StringToArray($partie->grille);
+                $imax = 0;
+                $pas = 1;
+                $reserve = $partie->reserve;
+                $ResteMot = $mot;
+                $Score = 0;
+                $TM = 1;
+                $DM = 1;
+                $ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+
+                switch ($position) {
+                    case 'v' :
+                        $imax =((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1);
+                        $pas = 15;
+
+                        break;
+                    case 'h' :
+                        $imax = $posMotTableau + strlen($mot);
+                        break;
+                }
+                //return new JsonResponse($posMotTableau + strlen($mot));
+                for ($i = $posMotTableau,$j=0; $i < $imax && $j<strlen($mot); $i+=$pas , $j++) {
+
+                    $chaineGrille .= $grillTab[$i];
+                    $nouvelGrilleChaine[$i] = $mot[$j];
+                    if($ScoreGrille[$i] ==="DL"){
+                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *2;
+                    }else if($ScoreGrille[$i] ==="TL"){
+                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *3;
+                    }else if($ScoreGrille[$i] ==="TM"){
+                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+                        $TM *= 3;
+                    }else if($ScoreGrille[$i] ==="DM"){
+                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+                        $DM *= 2;
+                    }else{
+                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+
+                    }
+
+                }
+                $Score *= $TM;
+                $Score *= $DM;
 
 
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($ResteMot, $char)) {
+                        $posCharMot = strpos($ResteMot, $char);
+                        $ResteMot = substr($ResteMot, 0, $posCharMot) . substr($ResteMot, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+               // return new JsonResponse($ResteMot);
+                // calculer bingo
+                if(strlen($ResteMot) === 7){
+                    $Score +=50;
+                }
+
+                $RestChevalet = $joueur->chevalet;
+                $l = 0;
+                while ($l < strlen($ResteMot)) {
+                    $charRestMot = $ResteMot[$l];
+                    if (ctype_upper($charRestMot)) {
+                        $charRestMot = '*';
+                    }
+                    if (str_contains($RestChevalet, $charRestMot)) {
+                        $posCharRestMot = strpos($RestChevalet, $charRestMot);
+                        $RestChevalet = substr($RestChevalet, 0, $posCharRestMot) . substr($RestChevalet, $posCharRestMot + 1);
+                        $l++;
+                    }
+                }
+                for ($m = 0, $mMax = strlen($ResteMot); $m < $mMax; $m++) {
+                    $RestChevalet .= $reserve[random_int(0, strlen($reserve) - 1)];
+                    $strposRest = strpos($reserve, $RestChevalet[$m]);
+                    $reserve = substr($reserve, 0, $strposRest) . substr($reserve, $strposRest + 1);
+                }
+
+                DB::table('parties')->where("idPartie", $partie->idPartie)
+                    ->update(["grille" => strtolower($nouvelGrilleChaine), "reserve" => $reserve]);
+                DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
 
 
-
+                return new JsonResponse(['message'=>'successsssss']);
 
                 break;
             case 'changer' :
@@ -350,13 +437,6 @@ class MessageController extends Controller
     }
 
 
-
-
-
-
-
-
-
     //? verifier si un mot contient un caractere Majuscule
     public function verifierMotContientLettreMajuscule($mot): bool
     {
@@ -380,7 +460,6 @@ class MessageController extends Controller
         $limiteColonne = 16 - $colonne;
         return ($limiteColonne >= $longeurchaine);
     }
-
 
 
     public function StringToArray($string)
@@ -456,5 +535,124 @@ class MessageController extends Controller
         }
     }
 
+    //!  tester vaec h8 et ordre doit etre = 1 le premier vas jouer
+    public function verfierMotDansChevalet($mot, $chevalet, $grille, $colonne, $ligne, $pos, $ordre): bool
+    {
+        $motGrille = [];
+        $motAPlacer = str_split($mot);
+        $resteMotGrille = '';
+        $isOrderOne = true;
+        // convertir la grille en d'une chaine vers un tableau
+        $grillTab = $this->StringToArray($grille);
+        // retourner la position du mot dans le tableau (grille sous forme d'un tableau)
+        $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+
+        $chaineGrille = '';
+        $motCopie = $mot;
+        switch ($pos) {
+            case 'v' :
+                for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
+                    $chaineGrille .= $grillTab[$i];
+                    array_push($motGrille,$grillTab[$i]);
+
+                    if ($i === 112) {
+                        $isOrderOne = false;
+                    }
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                $resteMotGrille = $motCopie;
+                break;
+            case 'h' :
+                for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i < $iMax; $i++) {
+                    $chaineGrille .= $grillTab[$i];
+                    array_push($motGrille,$grillTab[$i]);
+                    if ($i === 112) {
+                        $isOrderOne = false;
+                    }
+                }
+                // ? verifier que la longeur mot < longeur chevalet
+
+                $x = 0;
+                while ($x < strlen($chaineGrille)) {
+                    $char = $chaineGrille[$x];
+                    if (str_contains($motCopie, $char)) {
+                        $posCharMot = strpos($motCopie, $char);
+                        $motCopie = substr($motCopie, 0, $posCharMot) . substr($motCopie, $posCharMot + 1);
+                        $x++;
+                    }
+                }
+                $resteMotGrille = $motCopie;
+                break;
+
+        }
+        if(!$this->compareMotGrilleMot($motGrille,$motAPlacer)){
+            return false;
+        }
+
+
+
+        // ***************************************************************************************
+        //   $resteMotGrille = $this->retournerMotGrille($mot, $grille, $colonne, $ligne, $pos);
+
+        if ($isOrderOne && $ordre === 1) {
+            return false;
+        }
+
+        if ($resteMotGrille === '') {
+            return false;
+        }
+        // ? verifier que la longeur mot < longeur chevalet
+        $chevaletCopie = $chevalet;
+        $x = 0;
+        while ($x < strlen($resteMotGrille)) {
+            $char = $resteMotGrille[$x];
+            if (ctype_upper($char)) {
+                $char = '*';
+            }
+            if (str_contains($chevaletCopie, $char)) {
+                $posChar = strpos($chevaletCopie, $char);
+                $chevaletCopie = substr($chevaletCopie, 0, $posChar) . substr($chevaletCopie, $posChar + 1);
+                $x++;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    public function compareMotGrilleMot($motGrille,$mot) : bool{
+        $i = 0;
+        $valid = true;
+        while($i<count($mot)&& $valid){
+            if($motGrille[$i]===''){
+                $i++;
+            }else if($motGrille[$i] !== $mot[$i]){
+                $valid = false;
+            }else{
+                $i++;
+            }
+        }
+        return $valid;
+    }
+public function valueLettre($tile) : int {
+    return match ($tile) {
+        "A", "E", "I", "L", "N", "O", "R", "S", "T", "U" => 1,
+        "D", "G", "M" => 2,
+        "B", "C", "P" => 3,
+        "F", "H", "V" => 4,
+        "J", "Q" => 8,
+        "K", "W", "X", "Y", "Z" => 10,
+        default => 0,
+    };
+}
 
 }

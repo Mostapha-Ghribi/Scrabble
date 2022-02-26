@@ -149,7 +149,7 @@ class test extends Controller
                     //? creer le message dans la base de donnes
 
 
-                    /*       $resteMotGrille = '';
+                           $resteMotGrille = '';
                            $isOrderOne = true;
                            // convertir la grille en d'une chaine vers un tableau
                            $grillTab = $this->StringToArray($partie->grille);
@@ -165,7 +165,7 @@ class test extends Controller
                            switch ($posit) {
 
                                case 'v' :
-                                   for ($i = $posMotTableau, $j = 0, $iMax = ((ord(strtoupper($lg)) - ord('A')) + strlen($motAplacer) - 1) * 15 + ($col - 1); $j < strlen($motAplacer) && $i <= $iMax; $j++, $i += 15) {
+                                   for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
                                        $chaineGrille .= $grillTab[$i];
                                        $nouvelGrilleChaine[$i] = $motAplacer[$j];
                                    }
@@ -544,7 +544,6 @@ class test extends Controller
         $motCopie = $mot;
         switch ($pos) {
             case 'v' :
-
                 for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
                     $chaineGrille .= $grillTab[$i];
 
@@ -622,7 +621,7 @@ class test extends Controller
 //? verifier si un mot contient un caractere Majuscule
     public function verifierMotContientLettreMajuscule($mot): bool
     {
-        // ? verfier si toute la chaine est en Minuscule
+        //  verifier si toute la chaine est en Minuscule
         $mot = trim($mot);
         $chaineMinuscule = ctype_lower($mot);
         if ($chaineMinuscule) {
