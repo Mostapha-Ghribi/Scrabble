@@ -266,7 +266,7 @@ class MessageController extends Controller
         $posArray = ["h", "v"];
         $joueur = Joueur::find($request->envoyeur);
         $partie = Partie::find($request->partie);
-        $ordre = $request->ordre;
+        $ordre = $partie->nombreTours;
         $contenu = trim($request->contenu);
         if ($contenu[0] !== '!') {
             $message = Message::create($request->all());
@@ -283,7 +283,13 @@ class MessageController extends Controller
         }
 
 
+
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
+        if(($commande ==="placer" || $commande==="changer" || $commande==="passer") && ($partie->nombreTours +1) %$partie->typePartie +1 !== $joueur->ordre){
+            return new JsonResponse([
+                'message' => "$joueur->nom  Commande impossible à realiser",
+            ], 404);
+        }
         switch ($commande) {
             case 'placer' :
                 $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
@@ -329,7 +335,7 @@ class MessageController extends Controller
                 $pas = 1;
                 $reserve = $partie->reserve;
                 $ResteMot = $mot;
-                $Score = 0;
+                $Score = $joueur->score;
                 $TM = 1;
                 $DM = 1;
                 $ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
@@ -405,6 +411,8 @@ class MessageController extends Controller
 
                 DB::table('parties')->where("idPartie", $partie->idPartie)
                     ->update(["grille" => strtolower($nouvelGrilleChaine), "reserve" => $reserve]);
+                DB::table('parties')->where("idPartie", $partie->idPartie)
+                    ->increment('nombreTours');
                 DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
 
 

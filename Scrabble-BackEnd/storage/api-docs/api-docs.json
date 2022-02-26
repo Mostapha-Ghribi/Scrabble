@@ -132,6 +132,78 @@
                 }
             }
         },
+        "/v1/quitter/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "joueur"
+                ],
+                "summary": "quit game",
+                "operationId": "quitPlayer",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
+        "/v1/quitter/partie/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "joueur"
+                ],
+                "summary": "quit game",
+                "operationId": "quitPlayerPartie",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "joueur inexistant"
+                    }
+                }
+            }
+        },
         "/v1/messages": {
             "get": {
                 "tags": [
@@ -205,14 +277,6 @@
                 ],
                 "summary": "Trouver un Message a partir  de l'ID d'un joueur",
                 "operationId": "getMessageByPlayerId",
-
-        "/v1/quitter/joueur/{idJoueur}": {
-            "get": {
-                "tags": [
-                    "joueur"
-                ],
-                "summary": "quit game",
-                "operationId": "quitPlayer",
                 "parameters": [
                     {
                         "name": "idJoueur",
@@ -252,16 +316,6 @@
                 "parameters": [
                     {
                         "name": "partieId",
-        "/v1/quitter/partie/joueur/{idJoueur}": {
-            "get": {
-                "tags": [
-                    "joueur"
-                ],
-                "summary": "quit game",
-                "operationId": "quitPlayerPartie",
-                "parameters": [
-                    {
-                        "name": "idJoueur",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -335,44 +389,6 @@
                                 }
                             }
                         }
-                    }
-                }
-            }
-        },
-        "/v1/partie/{idPartie}": {
-
-        "/v1/partie/joueurs/joueur/{idJoueur}": {
-            "get": {
-                "tags": [
-                    "partie"
-                ],
-                "summary": "retourne les joueurs d'une partie par id Joueur",
-                "operationId": "getJoueursPartieByIdJoueur",
-                "parameters": [
-                    {
-                        "name": "idJoueur",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Opération réussie"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "partie inexistant"
                     }
                 }
             }
