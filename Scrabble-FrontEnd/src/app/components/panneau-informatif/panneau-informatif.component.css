@@ -1,17 +1,21 @@
-.joueurContainers {
+.panneau-informatif{
+  position: absolute;
+  left: 900px;
+  top: 40px;
+  height: 600px;
+  border: 2px solid black;
+  width: 390px;
+  background-color:#D1E7DD;
+}
+.panneau-informatif .joueurContainers {
   height: 100px;
   display: grid;
   grid-template-columns: 100px 260px;
   margin: 10px;
 }
 
-.container {
-  border: 2px solid black;
-  width: 390px;
-  background-color:#D1E7DD;
-}
 
-.infojoueur {
+.panneau-informatif .infojoueur {
   font-size: 16px;
   border-radius: 15px;
   padding-top: 4px;
@@ -19,7 +23,7 @@
   margin-left: 7px;
 }
 
-.nom-joueur {
+.panneau-informatif .nom-joueur {
   padding-top: 2px;
   font-family: serif;
   font-weight: bold;
@@ -27,16 +31,18 @@
   font-size: 15px;
 }
 
-.temps {
+.panneau-informatif .temps {
+  position: absolute;
   padding-left: 4px;
   padding-right: 4px;
   background-color: #D1E7DD;
   border: 2px solid rgba(35, 229, 229, 0.63);
   border-radius: 15px;
   margin-left: 15px;
+  top: 65px;
 }
 
-.timeout {
+.panneau-informatif .timeout {
   padding-left: 4px;
   padding-right: 4px;
   background-color: #d95a5a;
@@ -45,37 +51,38 @@
   margin-left: 15px;
 }
 
-.image-joueur {
+.panneau-informatif .image-joueur {
   border: 1px solid rgba(35, 229, 229, 0.63);
   margin-top: 10px;
   margin-left: 10px;
 }
 
-.score-joueur {
+.panneau-informatif .score-joueur {
   font-size: 16px;
   font-weight: bold;
 }
 
-.lettre-chevalet {
+.panneau-informatif .lettre-chevalet {
 text-align: justify;
   font-weight: bold;
 }
 
 
-.reserve {
-  height: 50px;
+.panneau-informatif .reserve {
+  height: 70px;
+  width: 380px;
   display: grid;
   grid-template-columns: 60px 260px 140px 100px;
 }
 
-.nombre-reserve {
+.panneau-informatif .nombre-reserve {
   font-size: 16px;
   padding-top: 5px;
   padding-left: 2px;
 
 }
 
-.nombre-lettre-reserve {
+.panneau-informatif .nombre-lettre-reserve {
   margin-left: 95px;
  border-radius: 50%;
   font-weight: bold;
@@ -84,7 +91,7 @@ text-align: justify;
   padding: 1px;
 }
 
-.image-reserve {
+.panneau-informatif .image-reserve {
   padding: 2px;
 
 }

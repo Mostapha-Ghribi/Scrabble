@@ -20,7 +20,7 @@
                 "tags": [
                     "joueur"
                 ],
-                "summary": "Trouver un joueur a partir  de son id",
+                "summary": "Trouver un joueur par son id",
                 "operationId": "getJoueur",
                 "parameters": [
                     {
@@ -205,6 +205,14 @@
                 ],
                 "summary": "Trouver un Message a partir  de l'ID d'un joueur",
                 "operationId": "getMessageByPlayerId",
+
+        "/v1/quitter/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "joueur"
+                ],
+                "summary": "quit game",
+                "operationId": "quitPlayer",
                 "parameters": [
                     {
                         "name": "idJoueur",
@@ -244,6 +252,16 @@
                 "parameters": [
                     {
                         "name": "partieId",
+        "/v1/quitter/partie/joueur/{idJoueur}": {
+            "get": {
+                "tags": [
+                    "joueur"
+                ],
+                "summary": "quit game",
+                "operationId": "quitPlayerPartie",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -322,11 +340,49 @@
             }
         },
         "/v1/partie/{idPartie}": {
+
+        "/v1/partie/joueurs/joueur/{idJoueur}": {
             "get": {
                 "tags": [
                     "partie"
                 ],
-                "summary": "Trouver les joueurs d'une partie par id partie",
+                "summary": "retourne les joueurs d'une partie par id Joueur",
+                "operationId": "getJoueursPartieByIdJoueur",
+                "parameters": [
+                    {
+                        "name": "idJoueur",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "partie inexistant"
+                    }
+                }
+            }
+        },
+        "/v1/partie/{idPartie}/joueurs": {
+            "get": {
+                "tags": [
+                    "partie"
+                ],
+                "summary": "retourne les joueurs d'une partie",
                 "operationId": "getJoueursByIdPartie",
                 "parameters": [
                     {
@@ -362,8 +418,8 @@
                 "tags": [
                     "partie"
                 ],
-                "summary": "Trouver les joueurs d'une partie par id joueur",
-                "operationId": "getJoueursPartieByIdPlayer",
+                "summary": "recuperer la partie et ses joueurs avec id joueur",
+                "operationId": "getPartieByIdJoueur",
                 "parameters": [
                     {
                         "name": "idJoueur",
@@ -389,6 +445,30 @@
                     },
                     "404": {
                         "description": "Joueur inexistant"
+                    }
+                }
+            }
+        },
+        "/v1/addChevalet/partie/{idPartie}": {
+            "get": {
+                "tags": [
+                    "partie"
+                ],
+                "summary": "//TODO",
+                "operationId": "f8434933a22cbddd915f696e8092c7dd",
+                "parameters": [
+                    {
+                        "name": "idPartie",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "422": {
+                        "description": "L'un des champs est invalide"
                     }
                 }
             }

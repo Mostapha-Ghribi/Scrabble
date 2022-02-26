@@ -1,0 +1,87 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div class="alphabets">
+    <div  *ngFor="let alpha of ['','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O']">
+        <div class="alphabet_Lettre">{{alpha}}</div>
+    </div>
+</div>
+<div class="grille">
+    <div class="lettres" *ngFor="let number of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">
+        <div class="numbers">{{number}}</div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="BoardBlock" *ngFor="let tile of tiles" style="{{this.BackGroundColor(tile)}};">
+                <div class="Lettre" *ngIf="isLettre(tile)">
+                    <span class="ScrabbleLetter">{{tile}}</span>
+                    <span class="ScrabbleNumber">{{valueLettre(tile)}}</span>
+                </div>
+                <span class="BoardLetter{{tile}}">{{tile}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container panneau-informatif">
+    <div *ngFor="let joueur of joueurs;index as j">
+        <div [ngClass]=" ordre === j+1 ? 'joueurContainers card bordredCard' : 'joueurContainers card' ">
+            <img src="{{joueur.photo}}" width="80" height="80" class="rounded-circle image-joueur" alt="image">
+            <div class="infojoueur">
+                <p class="nom-joueur">{{joueur.nom}}</p>
+                <p><span class="lettre-chevalet">{{joueur.chevalet.length}}</span> lettres sur son chevalet </p>
+                <div>
+                    Score: <span class="score-joueur">{{joueur.score}}</span>
+                    <span id="{{j+1}}" [ngClass]=" time <= 60 && ordre === j+1 ? 'temps timeout' : 'temps'">{{ ordre === j+1 ?"Temps "+ display : "Temps 5:00"}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="reserve card">
+        <div class="image-reserve">
+            <img src="assets/images/reserve.png" width="40" height="40" class="rounded-circle" alt="image">
+        </div>
+        <p class="nombre-reserve">Nombre de lettres dans la reserve  <span class="nombre-lettre-reserve">{{reserve}}</span>  </p>
+    </div>
+    <br>
+</div>
+<br>
+<div class="container boite-communication">
+
+    <div class="column justify-content-center">
+        <div class="mb-6">
+      <textarea class="form-control message" id="exampleFormControlTextarea1" rows="3" cols="50" readonly>
+        haithem :  bonjour
+        haithem : a fait une erreur
+        le tour de mostapha
+      </textarea>
+        </div>
+        <br>
+        <div class="mb-6">
+            <input type="text" class="form-control form-control-sm" name="message" #messageBoit placeholder="Entrer une commande ou un message"/>
+        </div>
+        <br>
+    </div>
+</div>
+
+<div [ngClass]="ChevaletTabed ? 'Chevalet tabbed' : 'Chevalet'" #chevalet>
+    <div  *ngFor="let lettre of LettreChevalet ;index as i">
+        <span [ngClass]=" i === indexlastArray ?'LettreChevalet borderLettre' : 'LettreChevalet'" id="{{i}}">
+        <span class="ScrabbleLetter">{{lettre}}</span>
+        <span class="ScrabbleNumber">{{this.valueLettre(lettre)}}</span>
+        </span>
+    </div>
+</div>
+
+</body>
+</html>
+

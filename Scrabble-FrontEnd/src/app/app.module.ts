@@ -20,6 +20,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatButtonModule} from "@angular/material/button";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {HttpClientModule} from "@angular/common/http";
+import { JeuComponent } from './components/jeu/jeu.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {HttpClientModule} from "@angular/common/http";
     GrilleComponent,
     ChevaletComponent,
     SalleDattenteComponent,
+    JeuComponent,
 
   ],
   imports: [

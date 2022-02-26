@@ -3,6 +3,7 @@ import {InscriptionComponent} from './components/inscription/inscription.compone
 import {SalleDattenteComponent} from "./components/salle-dattente/salle-dattente.component";
 import { RouterModule, Routes } from '@angular/router';
 import {BoiteCommunicationComponent} from "./components/boite-communication/boite-communication.component";
+import {JeuComponent} from "./components/jeu/jeu.component";
 
 const routes: Routes = [
   {
@@ -18,8 +19,8 @@ const routes: Routes = [
     path: "room",
     component : SalleDattenteComponent
   },{
-    path: "message",
-    component : BoiteCommunicationComponent
+    path: "jeu",
+    component : JeuComponent
   }
 ];
 

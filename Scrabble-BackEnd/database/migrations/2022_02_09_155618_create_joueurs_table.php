@@ -11,7 +11,7 @@ return new class extends Migration {
         Schema::create('joueurs', function (Blueprint $table) {
             $table->increments('idJoueur');
             $table->string('nom', 50);
-            $table->text('photo')->default('');
+            $table->longtext('photo')->default('');
             $table->string('chevalet', 7)->default("");
             $table->integer('score')->default(0);
             $table->boolean('statutJoueur')->default(1);

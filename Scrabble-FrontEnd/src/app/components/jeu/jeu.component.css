@@ -1,0 +1,361 @@
+/*!  Grille */
+.grille{
+    position: absolute;
+    left: 150px;
+    width: 600px;
+    margin: 50px;
+}
+.BoardBlock {
+    background-color: #ffbead;
+    height: 40px;
+    width: 40px;
+    float: left;
+    display: block;
+    -moz-box-shadow: inset 0 3px 5px #acacac;
+    -webkit-box-shadow:inset 0 3px 5px #acacac;
+    box-shadow: inset 0 0 5px #acacac;
+}
+.BoardLetterDL {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #5d94c5;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 5px;
+    margin-left: -7px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterTM {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #f8bdb4;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -10px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterTL {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #c3f5f7;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -7px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+.BoardLetterDM {
+    font-family: Asap, serif;
+    font-size: 20px;
+    color: #b86e74;
+    user-select: none;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 4px;
+    margin-left: -10px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding-left: 2px;
+}
+
+.BoardLetterii {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0.7em solid #fc0;
+    border-left: 0.3em solid transparent;
+    font-size: 16px;
+}
+.BoardLetterii:before, .BoardLetterii:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0.6em;
+    left: -1em;
+    border-right: 1em solid transparent;
+    border-bottom: 0.7em solid #fc0;
+    border-left: 1em solid transparent;
+    transform: rotate(-35deg);
+}
+.BoardLetterii:after {
+    transform: rotate(35deg);
+}
+
+.Lettre {
+    background: #f6e1a6;
+    height: 39px;
+    width: 39px;
+    margin-left: -12px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    -moz-box-shadow:0 3px 5px #000;
+    -webkit-box-shadow:0 3px 5px #000;
+    box-shadow:0 0 1px #000;
+    float: left;
+    text-align: center;
+    border-top-width: 1px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #f8e6b1;
+    border-right-color: #d7c293;
+    border-bottom-color: #cab06b;
+    border-left-color: #f8e6b1;
+    user-select: none;
+}
+.ScrabbleLetter {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 30px;
+    color: #272832;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: -9px;
+    margin-left: -16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+}
+.ScrabbleNumber {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 15px;
+    color: #272832;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: 14px;
+    margin-left: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+}
+.numbers{
+    background-color: #a8b8be;
+    width: 40px;
+    height: 40px;
+    float: left;
+    display: block;
+    font-weight: bold;
+    text-align: center;
+    font-size: 24px;
+    box-shadow: inset 0 0 5px #acacac;
+}
+.alphabets{
+    position: absolute;
+    top: 50px;
+    left: 160px;
+
+}
+.alphabet_Lettre{
+    position:relative;
+    display: block;
+    background-color: #a8b8be;
+    width: 40px;
+    height: 40px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: inset 0 0 5px #acacac;
+}
+/*! panneau informatif */
+.panneau-informatif{
+    position: absolute;
+    left: 900px;
+    top: 40px;
+    height: 600px;
+    border: 2px solid black;
+    width: 390px;
+    background-color:#D1E7DD;
+}
+.panneau-informatif .joueurContainers {
+    height: 100px;
+    display: grid;
+    grid-template-columns: 100px 260px;
+    margin: 10px;
+}
+
+
+.panneau-informatif .infojoueur {
+    font-size: 16px;
+    border-radius: 15px;
+    padding-top: 4px;
+    padding-left: 8px;
+    margin-left: 7px;
+}
+
+.panneau-informatif .nom-joueur {
+    padding-top: 2px;
+    font-family: serif;
+    font-weight: bold;
+    color: black;
+    font-size: 15px;
+}
+
+.panneau-informatif .temps {
+    position: absolute;
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: #D1E7DD;
+    border: 2px solid rgba(35, 229, 229, 0.63);
+    border-radius: 15px;
+    margin-left: 15px;
+    top: 65px;
+}
+
+.panneau-informatif .timeout {
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: #d95a5a;
+    border: 2px solid red;
+    border-radius: 15px;
+    margin-left: 15px;
+}
+
+.panneau-informatif .image-joueur {
+    border: 1px solid rgba(35, 229, 229, 0.63);
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.panneau-informatif .score-joueur {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.panneau-informatif .lettre-chevalet {
+    text-align: justify;
+    font-weight: bold;
+}
+
+
+.panneau-informatif .reserve {
+    height: 70px;
+    width: 380px;
+    display: grid;
+    grid-template-columns: 60px 260px 140px 100px;
+}
+
+.panneau-informatif .nombre-reserve {
+    font-size: 16px;
+    padding-top: 5px;
+    padding-left: 2px;
+
+}
+
+.panneau-informatif .nombre-lettre-reserve {
+    margin-left: 95px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: justify-all;
+    padding: 1px;
+}
+
+.panneau-informatif .image-reserve {
+    padding: 2px;
+
+}
+/*! boite de communication */
+.boite-communication {
+    position: absolute;
+    top: 650px;
+    left: 900px;
+    border: 2px solid black;
+    width: 390px;
+    height: 280px;
+    background-color: #D1E7DD;
+}
+.boite-communication .message{
+    margin-top: 10px;
+    resize: none;
+    height: 200px;
+}
+/*! chevalet */
+.Chevalet{
+    position: absolute;
+    width: 385px;
+    height: 60px;
+    top: 750px;
+    left: 250px;
+    margin-left: 15px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #D1E7DD;
+}
+.Chevalet .LettreChevalet{
+    background: #f6e1a6;
+    height: 50px;
+    width: 50px;
+    border-radius: 7px;
+    box-shadow:0 0 1px #000;
+    border-top-width: 1px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #f8e6b1;
+    border-right-color: #d7c293;
+    border-bottom-color: #cab06b;
+    border-left-color: #f8e6b1;
+    margin-top: 3px;
+    margin-left: 4px;
+    display: block;
+    float: left;
+}
+.Chevalet .ScrabbleLetter {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 30px;
+    color: #272832;
+    margin-left: 3px;
+    top: 1px;
+    text-shadow:1px 1px 0 #fff5d7;
+
+}
+.Chevalet .ScrabbleNumber {
+    position: absolute;
+    font-family: 'Asap', serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #272832;
+    bottom: 3px;
+    text-shadow:1px 1px 0 #fff5d7;
+    margin-top: 15px;
+    margin-left: 26px;
+}
+.tabbed{
+    border: solid 1px red;
+}
+.borderLettre{
+    border-top-color: red !important;
+    border-right-color: red !important;
+    border-bottom-color: red !important;
+    border-left-color: red !important;
+}
+.bordredCard{
+    border : solid 2px rgba(35, 229, 229, 0.63);
+}
+
+

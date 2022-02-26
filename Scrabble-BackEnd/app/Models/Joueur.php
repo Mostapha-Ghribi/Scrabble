@@ -51,7 +51,7 @@ class Joueur extends Model
 
     public function partie()
     {
-        return $this->belongsTo(Partie::class);
+        return $this->belongsTo(Partie::class,'partie','idPartie');
     }
 
     public function messages()
@@ -64,6 +64,6 @@ class Joueur extends Model
     protected $fillable = ['nom', 'photo', 'partie'];
     public $timestamps = false;
     protected $primaryKey = 'idJoueur';
-    
+
 
 }

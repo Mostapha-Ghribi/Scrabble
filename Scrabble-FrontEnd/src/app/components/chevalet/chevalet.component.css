@@ -1,12 +1,15 @@
 .Chevalet{
+  position: absolute;
   width: 385px;
   height: 60px;
+  top: 750px;
+  left: 250px;
   margin-left: 15px;
   border: 1px solid #000;
   border-radius: 5px;
   background-color: #D1E7DD;
 }
-.LettreChevalet{
+.Chevalet .LettreChevalet{
   background: #f6e1a6;
   height: 50px;
   width: 50px;
@@ -29,23 +32,31 @@
   display: block;
   float: left;
 }
-.ScrabbleLetter {
+.Chevalet .ScrabbleLetter {
   position: absolute;
   font-family: 'Asap', serif;
-  font-size: 35px;
+  font-size: 30px;
   color: #272832;
-  text-shadow:1px 1px 0 #fff5d7;
-  margin-top: 6px;
   margin-left: 3px;
+  top: 1px;
+  text-shadow:1px 1px 0 #fff5d7;
 
 }
-.ScrabbleNumber {
+.Chevalet .ScrabbleNumber {
   position: absolute;
   font-family: 'Asap', serif;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
   color: #272832;
+  bottom: 3px;
   text-shadow:1px 1px 0 #fff5d7;
-  margin-top: 22px;
+  margin-top: 15px;
   margin-left: 26px;
+}
+.borderLettre{
+  border-top-color: red !important;
+  border-right-color: red !important;
+  border-bottom-color: red !important;
+  border-left-color: red !important;
+  background: red !important;
 }
