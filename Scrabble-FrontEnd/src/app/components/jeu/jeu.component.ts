@@ -156,6 +156,9 @@ export class JeuComponent implements OnInit {
           }
         }
         this.tiles = ScoreGrille;
+        this.joueurService.getJoueur(this.id).subscribe( data =>{
+          this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+        })
         //this.messages = data.messages;
       })
     });
@@ -171,14 +174,13 @@ export class JeuComponent implements OnInit {
         // @ts-ignore
         this.messageTxt += message.nom +" : "+ message.contenu+linebreak;
         this.textarea.nativeElement.value = this.messageTxt;
-
+        this.joueurService.getJoueur(this.id).subscribe( data =>{
+          this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+        })
       }
     })
     // @ts-ignore
     this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
-    this.joueurService.getJoueur(this.id).subscribe( data =>{
-      this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
-    })
     this.startTimer(300);
     //console.log(this.messages);
 
