@@ -33,6 +33,7 @@ Route::controller(MessageController::class)->prefix("v1")->group(
         Route::get("/message/{idMessage}", [MessageController::class, 'getMessageById']);
         Route::get("/messages/joueur/{idJoueur}", [MessageController::class, 'getMessageByPlayerId']);
         Route::get("/messages/partie/{partieId}", [MessageController::class, 'getMessageByPartieId']);
+        Route::get("/passerTour/{idJoueur}", [MessageController::class, 'passerTour']);
         Route::post("/message", [MessageController::class, 'creerMessage']);
     }
 

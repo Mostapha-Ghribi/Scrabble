@@ -465,7 +465,15 @@ class MessageController extends Controller
 
 
     }
-
+    public function passerTour($idJoueur){
+        $joueur = Joueur::find($idJoueur);
+        $partie = Partie::find($joueur->partie);
+        DB::table('parties')->where("idPartie", $partie->idPartie)
+            ->increment('nombreTours');
+        $partie2 = Partie::where('idPartie',$partie->idPartie)->first();
+        event (new getJoueurs($partie2->idPartie,$partie2->typePartie));
+        return new JsonResponse(['nombreTours'=> $partie2->nombreTours , 'typePartie'=>$partie2->typePartie]);
+    }
 
     //? verifier si un mot contient un caractere Majuscule
     public function verifierMotContientLettreMajuscule($mot): bool

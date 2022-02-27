@@ -36,7 +36,7 @@ export class JeuComponent implements OnInit {
   public messageTxt: any;
   public grille: any;
   public nombreTours: any;
-  private ordreLast: any;
+  ordreLast: any = 1;
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     let $message;
@@ -98,10 +98,10 @@ export class JeuComponent implements OnInit {
       if (event.keyCode === 13) {
         if (this.searchElement.nativeElement.value !== "") {
           $message = {'contenu': this.searchElement.nativeElement.value , 'envoyeur' : this.id,'partie':this.idPartie};
-          console.log($message);
           this.messageService.addMessage($message).subscribe(data => {
-            console.log(data);
+            this.searchElement.nativeElement.value = '';
           },error => {
+            this.searchElement.nativeElement.value = '';
             console.log(error);
           });
         }
@@ -146,14 +146,17 @@ export class JeuComponent implements OnInit {
           this.textarea.nativeElement.value = this.messageTxt;
 
         }
+        //@ts-ignore
         let ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
         this.grille = data.grille;
         let grilleArray = this.partieService.StringToArray(this.grille);
-        console.log(grilleArray);
         for (let i = 0; i < 225; i++) {
           if(grilleArray[i]!==''){
             ScoreGrille[i] = grilleArray[i].toUpperCase();
           }
+          this.nombreTours = data.nombreTours;
+          this.ordre = (this.nombreTours + 1) % this.typePartie +1;
+          console.log(this.ordre);
         }
         this.tiles = ScoreGrille;
         this.joueurService.getJoueur(this.id).subscribe( data =>{
@@ -180,9 +183,11 @@ export class JeuComponent implements OnInit {
       }
     })
     // @ts-ignore
-    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","ii","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","B","O","N","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+    this.joueurService.getJoueur(this.id).subscribe( data =>{
+      this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+    })
     this.startTimer(300);
-    //console.log(this.messages);
 
   }
   quitGamePartie(){
@@ -272,15 +277,19 @@ export class JeuComponent implements OnInit {
   startTimer(time : any) {
     this.time = time;
     this.interval = setInterval(() => {
-
-      if(this.time == 0 || this.ordre !=this.ordreLast){
-        this.time == 0;
+      if(this.time === 1){
+        this.messageService.passer(this.id).subscribe(res =>{
+            this.ordre = (res.nombreTours + 1) % res.typePartie +1;
+          console.log(this.ordre);
+        },error => {
+          console.log(error);
+        })
+      }
+      if(this.ordre !== this.ordreLast){
         this.ordreLast = this.ordre;
-        this.ordre = this.nombreTours;
-
         this.time = 300;
       }
-           this.time--;
+      this.time--;
       this.display=this.transform( this.time)
     }, 1000);
   }
