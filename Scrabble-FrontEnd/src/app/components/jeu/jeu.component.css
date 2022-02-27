@@ -288,6 +288,7 @@
     margin-top: 10px;
     resize: none;
     height: 200px;
+    white-space: pre-wrap;
 }
 /*! chevalet */
 .Chevalet{
