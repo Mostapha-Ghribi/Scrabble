@@ -299,6 +299,7 @@ class MessageController extends Controller
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
         $ordre = $partie->nombreTours;
 
+
         if(($commande ==="placer" || $commande==="changer" || $commande==="passer") && ($ordre +1) %$partie->typePartie +1 !== $joueur->ordre){
             $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
             $messageCreated->increment('statutMessage');
@@ -446,7 +447,7 @@ class MessageController extends Controller
 
 
             case 'passer' :
-
+                $this->passerTour($joueur->idJoueur);
                 break;
             case 'aider' :
                 break;
