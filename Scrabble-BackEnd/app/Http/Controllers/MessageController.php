@@ -641,8 +641,14 @@ class MessageController extends Controller
 
         // ***************************************************************************************
         //   $resteMotGrille = $this->retournerMotGrille($mot, $grille, $colonne, $ligne, $pos);
+        $isEmplty = true;
+        for ($y = 0;$y<225;$y++){
+            if($grille[$y]!== '-'){
+                $isEmplty = false;
+            }
+        }
 
-        if ($isOrderOne && $ordre === 1) {
+        if ($isOrderOne && $isEmplty) {
             return false;
         }
 
