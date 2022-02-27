@@ -7,6 +7,7 @@ use App\Models\Joueur;
 use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class PartieController extends Controller
 {
@@ -110,7 +111,20 @@ class PartieController extends Controller
         $partie = Partie::where('idPartie',$joueur->partie);
         $partie2 = Partie::find($joueur->partie);
         $p = $partie->first();
+        $messages = Partie::find($joueur->partie)->messages()
+            ->where('partie', $joueur->partie)
+            ->latest('dateCreation')
+            ->get();
+        $m = [];
+        foreach ($messages as $message){
+            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
+            $me= new stdClass();
+            $me->nom = $joueur->nom;
+            $me->contenu = $message->contenu;
+            array_push($m , $me);
+        }
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $p->messages = $m;
         event(new getJoueurs($p->idPartie,$p->typePartie));
         return new JsonResponse($p);
 
@@ -124,7 +138,20 @@ class PartieController extends Controller
         $partie = Partie::where('idPartie',$joueur->partie);
         $partie2 = Partie::find($joueur->partie);
         $p = $partie->first();
+        $messages = Partie::find($joueur->partie)->messages()
+            ->where('partie', $joueur->partie)
+            ->latest('dateCreation')
+            ->get();
+        $m = [];
+        foreach ($messages as $message){
+            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
+            $me= new stdClass();
+            $me->nom = $joueur->nom;
+            $me->contenu = $message->contenu;
+            array_push($m , $me);
+        }
         $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $p->messages = $m;
         return new JsonResponse($p);
 
     }

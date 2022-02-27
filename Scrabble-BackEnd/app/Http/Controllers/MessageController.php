@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\getJoueurs;
 use App\Models\Joueur;
 use App\Models\Message;
 
@@ -10,6 +11,8 @@ use App\Models\Partie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Js;
+use stdClass;
 use function Sodium\add;
 
 class MessageController extends Controller
@@ -212,10 +215,19 @@ class MessageController extends Controller
 
     public function getMessageByPartieId($partieId)
     {
-        return Partie::find($partieId)->messages()
+        $messages = Partie::find($partieId)->messages()
             ->where('partie', $partieId)
             ->latest('dateCreation')
             ->get();
+        $m = [];
+        foreach ($messages as $message){
+            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
+            $me= new stdClass();
+            $me->nom = $joueur->nom;
+            $me->contenu = $message->contenu;
+            array_push($m , $me);
+        }
+        return new JsonResponse($m);
     }
     /*  =====================================================================================================================================
           =====================================================================================================================================
@@ -266,10 +278,10 @@ class MessageController extends Controller
         $posArray = ["h", "v"];
         $joueur = Joueur::find($request->envoyeur);
         $partie = Partie::find($request->partie);
-        $ordre = $partie->nombreTours;
         $contenu = trim($request->contenu);
         if ($contenu[0] !== '!') {
             $message = Message::create($request->all());
+            event(new getJoueurs($partie->idPartie,$partie->typePartie));
             return new JsonResponse($message);
         }
 
@@ -285,9 +297,14 @@ class MessageController extends Controller
 
 
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
-        if(($commande ==="placer" || $commande==="changer" || $commande==="passer") && ($partie->nombreTours +1) %$partie->typePartie +1 !== $joueur->ordre){
+        $ordre = $partie->nombreTours;
+
+        if(($commande ==="placer" || $commande==="changer" || $commande==="passer") && ($ordre +1) %$partie->typePartie +1 !== $joueur->ordre){
+            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->increment('statutMessage');
+            event(new getJoueurs($partie->idPartie,$partie->typePartie));
             return new JsonResponse([
-                'message' => "$joueur->nom  Commande impossible à realiser",
+                'message' => "$joueur->nom fait une commande impossible à réaliser",
             ], 404);
         }
         switch ($commande) {
@@ -304,10 +321,13 @@ class MessageController extends Controller
 
                 // tester si les coordonnes sont  invalide
                 if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot) || ($colonne < 1 || $colonne > 15)) {
+                    $messageCreated = Message::create(['contenu' => 'fait un erreur de syntaxe', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                    $messageCreated->increment('statutMessage');
+                    event(new getJoueurs($partie->idPartie,$partie->typePartie));
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom  Erreur de syntaxe",
+                        'message' => "$joueur->nom fait un erreur de syntaxe",
                         'mot' => $mot,
                     ], 404);
                 }
@@ -319,12 +339,14 @@ class MessageController extends Controller
                     !ctype_alpha(trim($mot)) ||
                     !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot) ||
                     !$this->verfierMotDansChevalet($mot, $joueur->chevalet, $partie->grille, $colonne, $ligne, $position, $ordre)) {
+                    $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                    $messageCreated->increment('statutMessage');
+                    event(new getJoueurs($partie->idPartie,$partie->typePartie));
                     return new JsonResponse([
                         "nom" => $joueur->nom,
                         "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom  Commande impossible à realiser",
-                        'mot' => $mot,
-                        "test" => strlen($mot) > strlen($joueur->chevalet)
+                        'message' => "$joueur->nom fait une commande impossible à réaliser",
+                        'mot' => $mot
                     ], 404);
                 }
                 $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
@@ -415,7 +437,7 @@ class MessageController extends Controller
                     ->increment('nombreTours');
                 DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
 
-
+                event(new getJoueurs($partie->idPartie,$partie->typePartie));
                 return new JsonResponse(['message'=>'successsssss']);
 
                 break;
@@ -434,7 +456,7 @@ class MessageController extends Controller
                 return new JsonResponse([
                     "nom" => $joueur->nom,
                     "partie" => $partie->idPartie,
-                    'message' => "$joueur->nom  Commande impossible a realiser",
+                    'message' => "$joueur->nom fait une commande impossible à réaliser",
                     'mot' => $commande,
                 ], 404);
 
