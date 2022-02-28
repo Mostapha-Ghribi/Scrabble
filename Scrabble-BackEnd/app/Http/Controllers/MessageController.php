@@ -311,6 +311,8 @@ class MessageController extends Controller
 
 
         if ($commande === "placer") {
+
+
             $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
             $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
             $mot = substr($coordonnesContenu, strpos($coordonnesContenu, ' ') + 1);
@@ -491,10 +493,10 @@ class MessageController extends Controller
                 $strpos = strpos($reserve, $copieChevalet[$j]);
                 $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
             }
-            $reserve.=$lettres;
-           // return new JsonResponse([$copieChevalet,$reserve]) ;
+            $reserve .= $lettres;
+            // return new JsonResponse([$copieChevalet,$reserve]) ;
             DB::table('parties')->where("idPartie", $partie->idPartie)
-                ->update([ "reserve" => $reserve]);
+                ->update(["reserve" => $reserve]);
             DB::table('parties')->where("idPartie", $partie->idPartie)
                 ->increment('nombreTours');
             DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $copieChevalet]);
@@ -502,9 +504,6 @@ class MessageController extends Controller
             $messageCreated->decrement('statutMessage');
 
             event(new getJoueurs($partie->idPartie, $partie->typePartie));
-
-
-
 
 
         } else if ($contenu === '!passer') {
@@ -763,5 +762,34 @@ class MessageController extends Controller
             default => 0,
         };
     }
+
+
+    public function victoire($idJoueur)
+    {
+
+        $joueur = Joueur::where('idJoueur', $idJoueur)->first();
+
+        $joueurs = Joueur::where(['partie' => $joueur->partie, 'statutJoueur' => 1])->get();
+        // $joueurs=Db::table("joueurs")->where('partie', $joueur->partie)->get() ;
+        $highScore = $joueur->score;
+        $winner = new Joueur();
+
+        foreach ($joueurs as $user) {
+
+            DB::table('joueurs')
+                ->where('idJoueur', $user->idJoueur)
+                ->update(['statutJoueur' => 0]);
+            if ($user->score >= $highScore) {
+                $winner = $user;
+            }
+
+        }
+        DB::table('parties')
+            ->where('idPartie', $joueur->partie)
+            ->update(['statutPartie' => "Finie", "dateFinPartie" => DB::raw('CURRENT_TIMESTAMP')]);
+
+        return new JsonResponse($winner);
+    }
+
 
 }

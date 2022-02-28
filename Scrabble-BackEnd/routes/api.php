@@ -25,10 +25,10 @@ Route::controller(PartieController::class)->prefix("v1")->group(static function 
     Route::get("/partie/joueur/{idJoueur}",[PartieController::class ,"getPartieByIdJoueur"]);
     Route::get("/partie/joueurBind/{idJoueur}",[PartieController::class ,"getPartieByIdJoueurBind"]);
     Route::get("/addChevalet/partie/{idPartie}",[PartieController::class ,"InitChevaletAndReserve"]);
+    Route::get("/victoire/{idJoueur}",[PartieController::class ,"victoire"]);
 });
 Route::controller(MessageController::class)->prefix("v1")->group(
     static function () {
-
         Route::get("/messages", [MessageController::class, 'index']);
         Route::get("/message/{idMessage}", [MessageController::class, 'getMessageById']);
         Route::get("/messages/joueur/{idJoueur}", [MessageController::class, 'getMessageByPlayerId']);

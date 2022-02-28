@@ -52,12 +52,12 @@ class PartieController extends Controller
      */
     public function getJoueursByIdPartie($idPartie): JsonResponse
     {
-        $partie = Partie::where('idPartie',$idPartie)->first();
-        if(empty(json_decode($partie, false, 512, JSON_THROW_ON_ERROR))){
-            return Response()->json(['message'=>'Partie inexistant'],404);
+        $partie = Partie::where('idPartie', $idPartie)->first();
+        if (empty(json_decode($partie, false, 512, JSON_THROW_ON_ERROR))) {
+            return Response()->json(['message' => 'Partie inexistant'], 404);
         }
         $partie2 = Partie::find($idPartie);
-        $joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $joueurs = $partie2->joueurs()->where('statutJoueur', 1)->get();
         return new JsonResponse($joueurs);
 
 
@@ -104,11 +104,11 @@ class PartieController extends Controller
      */
     public function getPartieByIdJoueur($idJoueur): JsonResponse
     {
-        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
-        if(empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))){
-            return Response()->json(['message'=>'Joueur inexistant'],404);
+        $joueur = Joueur::where('idJoueur', $idJoueur)->first();
+        if (empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))) {
+            return Response()->json(['message' => 'Joueur inexistant'], 404);
         }
-        $partie = Partie::where('idPartie',$joueur->partie);
+        $partie = Partie::where('idPartie', $joueur->partie);
         $partie2 = Partie::find($joueur->partie);
         $p = $partie->first();
         $messages = Partie::find($joueur->partie)->messages()
@@ -116,26 +116,27 @@ class PartieController extends Controller
             ->latest('dateCreation')
             ->get();
         $m = [];
-        foreach ($messages as $message){
-            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
-            $me= new stdClass();
+        foreach ($messages as $message) {
+            $joueur = Joueur::where('idJoueur', $message->envoyeur)->first();
+            $me = new stdClass();
             $me->nom = $joueur->nom;
             $me->contenu = $message->contenu;
-            array_push($m , $me);
+            array_push($m, $me);
         }
-        $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $p->joueurs = $partie2->joueurs()->where('statutJoueur', 1)->get();
         $p->messages = $m;
-        event(new getJoueurs($p->idPartie,$p->typePartie));
+        event(new getJoueurs($p->idPartie, $p->typePartie));
         return new JsonResponse($p);
 
     }
+
     public function getPartieByIdJoueurBind($idJoueur): JsonResponse
     {
-        $joueur = Joueur::where('idJoueur',$idJoueur)->first();
-        if(empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))){
-            return Response()->json(['message'=>'Joueur inexistant'],404);
+        $joueur = Joueur::where('idJoueur', $idJoueur)->first();
+        if (empty(json_decode($joueur, false, 512, JSON_THROW_ON_ERROR))) {
+            return Response()->json(['message' => 'Joueur inexistant'], 404);
         }
-        $partie = Partie::where('idPartie',$joueur->partie);
+        $partie = Partie::where('idPartie', $joueur->partie);
         $partie2 = Partie::find($joueur->partie);
         $p = $partie->first();
         $messages = Partie::find($joueur->partie)->messages()
@@ -143,14 +144,14 @@ class PartieController extends Controller
             ->latest('dateCreation')
             ->get();
         $m = [];
-        foreach ($messages as $message){
-            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
-            $me= new stdClass();
+        foreach ($messages as $message) {
+            $joueur = Joueur::where('idJoueur', $message->envoyeur)->first();
+            $me = new stdClass();
             $me->nom = $joueur->nom;
             $me->contenu = $message->contenu;
-            array_push($m , $me);
+            array_push($m, $me);
         }
-        $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $p->joueurs = $partie2->joueurs()->where('statutJoueur', 1)->get();
         $p->messages = $m;
         return new JsonResponse($p);
 
@@ -179,32 +180,62 @@ class PartieController extends Controller
      */
     public function InitChevaletAndReserve($idPartie): JsonResponse
     {
-        $partie = Partie::where('idPartie',$idPartie);
+        $partie = Partie::where('idPartie', $idPartie);
         $partie2 = Partie::find($idPartie);
         $p = $partie->first();
-        $p->joueurs = $partie2->joueurs()->where('statutJoueur',1)->get();
+        $p->joueurs = $partie2->joueurs()->where('statutJoueur', 1)->get();
         $reserve = $p->reserve;
         foreach ($p->joueurs as $i => $iValue) {
-           $idJoueur =  $iValue->idJoueur;
-           if($iValue->chevalet === '') {
-               $chevaletJoueur = "";
-               for ($j = 0; $j < 7; $j++) {
-                   $chevaletJoueur .= $reserve[random_int(0, strlen($reserve) - 1)];
-                   $strpos = strpos($reserve, $chevaletJoueur[$j]);
-                   $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
-               }
-               DB::table('joueurs')
-                   ->where('idJoueur', $idJoueur)
-                   ->update(['chevalet' => $chevaletJoueur,'ordre' => $i+1]);
-               DB::table('parties')
-                   ->where('idPartie', $idPartie)
-                   ->update(['reserve' => $reserve]);
-           }
+            $idJoueur = $iValue->idJoueur;
+            if ($iValue->chevalet === '') {
+                $chevaletJoueur = "";
+                for ($j = 0; $j < 7; $j++) {
+                    $chevaletJoueur .= $reserve[random_int(0, strlen($reserve) - 1)];
+                    $strpos = strpos($reserve, $chevaletJoueur[$j]);
+                    $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+                }
+                DB::table('joueurs')
+                    ->where('idJoueur', $idJoueur)
+                    ->update(['chevalet' => $chevaletJoueur, 'ordre' => $i + 1]);
+                DB::table('parties')
+                    ->where('idPartie', $idPartie)
+                    ->update(['reserve' => $reserve]);
+            }
         }
-        $partieAfter = Partie::where('idPartie',$idPartie);
+        $partieAfter = Partie::where('idPartie', $idPartie);
         $partieAfter2 = Partie::find($idPartie);
         $pAfter = $partieAfter->first();
-        $pAfter->joueurs = $partieAfter2->joueurs()->where('statutJoueur',1)->get();
+        $pAfter->joueurs = $partieAfter2->joueurs()->where('statutJoueur', 1)->get();
         return new JsonResponse($pAfter);
     }
+
+
+    public function victoire($idJoueur)
+    {
+
+        $joueur = Joueur::where('idJoueur', $idJoueur)->first();
+
+        $joueurs = Joueur::where(['partie'=> $joueur->partie,'statutJoueur'=>1])->get();
+        // $joueurs=Db::table("joueurs")->where('partie', $joueur->partie)->get() ;
+        $highScore = $joueur->score;
+        $winner = new Joueur();
+
+        foreach ($joueurs as $user) {
+
+            DB::table('joueurs')
+                ->where('idJoueur', $user->idJoueur)
+                ->update(['statutJoueur' => 0]);
+            if ($user->score >= $highScore) {
+                $winner = $user;
+            }
+
+        }
+        DB::table('parties')
+            ->where('idPartie', $joueur->partie)
+            ->update(['statutPartie' => "Finie", "dateFinPartie" => DB::raw('CURRENT_TIMESTAMP')]);
+
+        return new JsonResponse($winner);
+    }
+
+
 }
