@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('idMessage');
             $table->timestamp('dateCreation')->default(\DB::raw('CURRENT_TIMESTAMP'));
-            $table->string('contenu', 50);
+            $table->text('contenu');
             $table->boolean('statutMessage')->default(true);
             $table->integer('partie')->unsigned();
             $table->foreign('partie')->references('idPartie')->on('parties');
