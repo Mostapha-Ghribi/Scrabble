@@ -444,17 +444,18 @@ class MessageController extends Controller
             return new JsonResponse(['message' => 'successsssss']);
         } elseif ($commande === 'changer') {
 
-            $lettres = trim(substr($contenu, strpos($contenu, ' ')));
+            $lettres = strtolower(trim(substr($contenu, strpos($contenu, ' '))));
             // return new JsonResponse($lettres);
             $longeurReserve = strlen($partie->reserve);
             $longeurChevalet = strlen($joueur->chevalet);
-            $longeurLettres=strlen($lettres) ;
+            $longeurLettres = strlen($lettres);
 
 
+            if ($longeurLettres > $longeurChevalet || $longeurLettres > $longeurReserve) {
 
-
-
-            if ($longeurLettres>$longeurChevalet  ) {
+                $messageCreated = Message::create(['contenu' => "a fait une commande impossible à réaliser", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated->decrement('statutMessage');
+                event(new getJoueurs($partie->idPartie, $partie->typePartie));
                 return new JsonResponse([
                     "nom" => $joueur->nom,
                     "partie" => $partie->idPartie,
@@ -462,17 +463,50 @@ class MessageController extends Controller
                     'mot' => $lettres
                 ], 404);
             }
-            if ( $longeurLettres>$longeurReserve) {
-                return new JsonResponse([
-                    "nom" => $joueur->nom,
-                    "partie" => $partie->idPartie,
-                    'message' => "$joueur->nom fait une commande impossible à réaliser",
-                    'mot' => $lettres
-                ], 404);
-            }
+            $f = 0;
+            $valid = true;
+            $copieChevalet = $joueur->chevalet;
+            $reserve = $partie->reserve;
+            while ($f < $longeurLettres) {
+                $strpos = strpos($copieChevalet, $lettres[$f]);
+                //return  new JsonResponse($strpos) ;
+                if ($strpos === false) {
+                    $messageCreatedl = Message::create(['contenu' => "a fait une commande impossible à réaliser", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                    $messageCreatedl->decrement('statutMessage');
+                    event(new getJoueurs($partie->idPartie, $partie->typePartie));
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom fait une commande impossible à réaliser",
+                        'mot' => $lettres
+                    ], 404);
 
-           return new JsonResponse($longeurLettres);
-            //return true;
+                }
+                $copieChevalet = substr($copieChevalet, 0, $strpos) . substr($copieChevalet, $strpos + 1);
+                $f++;
+
+            }
+            for ($j = 0; $j < $longeurLettres; $j++) {
+                $copieChevalet .= $reserve[random_int(0, strlen($reserve) - 1)];
+                $strpos = strpos($reserve, $copieChevalet[$j]);
+                $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+            }
+            $reserve.=$lettres;
+           // return new JsonResponse([$copieChevalet,$reserve]) ;
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->update([ "reserve" => $reserve]);
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->increment('nombreTours');
+            DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $copieChevalet]);
+            $messageCreated = Message::create(['contenu' => "a changé son chevalet", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->decrement('statutMessage');
+
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
+
+
+
+
+
         } else if ($contenu === '!passer') {
             $this->passerTour($joueur->idJoueur);
         } elseif ($contenu === "!aider") {
