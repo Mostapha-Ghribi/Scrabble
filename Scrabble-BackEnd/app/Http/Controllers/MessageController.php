@@ -307,6 +307,9 @@ class MessageController extends Controller
                 'message' => "$joueur->nom fait une commande impossible à réaliser",
             ], 404);
         }
+        // return new JsonResponse($commande)  ;
+
+
         if ($commande === "placer") {
             $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
             $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
@@ -395,7 +398,6 @@ class MessageController extends Controller
             $Score *= $TM;
             $Score *= $DM;
 
-
             $x = 0;
             while ($x < strlen($chaineGrille)) {
                 $char = $chaineGrille[$x];
@@ -441,12 +443,74 @@ class MessageController extends Controller
             event(new getJoueurs($partie->idPartie, $partie->typePartie));
             return new JsonResponse(['message' => 'successsssss']);
         } elseif ($commande === 'changer') {
-            return true;
+
+            $lettres = strtolower(trim(substr($contenu, strpos($contenu, ' '))));
+            // return new JsonResponse($lettres);
+            $longeurReserve = strlen($partie->reserve);
+            $longeurChevalet = strlen($joueur->chevalet);
+            $longeurLettres = strlen($lettres);
+
+
+            if ($longeurLettres > $longeurChevalet || $longeurLettres > $longeurReserve) {
+
+                $messageCreated = Message::create(['contenu' => "a fait une commande impossible à réaliser", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated->decrement('statutMessage');
+                event(new getJoueurs($partie->idPartie, $partie->typePartie));
+                return new JsonResponse([
+                    "nom" => $joueur->nom,
+                    "partie" => $partie->idPartie,
+                    'message' => "$joueur->nom fait une commande impossible à réaliser",
+                    'mot' => $lettres
+                ], 404);
+            }
+            $f = 0;
+            $valid = true;
+            $copieChevalet = $joueur->chevalet;
+            $reserve = $partie->reserve;
+            while ($f < $longeurLettres) {
+                $strpos = strpos($copieChevalet, $lettres[$f]);
+                //return  new JsonResponse($strpos) ;
+                if ($strpos === false) {
+                    $messageCreatedl = Message::create(['contenu' => "a fait une commande impossible à réaliser", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                    $messageCreatedl->decrement('statutMessage');
+                    event(new getJoueurs($partie->idPartie, $partie->typePartie));
+                    return new JsonResponse([
+                        "nom" => $joueur->nom,
+                        "partie" => $partie->idPartie,
+                        'message' => "$joueur->nom fait une commande impossible à réaliser",
+                        'mot' => $lettres
+                    ], 404);
+
+                }
+                $copieChevalet = substr($copieChevalet, 0, $strpos) . substr($copieChevalet, $strpos + 1);
+                $f++;
+
+            }
+            for ($j = 0; $j < $longeurLettres; $j++) {
+                $copieChevalet .= $reserve[random_int(0, strlen($reserve) - 1)];
+                $strpos = strpos($reserve, $copieChevalet[$j]);
+                $reserve = substr($reserve, 0, $strpos) . substr($reserve, $strpos + 1);
+            }
+            $reserve.=$lettres;
+           // return new JsonResponse([$copieChevalet,$reserve]) ;
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->update([ "reserve" => $reserve]);
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->increment('nombreTours');
+            DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $copieChevalet]);
+            $messageCreated = Message::create(['contenu' => "a changé son chevalet", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->decrement('statutMessage');
+
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
+
+
+
+
+
         } else if ($contenu === '!passer') {
             $this->passerTour($joueur->idJoueur);
         } elseif ($contenu === "!aider") {
             $aide = "!placer g15v bonjour  ===> joue le mot bonjour à la verticale et le b est positionné en g15 changer un lettre avec  ===>  !changer mwb : remplace les lettres m, w et b. !changer e*  =>  remplace une seule des lettres e et une lettre blanche Passer son tour ===> !passer Besoin d aide ===>  !aider ";
-
             $messageCreated = Message::create(['contenu' => $aide, 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
             $messageCreated->decrement('statutMessage');
             event(new getJoueurs($partie->idPartie, $partie->typePartie));
@@ -454,7 +518,6 @@ class MessageController extends Controller
                 "nom" => $joueur->nom,
                 "partie" => $partie->idPartie,
                 'message' => $aide,
-
             ], 200);
 
         } else {
