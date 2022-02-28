@@ -300,168 +300,161 @@ class MessageController extends Controller
         $ordre = $partie->nombreTours;
 
 
-        if(($commande ==="placer" || $commande==="changer" || $commande==="passer") && ($ordre +1) %$partie->typePartie +1 !== $joueur->ordre){
+        if(($commande ==="placer" || $commande==="changer" || $contenu==="!passer") && ($ordre +1) %$partie->typePartie +1 !== $joueur->ordre){
             $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
-            $messageCreated->increment('statutMessage');
+            $messageCreated->decrement('statutMessage');
             event(new getJoueurs($partie->idPartie,$partie->typePartie));
             return new JsonResponse([
                 'message' => "$joueur->nom fait une commande impossible à réaliser",
             ], 404);
         }
-        switch ($commande) {
-            case 'placer' :
-                $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
-                $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
-                $mot = substr($coordonnesContenu, strpos($coordonnesContenu, ' ') + 1);
-                $ligne = $coordonnes[0];
-                $coordonnes = substr($coordonnes, 1);
-                $position = substr($coordonnes, -1);
-                $coordonnes = substr($coordonnes, 0, -1);
-                $colonne = intval($coordonnes);
+        if($commande ==="placer"){
+            $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
+            $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
+            $mot = substr($coordonnesContenu, strpos($coordonnesContenu, ' ') + 1);
+            $ligne = $coordonnes[0];
+            $coordonnes = substr($coordonnes, 1);
+            $position = substr($coordonnes, -1);
+            $coordonnes = substr($coordonnes, 0, -1);
+            $colonne = intval($coordonnes);
 
 
-                // tester si les coordonnes sont  invalide
-                if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot) || ($colonne < 1 || $colonne > 15)) {
-                    $messageCreated = Message::create(['contenu' => 'fait un erreur de syntaxe', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
-                    $messageCreated->increment('statutMessage');
-                    event(new getJoueurs($partie->idPartie,$partie->typePartie));
-                    return new JsonResponse([
-                        "nom" => $joueur->nom,
-                        "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom fait un erreur de syntaxe",
-                        'mot' => $mot,
-                    ], 404);
-                }
-                // verifier l'inexistance des espace entres les characters d'un mot
-                // la chaine doit etre alphabetique
-                // la longeur du mot doit etre <= longeur de chevalet
-                if (str_contains(trim($mot), ' ') ||
-                    strlen(trim($mot)) < 2 ||
-                    !ctype_alpha(trim($mot)) ||
-                    !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot) ||
-                    !$this->verfierMotDansChevalet($mot, $joueur->chevalet, $partie->grille, $colonne, $ligne, $position, $ordre)) {
-                    $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
-                    $messageCreated->increment('statutMessage');
-                    event(new getJoueurs($partie->idPartie,$partie->typePartie));
-                    return new JsonResponse([
-                        "nom" => $joueur->nom,
-                        "partie" => $partie->idPartie,
-                        'message' => "$joueur->nom fait une commande impossible à réaliser",
-                        'mot' => $mot
-                    ], 404);
-                }
-                $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
-                $nouvelGrilleChaine = $partie->grille;
-                $chaineGrille = '';
-                $grillTab = $this->StringToArray($partie->grille);
-                $imax = 0;
-                $pas = 1;
-                $reserve = $partie->reserve;
-                $ResteMot = $mot;
-                $Score = $joueur->score;
-                $TM = 1;
-                $DM = 1;
-                $ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
-
-                switch ($position) {
-                    case 'v' :
-                        $imax =((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1);
-                        $pas = 15;
-
-                        break;
-                    case 'h' :
-                        $imax = $posMotTableau + strlen($mot);
-                        break;
-                }
-                //return new JsonResponse($posMotTableau + strlen($mot));
-                for ($i = $posMotTableau,$j=0; $i < $imax && $j<strlen($mot); $i+=$pas , $j++) {
-
-                    $chaineGrille .= $grillTab[$i];
-                    $nouvelGrilleChaine[$i] = $mot[$j];
-                    if($ScoreGrille[$i] ==="DL"){
-                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *2;
-                    }else if($ScoreGrille[$i] ==="TL"){
-                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *3;
-                    }else if($ScoreGrille[$i] ==="TM"){
-                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
-                        $TM *= 3;
-                    }else if($ScoreGrille[$i] ==="DM"){
-                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
-                        $DM *= 2;
-                    }else{
-                        $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
-
-                    }
-
-                }
-                $Score *= $TM;
-                $Score *= $DM;
-
-
-                $x = 0;
-                while ($x < strlen($chaineGrille)) {
-                    $char = $chaineGrille[$x];
-                    if (str_contains($ResteMot, $char)) {
-                        $posCharMot = strpos($ResteMot, $char);
-                        $ResteMot = substr($ResteMot, 0, $posCharMot) . substr($ResteMot, $posCharMot + 1);
-                        $x++;
-                    }
-                }
-               // return new JsonResponse($ResteMot);
-                // calculer bingo
-                if(strlen($ResteMot) === 7){
-                    $Score +=50;
-                }
-
-                $RestChevalet = $joueur->chevalet;
-                $l = 0;
-                while ($l < strlen($ResteMot)) {
-                    $charRestMot = $ResteMot[$l];
-                    if (ctype_upper($charRestMot)) {
-                        $charRestMot = '*';
-                    }
-                    if (str_contains($RestChevalet, $charRestMot)) {
-                        $posCharRestMot = strpos($RestChevalet, $charRestMot);
-                        $RestChevalet = substr($RestChevalet, 0, $posCharRestMot) . substr($RestChevalet, $posCharRestMot + 1);
-                        $l++;
-                    }
-                }
-                for ($m = 0, $mMax = strlen($ResteMot); $m < $mMax; $m++) {
-                    $RestChevalet .= $reserve[random_int(0, strlen($reserve) - 1)];
-                    $strposRest = strpos($reserve, $RestChevalet[$m]);
-                    $reserve = substr($reserve, 0, $strposRest) . substr($reserve, $strposRest + 1);
-                }
-
-                DB::table('parties')->where("idPartie", $partie->idPartie)
-                    ->update(["grille" => strtolower($nouvelGrilleChaine), "reserve" => $reserve]);
-                DB::table('parties')->where("idPartie", $partie->idPartie)
-                    ->increment('nombreTours');
-                DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
-
+            // tester si les coordonnes sont  invalide
+            if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot) || ($colonne < 1 || $colonne > 15)) {
+                $messageCreated = Message::create(['contenu' => 'fait un erreur de syntaxe', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated->decrement('statutMessage');
                 event(new getJoueurs($partie->idPartie,$partie->typePartie));
-                return new JsonResponse(['message'=>'successsssss']);
-
-                break;
-            case 'changer' :
-                break;
-
-
-            case 'passer' :
-                $this->passerTour($joueur->idJoueur);
-                break;
-            case 'aider' :
-                break;
-
-
-            default :
+                return new JsonResponse([
+                    "nom" => $joueur->nom,
+                    "partie" => $partie->idPartie,
+                    'message' => "$joueur->nom fait un erreur de syntaxe",
+                    'mot' => $mot,
+                ], 404);
+            }
+            // verifier l'inexistance des espace entres les characters d'un mot
+            // la chaine doit etre alphabetique
+            // la longeur du mot doit etre <= longeur de chevalet
+            if (str_contains(trim($mot), ' ') ||
+                strlen(trim($mot)) < 2 ||
+                !ctype_alpha(trim($mot)) ||
+                !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot) ||
+                !$this->verfierMotDansChevalet($mot, $joueur->chevalet, $partie->grille, $colonne, $ligne, $position, $ordre)) {
+                $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated->decrement('statutMessage');
+                event(new getJoueurs($partie->idPartie,$partie->typePartie));
                 return new JsonResponse([
                     "nom" => $joueur->nom,
                     "partie" => $partie->idPartie,
                     'message' => "$joueur->nom fait une commande impossible à réaliser",
-                    'mot' => $commande,
+                    'mot' => $mot
                 ], 404);
+            }
+            $posMotTableau = (ord(strtoupper($ligne)) - ord('A')) * 15 + ($colonne - 1);
+            $nouvelGrilleChaine = $partie->grille;
+            $chaineGrille = '';
+            $grillTab = $this->StringToArray($partie->grille);
+            $imax = 0;
+            $pas = 1;
+            $reserve = $partie->reserve;
+            $ResteMot = $mot;
+            $Score = $joueur->score;
+            $TM = 1;
+            $DM = 1;
+            $ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+
+            switch ($position) {
+                case 'v' :
+                    $imax =((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1);
+                    $pas = 15;
+
+                    break;
+                case 'h' :
+                    $imax = $posMotTableau + strlen($mot);
+                    break;
+            }
+            //return new JsonResponse($posMotTableau + strlen($mot));
+            for ($i = $posMotTableau,$j=0; $i < $imax && $j<strlen($mot); $i+=$pas , $j++) {
+
+                $chaineGrille .= $grillTab[$i];
+                $nouvelGrilleChaine[$i] = $mot[$j];
+                if($ScoreGrille[$i] ==="DL"){
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *2;
+                }else if($ScoreGrille[$i] ==="TL"){
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *3;
+                }else if($ScoreGrille[$i] ==="TM"){
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+                    $TM *= 3;
+                }else if($ScoreGrille[$i] ==="DM"){
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+                    $DM *= 2;
+                }else{
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
+
+                }
+
+            }
+            $Score *= $TM;
+            $Score *= $DM;
 
 
+            $x = 0;
+            while ($x < strlen($chaineGrille)) {
+                $char = $chaineGrille[$x];
+                if (str_contains($ResteMot, $char)) {
+                    $posCharMot = strpos($ResteMot, $char);
+                    $ResteMot = substr($ResteMot, 0, $posCharMot) . substr($ResteMot, $posCharMot + 1);
+                    $x++;
+                }
+            }
+            // return new JsonResponse($ResteMot);
+            // calculer bingo
+            if(strlen($ResteMot) === 7){
+                $Score +=50;
+            }
+
+            $RestChevalet = $joueur->chevalet;
+            $l = 0;
+            while ($l < strlen($ResteMot)) {
+                $charRestMot = $ResteMot[$l];
+                if (ctype_upper($charRestMot)) {
+                    $charRestMot = '*';
+                }
+                if (str_contains($RestChevalet, $charRestMot)) {
+                    $posCharRestMot = strpos($RestChevalet, $charRestMot);
+                    $RestChevalet = substr($RestChevalet, 0, $posCharRestMot) . substr($RestChevalet, $posCharRestMot + 1);
+                    $l++;
+                }
+            }
+            for ($m = 0, $mMax = strlen($ResteMot); $m < $mMax; $m++) {
+                $RestChevalet .= $reserve[random_int(0, strlen($reserve) - 1)];
+                $strposRest = strpos($reserve, $RestChevalet[$m]);
+                $reserve = substr($reserve, 0, $strposRest) . substr($reserve, $strposRest + 1);
+            }
+
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->update(["grille" => strtolower($nouvelGrilleChaine), "reserve" => $reserve]);
+            DB::table('parties')->where("idPartie", $partie->idPartie)
+                ->increment('nombreTours');
+            DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
+            $messageCreated = Message::create(['contenu' =>"a placé le mot '$mot'", 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->decrement('statutMessage');
+
+            event(new getJoueurs($partie->idPartie,$partie->typePartie));
+            return new JsonResponse(['message'=>'successsssss']);
+        }elseif ($commande === 'changer'){
+            return true;
+        }else if($contenu === '!passer'){
+            $this->passerTour($joueur->idJoueur);
+        }else{
+            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser  par default', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->decrement('statutMessage');
+            event(new getJoueurs($partie->idPartie,$partie->typePartie));
+            return new JsonResponse([
+                "nom" => $joueur->nom,
+                "partie" => $partie->idPartie,
+                'message' => "$joueur->nom fait une commande impossible à réaliser",
+                'mot' => $commande,
+            ], 404);
         }
 
 
@@ -469,28 +462,19 @@ class MessageController extends Controller
     public function passerTour($idJoueur){
         $joueur = Joueur::find($idJoueur);
         $partie = Partie::find($joueur->partie);
+        $ordrePass = $partie->nombreTours+1;
         DB::table('parties')->where("idPartie", $partie->idPartie)
             ->increment('nombreTours');
         $partie2 = Partie::where('idPartie',$partie->idPartie)->first();
+        $joueurNext = Joueur::where('ordre',$ordrePass%$partie->typePartie===0?$partie->typePartie:$ordrePass%$partie->typePartie)->first();
+        $messageCreated = Message::create(['contenu' => 'a passé son tour --> C`est le Tour de '.$joueurNext->nom , 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+        $messageCreated->decrement('statutMessage');
         event (new getJoueurs($partie2->idPartie,$partie2->typePartie));
         return new JsonResponse(['nombreTours'=> $partie2->nombreTours , 'typePartie'=>$partie2->typePartie]);
     }
 
-    //? verifier si un mot contient un caractere Majuscule
-    public function verifierMotContientLettreMajuscule($mot): bool
-    {
-        // ? verfier si toute la chaine est en Minuscule
-        $mot = trim($mot);
-        $chaineMinuscule = ctype_lower($mot);
-        if ($chaineMinuscule) {
-            return true;
-        }
-        return false;
-    }
-
     public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
     {
-        // g15v bonjour
         $longeurchaine = strlen($mot);
         if ($pos === 'v') {
             $limiteLigne = ord('P') - ord(strtoupper(trim($ligne)));
@@ -574,7 +558,7 @@ class MessageController extends Controller
         }
     }
 
-    //!  tester vaec h8 et ordre doit etre = 1 le premier vas jouer
+    //?  tester vaec h8 et ordre doit etre = 1 le premier vas jouer
     public function verfierMotDansChevalet($mot, $chevalet, $grille, $colonne, $ligne, $pos, $ordre): bool
     {
         $motGrille = [];

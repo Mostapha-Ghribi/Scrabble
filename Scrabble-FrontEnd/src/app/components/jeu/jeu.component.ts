@@ -37,6 +37,7 @@ export class JeuComponent implements OnInit {
   public grille: any;
   public nombreTours: any;
   ordreLast: any = 1;
+  nomJoueur: any;
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     let $message;
@@ -186,6 +187,8 @@ export class JeuComponent implements OnInit {
     this.tiles=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","B","O","N","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
     this.joueurService.getJoueur(this.id).subscribe( data =>{
       this.LettreChevalet = this.ChevaletToArray(data.chevalet.toUpperCase());
+      this.nomJoueur = data.nom;
+
     })
     this.startTimer(300);
 
