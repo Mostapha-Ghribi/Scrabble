@@ -220,12 +220,12 @@ class MessageController extends Controller
             ->latest('dateCreation')
             ->get();
         $m = [];
-        foreach ($messages as $message){
-            $joueur = Joueur::where('idJoueur' , $message->envoyeur)->first();
-            $me= new stdClass();
+        foreach ($messages as $message) {
+            $joueur = Joueur::where('idJoueur', $message->envoyeur)->first();
+            $me = new stdClass();
             $me->nom = $joueur->nom;
             $me->contenu = $message->contenu;
-            array_push($m , $me);
+            array_push($m, $me);
         }
         return new JsonResponse($m);
     }
@@ -281,7 +281,7 @@ class MessageController extends Controller
         $contenu = trim($request->contenu);
         if ($contenu[0] !== '!') {
             $message = Message::create($request->all());
-            event(new getJoueurs($partie->idPartie,$partie->typePartie));
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
             return new JsonResponse($message);
         }
 
@@ -295,20 +295,19 @@ class MessageController extends Controller
         }
 
 
-
         $commande = substr($contenu, 1, strpos($contenu, ' ') - 1);
         $ordre = $partie->nombreTours;
 
 
-        if(($commande ==="placer" || $commande==="changer" || $contenu==="!passer") && ($ordre +1) %$partie->typePartie +1 !== $joueur->ordre){
-            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+        if (($commande === "placer" || $commande === "changer" || $contenu === "!passer") && ($ordre + 1) % $partie->typePartie + 1 !== $joueur->ordre) {
+            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
             $messageCreated->decrement('statutMessage');
-            event(new getJoueurs($partie->idPartie,$partie->typePartie));
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
             return new JsonResponse([
                 'message' => "$joueur->nom fait une commande impossible à réaliser",
             ], 404);
         }
-        if($commande ==="placer"){
+        if ($commande === "placer") {
             $coordonnesContenu = substr($contenu, strpos($contenu, ' ') + 1);
             $coordonnes = substr($coordonnesContenu, 0, strpos($coordonnesContenu, ' '));
             $mot = substr($coordonnesContenu, strpos($coordonnesContenu, ' ') + 1);
@@ -321,9 +320,9 @@ class MessageController extends Controller
 
             // tester si les coordonnes sont  invalide
             if (!in_array($ligne, $ligneArray, true) || !in_array($position, $posArray) || empty($mot) || ($colonne < 1 || $colonne > 15)) {
-                $messageCreated = Message::create(['contenu' => 'fait un erreur de syntaxe', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated = Message::create(['contenu' => 'fait un erreur de syntaxe', 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
                 $messageCreated->decrement('statutMessage');
-                event(new getJoueurs($partie->idPartie,$partie->typePartie));
+                event(new getJoueurs($partie->idPartie, $partie->typePartie));
                 return new JsonResponse([
                     "nom" => $joueur->nom,
                     "partie" => $partie->idPartie,
@@ -339,9 +338,9 @@ class MessageController extends Controller
                 !ctype_alpha(trim($mot)) ||
                 !$this->verifierPostionMotValable($ligne, $colonne, $position, $mot) ||
                 !$this->verfierMotDansChevalet($mot, $joueur->chevalet, $partie->grille, $colonne, $ligne, $position, $ordre)) {
-                $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+                $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser', 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
                 $messageCreated->decrement('statutMessage');
-                event(new getJoueurs($partie->idPartie,$partie->typePartie));
+                event(new getJoueurs($partie->idPartie, $partie->typePartie));
                 return new JsonResponse([
                     "nom" => $joueur->nom,
                     "partie" => $partie->idPartie,
@@ -360,11 +359,11 @@ class MessageController extends Controller
             $Score = $joueur->score;
             $TM = 1;
             $DM = 1;
-            $ScoreGrille=["TM","","","DL","","","","TM","","","","DL","","","TM","","DM","","","","TL","","","","TL","","","","DM","","","","DM","","","","DL","","DL","","","","DM","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","","","DM","","","","","","DM","","","","","","TL","","","","TL","","","","TL","","","","TL","","","","DL","","","","DL","","DL","","","","DL","","","TM","","","DL","","","","","","","","DL","","","TM","","","DL","","","","DL","","DL","","","","DL","","","","TL","","","","TL","","","","TL","","","","TL","","","","","","DM","","","","","","DM","","","","","DL","","","DM","","","","DL","","","","DM","","","DL","","","DM","","","","DL","","DL","","","","DM","","","","DM","","","","TL","","","","TL","","","","DM","","TM","","","DL","","","","TM","","","","DL","","","TM"];
+            $ScoreGrille = ["TM", "", "", "DL", "", "", "", "TM", "", "", "", "DL", "", "", "TM", "", "DM", "", "", "", "TL", "", "", "", "TL", "", "", "", "DM", "", "", "", "DM", "", "", "", "DL", "", "DL", "", "", "", "DM", "", "", "DL", "", "", "DM", "", "", "", "DL", "", "", "", "DM", "", "", "DL", "", "", "", "", "DM", "", "", "", "", "", "DM", "", "", "", "", "", "TL", "", "", "", "TL", "", "", "", "TL", "", "", "", "TL", "", "", "", "DL", "", "", "", "DL", "", "DL", "", "", "", "DL", "", "", "TM", "", "", "DL", "", "", "", "", "", "", "", "DL", "", "", "TM", "", "", "DL", "", "", "", "DL", "", "DL", "", "", "", "DL", "", "", "", "TL", "", "", "", "TL", "", "", "", "TL", "", "", "", "TL", "", "", "", "", "", "DM", "", "", "", "", "", "DM", "", "", "", "", "DL", "", "", "DM", "", "", "", "DL", "", "", "", "DM", "", "", "DL", "", "", "DM", "", "", "", "DL", "", "DL", "", "", "", "DM", "", "", "", "DM", "", "", "", "TL", "", "", "", "TL", "", "", "", "DM", "", "TM", "", "", "DL", "", "", "", "TM", "", "", "", "DL", "", "", "TM"];
 
             switch ($position) {
                 case 'v' :
-                    $imax =((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1);
+                    $imax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1);
                     $pas = 15;
 
                     break;
@@ -373,21 +372,21 @@ class MessageController extends Controller
                     break;
             }
             //return new JsonResponse($posMotTableau + strlen($mot));
-            for ($i = $posMotTableau,$j=0; $i < $imax && $j<strlen($mot); $i+=$pas , $j++) {
+            for ($i = $posMotTableau, $j = 0; $i < $imax && $j < strlen($mot); $i += $pas, $j++) {
 
                 $chaineGrille .= $grillTab[$i];
                 $nouvelGrilleChaine[$i] = $mot[$j];
-                if($ScoreGrille[$i] ==="DL"){
-                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *2;
-                }else if($ScoreGrille[$i] ==="TL"){
-                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) *3;
-                }else if($ScoreGrille[$i] ==="TM"){
+                if ($ScoreGrille[$i] === "DL") {
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) * 2;
+                } else if ($ScoreGrille[$i] === "TL") {
+                    $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i])) * 3;
+                } else if ($ScoreGrille[$i] === "TM") {
                     $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
                     $TM *= 3;
-                }else if($ScoreGrille[$i] ==="DM"){
+                } else if ($ScoreGrille[$i] === "DM") {
                     $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
                     $DM *= 2;
-                }else{
+                } else {
                     $Score += $this->valueLettre(strtoupper($nouvelGrilleChaine[$i]));
 
                 }
@@ -408,8 +407,8 @@ class MessageController extends Controller
             }
             // return new JsonResponse($ResteMot);
             // calculer bingo
-            if(strlen($ResteMot) === 7){
-                $Score +=50;
+            if (strlen($ResteMot) === 7) {
+                $Score += 50;
             }
 
             $RestChevalet = $joueur->chevalet;
@@ -435,20 +434,33 @@ class MessageController extends Controller
                 ->update(["grille" => strtolower($nouvelGrilleChaine), "reserve" => $reserve]);
             DB::table('parties')->where("idPartie", $partie->idPartie)
                 ->increment('nombreTours');
-            DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet,'score'=>$Score]);
-            $messageCreated = Message::create(['contenu' =>"a placé le mot '$mot'", 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            DB::table("joueurs")->where("idJoueur", $joueur->idJoueur)->update(["chevalet" => $RestChevalet, 'score' => $Score]);
+            $messageCreated = Message::create(['contenu' => "a placé le mot '$mot'", 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
             $messageCreated->decrement('statutMessage');
 
-            event(new getJoueurs($partie->idPartie,$partie->typePartie));
-            return new JsonResponse(['message'=>'successsssss']);
-        }elseif ($commande === 'changer'){
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
+            return new JsonResponse(['message' => 'successsssss']);
+        } elseif ($commande === 'changer') {
             return true;
-        }else if($contenu === '!passer'){
+        } else if ($contenu === '!passer') {
             $this->passerTour($joueur->idJoueur);
-        }else{
-            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser  par default', 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+        } elseif ($contenu === "!aider") {
+            $aide = "!placer g15v bonjour  ===> joue le mot bonjour à la verticale et le b est positionné en g15 changer un lettre avec  ===>  !changer mwb : remplace les lettres m, w et b. !changer e*  =>  remplace une seule des lettres e et une lettre blanche Passer son tour ===> !passer Besoin d aide ===>  !aider ";
+
+            $messageCreated = Message::create(['contenu' => $aide, 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
             $messageCreated->decrement('statutMessage');
-            event(new getJoueurs($partie->idPartie,$partie->typePartie));
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
+            return new JsonResponse([
+                "nom" => $joueur->nom,
+                "partie" => $partie->idPartie,
+                'message' => $aide,
+
+            ], 200);
+
+        } else {
+            $messageCreated = Message::create(['contenu' => 'fait une commande impossible à réaliser  par default', 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+            $messageCreated->decrement('statutMessage');
+            event(new getJoueurs($partie->idPartie, $partie->typePartie));
             return new JsonResponse([
                 "nom" => $joueur->nom,
                 "partie" => $partie->idPartie,
@@ -459,18 +471,20 @@ class MessageController extends Controller
 
 
     }
-    public function passerTour($idJoueur){
+
+    public function passerTour($idJoueur)
+    {
         $joueur = Joueur::find($idJoueur);
         $partie = Partie::find($joueur->partie);
-        $ordrePass = $partie->nombreTours+1;
+        $ordrePass = $partie->nombreTours + 1;
         DB::table('parties')->where("idPartie", $partie->idPartie)
             ->increment('nombreTours');
-        $partie2 = Partie::where('idPartie',$partie->idPartie)->first();
-        $joueurNext = Joueur::where('ordre',$ordrePass%$partie->typePartie===0?$partie->typePartie:$ordrePass%$partie->typePartie)->first();
-        $messageCreated = Message::create(['contenu' => 'a passé son tour --> C`est le Tour de '.$joueurNext->nom , 'partie' =>  $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
+        $partie2 = Partie::where('idPartie', $partie->idPartie)->first();
+        $joueurNext = Joueur::where('ordre', $ordrePass % $partie->typePartie === 0 ? $partie->typePartie : $ordrePass % $partie->typePartie)->first();
+        $messageCreated = Message::create(['contenu' => 'a passé son tour --> C`est le Tour de ' . $joueurNext->nom, 'partie' => $partie->idPartie, 'envoyeur' => $joueur->idJoueur]);
         $messageCreated->decrement('statutMessage');
-        event (new getJoueurs($partie2->idPartie,$partie2->typePartie));
-        return new JsonResponse(['nombreTours'=> $partie2->nombreTours , 'typePartie'=>$partie2->typePartie]);
+        event(new getJoueurs($partie2->idPartie, $partie2->typePartie));
+        return new JsonResponse(['nombreTours' => $partie2->nombreTours, 'typePartie' => $partie2->typePartie]);
     }
 
     public function verifierPostionMotValable($ligne, $colonne, $pos, $mot)
@@ -576,7 +590,7 @@ class MessageController extends Controller
             case 'v' :
                 for ($i = $posMotTableau, $iMax = ((ord(strtoupper($ligne)) - ord('A')) + strlen($mot) - 1) * 15 + ($colonne - 1); $i <= $iMax; $i += 15) {
                     $chaineGrille .= $grillTab[$i];
-                    array_push($motGrille,$grillTab[$i]);
+                    array_push($motGrille, $grillTab[$i]);
 
                     if ($i === 112) {
                         $isOrderOne = false;
@@ -598,7 +612,7 @@ class MessageController extends Controller
             case 'h' :
                 for ($i = $posMotTableau, $iMax = $posMotTableau + strlen($mot); $i < $iMax; $i++) {
                     $chaineGrille .= $grillTab[$i];
-                    array_push($motGrille,$grillTab[$i]);
+                    array_push($motGrille, $grillTab[$i]);
                     if ($i === 112) {
                         $isOrderOne = false;
                     }
@@ -618,17 +632,16 @@ class MessageController extends Controller
                 break;
 
         }
-        if(!$this->compareMotGrilleMot($motGrille,$motAPlacer)){
+        if (!$this->compareMotGrilleMot($motGrille, $motAPlacer)) {
             return false;
         }
-
 
 
         // ***************************************************************************************
         //   $resteMotGrille = $this->retournerMotGrille($mot, $grille, $colonne, $ligne, $pos);
         $isEmplty = true;
-        for ($y = 0;$y<225;$y++){
-            if($grille[$y]!== '-'){
+        for ($y = 0; $y < 225; $y++) {
+            if ($grille[$y] !== '-') {
                 $isEmplty = false;
             }
         }
@@ -658,30 +671,34 @@ class MessageController extends Controller
         }
         return true;
     }
-    public function compareMotGrilleMot($motGrille,$mot) : bool{
+
+    public function compareMotGrilleMot($motGrille, $mot): bool
+    {
         $i = 0;
         $valid = true;
-        while($i<count($mot)&& $valid){
-            if($motGrille[$i]===''){
+        while ($i < count($mot) && $valid) {
+            if ($motGrille[$i] === '') {
                 $i++;
-            }else if($motGrille[$i] !== $mot[$i]){
+            } else if ($motGrille[$i] !== $mot[$i]) {
                 $valid = false;
-            }else{
+            } else {
                 $i++;
             }
         }
         return $valid;
     }
-public function valueLettre($tile) : int {
-    return match ($tile) {
-        "A", "E", "I", "L", "N", "O", "R", "S", "T", "U" => 1,
-        "D", "G", "M" => 2,
-        "B", "C", "P" => 3,
-        "F", "H", "V" => 4,
-        "J", "Q" => 8,
-        "K", "W", "X", "Y", "Z" => 10,
-        default => 0,
-    };
-}
+
+    public function valueLettre($tile): int
+    {
+        return match ($tile) {
+            "A", "E", "I", "L", "N", "O", "R", "S", "T", "U" => 1,
+            "D", "G", "M" => 2,
+            "B", "C", "P" => 3,
+            "F", "H", "V" => 4,
+            "J", "Q" => 8,
+            "K", "W", "X", "Y", "Z" => 10,
+            default => 0,
+        };
+    }
 
 }
